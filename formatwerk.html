@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formatwerk — Boeffes</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSI0IiB5MT0iNCIgeDI9IjI4IiB5Mj0iMjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjN0ZCNEZGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNEY3REYwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiByeD0iNyIgZmlsbD0idXJsKCNnKSIvPjxyZWN0IHg9IjMuNiIgeT0iMy42IiB3aWR0aD0iMjQuOCIgaGVpZ2h0PSIyNC44IiByeD0iNi42IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjgiLz48dGV4dCB4PSIxNiIgeT0iMjIuNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj5CPC90ZXh0Pjwvc3ZnPgo=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0A0C0F; --steel:#101319; --steel-2:#161A21; --steel-3:#1C212A;
+    --rail:#232932; --rail-2:#333B47; --rail-3:#414B5A;
+    --ink:#ECEFF4; --ink-2:#A2ADBB; --ink-3:#6A7482; --ink-4:#48515E;
+    --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --brand:#FFB401;
+    --ac:#2DD4BF;                      /* Formatwerk — Türkis */
+    --ac-soft:color-mix(in srgb, var(--ac) 14%, transparent);
+    --bo-1:#7FB4FF; --bo-2:#4F7DF0;
+    --warn:#F2A33C;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--void); color:var(--ink); font-family:var(--sans); line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; min-height:100vh; overflow-x:hidden;
+  }
+  /* ambient */
+  .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .aura{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(60% 42% at 70% -8%, color-mix(in srgb,var(--ac) 10%, transparent), transparent 70%);}
+  .vig{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(130% 90% at 50% -10%, transparent 58%, rgba(0,0,0,0.5) 100%);}
+
+  .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 24px 80px}
+
+  /* ---------- topbar ---------- */
+  .top{display:flex;align-items:center;gap:16px;justify-content:space-between;
+    padding:16px 0 14px;border-bottom:1px solid var(--rail);
+    position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--void) 72%,transparent);
+    backdrop-filter:blur(6px);}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex:none}
+  .logo{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
+    font:700 15px/1 var(--disp);color:#fff;background:linear-gradient(150deg,var(--bo-1),var(--bo-2));
+    box-shadow:inset 0 0 0 1px #ffffff30, 0 2px 9px #4f7df055;}
+  .word{font:600 16px/1 var(--disp);letter-spacing:-.01em;color:var(--ink)}
+  .word .x{color:#6E97F2}
+  .crumb{display:flex;align-items:center;gap:9px;min-width:0;
+    font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+  .crumb .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);
+    animation:dotp 2.6s var(--ease) infinite;flex:none}
+  @keyframes dotp{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 55%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .crumb b{color:var(--ink-2);font-weight:600;letter-spacing:.1em}
+  .crumb .sep{color:var(--ink-4)}
+  .loc{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);flex:none}
+  .loc i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#3CCB8E;margin-right:7px;vertical-align:middle}
+  @media (max-width:620px){.crumb b,.loc{display:none}}
+
+  /* ---------- intro ---------- */
+  .intro{padding:46px 0 30px;max-width:62ch}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-3);
+    margin:0 0 20px;display:flex;align-items:center;gap:12px}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--rail-3)}
+  h1{font-family:var(--disp);font-weight:700;font-size:clamp(40px,8vw,76px);line-height:.94;letter-spacing:-.035em;margin:0;color:var(--ink)}
+  .lead{font-size:clamp(15px,2vw,17px);color:var(--ink-2);margin:22px 0 0;line-height:1.6}
+
+  /* ---------- drop ---------- */
+  .drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;
+    width:100%;min-height:184px;padding:34px 24px;cursor:pointer;
+    border:1.5px dashed var(--rail-2);border-radius:18px;color:var(--ink-2);
+    background:radial-gradient(120% 120% at 50% 0%, color-mix(in srgb,var(--ac) 5%, transparent), transparent 60%), linear-gradient(180deg,var(--steel-2),var(--steel));
+    transition:border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease)}
+  .drop:hover{border-color:color-mix(in srgb,var(--ac) 50%, var(--rail-2));transform:translateY(-2px)}
+  .drop.drag{border-color:var(--ac);border-style:solid;
+    box-shadow:0 0 0 1px var(--ac), 0 0 50px -20px var(--ac);transform:translateY(-2px)}
+  .drop:focus-within{outline:none;border-color:color-mix(in srgb,var(--ac) 55%, var(--rail-2))}
+  .drop svg{width:42px;height:42px;color:var(--ac);opacity:.9}
+  .drop .big{font:600 17px/1.3 var(--disp);color:var(--ink)}
+  .drop .small{font-size:13.5px;color:var(--ink-3)}
+  .drop .forms{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-4);margin-top:6px;line-height:1.6;text-transform:uppercase}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---------- controls ---------- */
+  .panel{margin-top:18px;border:1px solid var(--rail);border-radius:16px;overflow:hidden;
+    background:linear-gradient(180deg,var(--steel-2),var(--steel))}
+  .panel[hidden]{display:none}
+  .prow{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--rail);flex-wrap:wrap}
+  .prow:last-child{border-bottom:none}
+  .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);flex:none;width:84px}
+  .fmts{display:flex;flex-wrap:wrap;gap:7px}
+  .fmt{appearance:none;cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.05em;
+    color:var(--ink-2);background:var(--steel-3);border:1px solid var(--rail-2);border-radius:9px;padding:7px 13px;
+    transition:.18s var(--ease)}
+  .fmt:hover{color:var(--ink);border-color:var(--rail-3)}
+  .fmt.on{color:var(--void);background:var(--ac);border-color:var(--ac);font-weight:700;
+    box-shadow:0 0 22px -8px var(--ac)}
+  .fmt:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .qwrap{display:flex;align-items:center;gap:14px;flex:1;min-width:200px}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:3px;flex:1;min-width:120px;
+    background:linear-gradient(90deg,var(--ac) var(--p,85%),var(--rail-2) var(--p,85%));outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+    background:var(--ink);border:3px solid var(--ac);box-shadow:0 1px 4px #0008;cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ink);border:3px solid var(--ac);cursor:pointer}
+  .qval{font-family:var(--mono);font-size:13px;color:var(--ink);min-width:42px;text-align:right}
+  .swatches{display:flex;align-items:center;gap:8px}
+  .swatch{width:24px;height:24px;border-radius:7px;cursor:pointer;border:1px solid var(--rail-2);position:relative;padding:0;background:none}
+  .swatch.on{box-shadow:0 0 0 2px var(--ac),0 0 0 4px var(--void)}
+  .swatch.w{background:#fff}.swatch.k{background:#111}
+  .swatch.cust{overflow:hidden}
+  .swatch.cust input{position:absolute;inset:-6px;width:200%;height:200%;border:none;padding:0;cursor:pointer;background:none}
+  .ghint{font-size:12px;color:var(--ink-4)}
+  .acts{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .count{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3);margin-right:auto}
+  .count b{color:var(--ink)}
+  .btn{appearance:none;cursor:pointer;font:600 13.5px/1 var(--disp);letter-spacing:.01em;
+    color:var(--ink);background:var(--steel-3);border:1px solid var(--rail-2);border-radius:11px;padding:11px 16px;
+    display:inline-flex;align-items:center;gap:8px;transition:.18s var(--ease)}
+  .btn:hover{border-color:var(--rail-3);background:var(--rail)}
+  .btn.primary{color:var(--void);background:var(--ac);border-color:var(--ac);box-shadow:0 8px 26px -14px var(--ac)}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .btn .spin{width:14px;height:14px;border-radius:50%;border:2px solid color-mix(in srgb,var(--void) 35%,transparent);border-top-color:var(--void);animation:sp .7s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  /* ---------- queue ---------- */
+  .queue{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+  .item{display:flex;align-items:center;gap:14px;padding:11px 13px;
+    border:1px solid var(--rail);border-radius:14px;background:linear-gradient(180deg,var(--steel-2),var(--steel));
+    animation:rise .3s var(--ease) both}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .thumb{width:58px;height:58px;flex:none;border-radius:9px;overflow:hidden;border:1px solid var(--rail-2);
+    background:repeating-conic-gradient(#1b2129 0 25%, #151a21 0 50%) 0/14px 14px;display:grid;place-items:center}
+  .thumb img{max-width:100%;max-height:100%;display:block;object-fit:contain}
+  .thumb.load{color:var(--ink-4)}
+  .thumb .ph{width:20px;height:20px;border-radius:50%;border:2px solid var(--rail-3);border-top-color:var(--ac);animation:sp .8s linear infinite}
+  .meta{flex:1;min-width:0}
+  .name{font:500 14px/1.3 var(--sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sub{display:flex;align-items:center;gap:8px;margin-top:4px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);flex-wrap:wrap}
+  .badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;padding:2px 6px;border-radius:5px;
+    background:var(--steel-3);border:1px solid var(--rail-2);color:var(--ink-2)}
+  .badge.out{background:color-mix(in srgb,var(--ac) 16%, var(--steel-3));border-color:color-mix(in srgb,var(--ac) 45%, var(--rail-2));color:var(--ac)}
+  .arrow{color:var(--ink-4)}
+  .delta.down{color:var(--ac)}
+  .delta.up{color:var(--warn)}
+  .err-txt{color:#F2685E}
+  .note{color:var(--ink-4)}
+  .bar{height:3px;border-radius:2px;background:var(--rail-2);margin-top:8px;overflow:hidden;display:none}
+  .item.working .bar{display:block}
+  .bar i{display:block;height:100%;width:35%;border-radius:2px;background:var(--ac);
+    animation:slide 1.05s var(--ease) infinite}
+  @keyframes slide{0%{margin-left:-35%}100%{margin-left:100%}}
+  .iact{display:flex;align-items:center;gap:6px;flex:none}
+  .ibtn{appearance:none;cursor:pointer;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+    background:var(--steel-3);border:1px solid var(--rail-2);color:var(--ink-2);transition:.16s var(--ease)}
+  .ibtn:hover{color:var(--ink);border-color:var(--rail-3);background:var(--rail)}
+  .ibtn.dl{color:var(--ac);border-color:color-mix(in srgb,var(--ac) 35%,var(--rail-2))}
+  .ibtn.dl:hover{background:color-mix(in srgb,var(--ac) 14%,var(--steel-3))}
+  .ibtn:disabled{opacity:.35;cursor:default}
+  .ibtn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .ibtn svg{width:16px;height:16px}
+
+  .foot{margin-top:42px;padding-top:18px;border-top:1px solid var(--rail);
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink-4);line-height:1.7}
+  .foot b{color:var(--ink-3);font-weight:500}
+
+  @media (max-width:560px){
+    .lab{width:100%}
+    .prow{gap:10px}
+    .intro{padding:34px 0 24px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div><div class="aura"></div><div class="vig"></div>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html" title="Zurück zur ToolBox">
+      <span class="logo">B</span>
+      <span class="word">Bo<span class="x">ff</span>es</span>
+    </a>
+    <div class="crumb">
+      <span class="dot"></span>
+      <b>Formatwerk</b><span class="sep">/</span>Konverter
+    </div>
+    <div class="loc"><i></i>100% lokal</div>
+  </header>
+
+  <section class="intro">
+    <p class="eyebrow">Bildformat-Konverter</p>
+    <h1>Formatwerk</h1>
+    <p class="lead">Bilder von einem Format ins andere umwandeln — von HEIC, TIFF und SVG bis WEBP, AVIF und PNG. Einzeln oder im Stapel, alles direkt im Browser.</p>
+  </section>
+
+  <label class="drop" id="drop" for="file">
+    <input class="sr" type="file" id="file" multiple
+      accept="image/*,.heic,.heif,.tif,.tiff,.avif,.bmp,.ico,.webp,.gif,.svg">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <path d="M12 3v13"/><path d="M7.5 7.5 12 3l4.5 4.5"/>
+    </svg>
+    <div class="big">Bilder hierher ziehen</div>
+    <div class="small">oder klicken zum Auswählen · auch per Einfügen (Ctrl/Cmd&nbsp;+&nbsp;V)</div>
+    <div class="forms">PNG · JPG · WEBP · GIF · BMP · HEIC · HEIF · TIFF · AVIF · SVG · ICO</div>
+  </label>
+
+  <div class="panel" id="panel" hidden>
+    <div class="prow">
+      <span class="lab">Zielformat</span>
+      <div class="fmts" id="fmts"></div>
+    </div>
+    <div class="prow" id="qrow">
+      <span class="lab">Qualität</span>
+      <div class="qwrap">
+        <input type="range" id="quality" min="1" max="100" value="85">
+        <span class="qval" id="qval">85%</span>
+      </div>
+    </div>
+    <div class="prow" id="bgrow">
+      <span class="lab">Hintergrund</span>
+      <div class="swatches">
+        <button class="swatch w on" data-bg="#ffffff" title="Weiss"></button>
+        <button class="swatch k" data-bg="#000000" title="Schwarz"></button>
+        <button class="swatch cust" id="bgCust" title="Eigene Farbe">
+          <input type="color" id="bgColor" value="#1c212a">
+        </button>
+      </div>
+      <span class="ghint">für Formate ohne Transparenz (JPG · BMP · GIF)</span>
+    </div>
+    <div class="prow">
+      <span class="count" id="count"></span>
+      <div class="acts">
+        <button class="btn" id="clear">Leeren</button>
+        <button class="btn" id="zip">Als ZIP</button>
+        <button class="btn primary" id="convert">Alle umwandeln</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="queue" id="queue"></div>
+
+  <footer class="foot">
+    <div><b>Alles läuft lokal in deinem Browser.</b> Keine Datei wird hochgeladen.</div>
+    <div>HEIC · HEIF · TIFF · AVIF · GIF laden bei Bedarf einmalig eine kleine Codec-Bibliothek nach.</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ===================== CDN codecs (lazy) ===================== */
+  const URLS = {
+    heic: "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js",
+    utif: "https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.js",
+    gifenc: "https://esm.sh/gifenc@1.0.3",
+    avif: "https://esm.sh/@jsquash/avif@1.3.0",
+  };
+  const _s = {};
+  function loadScript(src){
+    return _s[src] || (_s[src] = new Promise((res, rej) => {
+      const el = document.createElement("script");
+      el.src = src; el.async = true;
+      el.onload = () => res();
+      el.onerror = () => { _s[src] = null; rej(new Error("Codec-Bibliothek nicht erreichbar")); };
+      document.head.appendChild(el);
+    }));
+  }
+  const _m = {};
+  function loadModule(src){
+    return _m[src] || (_m[src] = import(src).catch(e => { _m[src] = null; throw new Error("Codec-Modul nicht erreichbar"); }));
+  }
+
+  /* ===================== verified byte encoders ===================== */
+  const CRC_TABLE = (() => {
+    const t = new Uint32Array(256);
+    for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(b){ let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC_TABLE[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+
+  function encodeBMP(rgba, w, h){
+    const rowSize = (w * 3 + 3) & ~3, pixSize = rowSize * h, size = 54 + pixSize;
+    const buf = new ArrayBuffer(size), dv = new DataView(buf), u8 = new Uint8Array(buf);
+    dv.setUint8(0, 0x42); dv.setUint8(1, 0x4D); dv.setUint32(2, size, true); dv.setUint32(10, 54, true);
+    dv.setUint32(14, 40, true); dv.setInt32(18, w, true); dv.setInt32(22, h, true);
+    dv.setUint16(26, 1, true); dv.setUint16(28, 24, true); dv.setUint32(34, pixSize, true);
+    dv.setInt32(38, 2835, true); dv.setInt32(42, 2835, true);
+    let p = 54;
+    for (let y = h - 1; y >= 0; y--){
+      let s = y * w * 4;
+      for (let x = 0; x < w; x++){ u8[p++] = rgba[s + 2]; u8[p++] = rgba[s + 1]; u8[p++] = rgba[s]; s += 4; }
+      p += rowSize - w * 3;
+    }
+    return u8;
+  }
+  function encodeICO(png, w, h){
+    const out = new Uint8Array(22 + png.length), dv = new DataView(out.buffer);
+    dv.setUint16(0, 0, true); dv.setUint16(2, 1, true); dv.setUint16(4, 1, true);
+    out[6] = w >= 256 ? 0 : w; out[7] = h >= 256 ? 0 : h; out[8] = 0; out[9] = 0;
+    dv.setUint16(10, 1, true); dv.setUint16(12, 32, true); dv.setUint32(14, png.length, true); dv.setUint32(18, 22, true);
+    out.set(png, 22); return out;
+  }
+  function makeZip(files){
+    const enc = new TextEncoder(), chunks = [], central = []; let offset = 0;
+    const d = new Date();
+    const dt = ((d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1)) & 0xFFFF;
+    const dd = (((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()) & 0xFFFF;
+    for (const f of files){
+      const name = enc.encode(f.name), data = f.data, crc = crc32(data);
+      const lh = new Uint8Array(30 + name.length), v = new DataView(lh.buffer);
+      v.setUint32(0, 0x04034b50, true); v.setUint16(4, 20, true); v.setUint16(8, 0, true);
+      v.setUint16(10, dt, true); v.setUint16(12, dd, true); v.setUint32(14, crc, true);
+      v.setUint32(18, data.length, true); v.setUint32(22, data.length, true); v.setUint16(26, name.length, true);
+      lh.set(name, 30); chunks.push(lh, data);
+      const ch = new Uint8Array(46 + name.length), cv = new DataView(ch.buffer);
+      cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
+      cv.setUint16(10, 0, true); cv.setUint16(12, dt, true); cv.setUint16(14, dd, true); cv.setUint32(16, crc, true);
+      cv.setUint32(20, data.length, true); cv.setUint32(24, data.length, true);
+      cv.setUint16(28, name.length, true); cv.setUint32(42, offset, true); ch.set(name, 46); central.push(ch);
+      offset += lh.length + data.length;
+    }
+    const cSize = central.reduce((s, c) => s + c.length, 0);
+    const eocd = new Uint8Array(22), e = new DataView(eocd.buffer);
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+    e.setUint32(12, cSize, true); e.setUint32(16, offset, true);
+    const out = new Uint8Array(offset + cSize + 22); let p = 0;
+    for (const c of chunks){ out.set(c, p); p += c.length; }
+    for (const c of central){ out.set(c, p); p += c.length; }
+    out.set(eocd, p); return out;
+  }
+
+  /* ===================== decode ===================== */
+  function loadImg(url){
+    return new Promise((res, rej) => { const img = new Image(); img.onload = () => res(img); img.onerror = () => rej(new Error("Bild konnte nicht gelesen werden")); img.src = url; });
+  }
+  function bitmapToCanvas(bmp){
+    const cv = document.createElement("canvas"); cv.width = bmp.width; cv.height = bmp.height;
+    cv.getContext("2d").drawImage(bmp, 0, 0); if (bmp.close) bmp.close(); return cv;
+  }
+  async function decodeNative(blob){
+    try { const bmp = await createImageBitmap(blob); return bitmapToCanvas(bmp); }
+    catch (_){
+      const url = URL.createObjectURL(blob);
+      try {
+        const img = await loadImg(url);
+        const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+        if (!w || !h) throw new Error("Bild ohne Dimensionen");
+        const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+        cv.getContext("2d").drawImage(img, 0, 0); return cv;
+      } finally { URL.revokeObjectURL(url); }
+    }
+  }
+  async function decodeHeic(file){
+    await loadScript(URLS.heic);
+    const res = await window.heic2any({ blob: file, toType: "image/png" });
+    return decodeNative(Array.isArray(res) ? res[0] : res);
+  }
+  async function decodeTiff(file){
+    await loadScript(URLS.utif);
+    const buf = await file.arrayBuffer(), U = window.UTIF, ifds = U.decode(buf);
+    if (!ifds.length) throw new Error("Keine TIFF-Bilddaten gefunden");
+    U.decodeImage(buf, ifds[0]);
+    const rgba = U.toRGBA8(ifds[0]), w = ifds[0].width, h = ifds[0].height;
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+    const ctx = cv.getContext("2d"), id = ctx.createImageData(w, h);
+    id.data.set(rgba); ctx.putImageData(id, 0, 0); return cv;
+  }
+  async function decodeSVG(file){
+    const text = await file.text();
+    let w = 0, h = 0; const tag = (text.match(/<svg[^>]*>/i) || [""])[0];
+    const wm = tag.match(/\bwidth\s*=\s*["']?\s*([\d.]+)/i), hm = tag.match(/\bheight\s*=\s*["']?\s*([\d.]+)/i);
+    if (wm) w = parseFloat(wm[1]); if (hm) h = parseFloat(hm[1]);
+    if (!w || !h){ const vb = tag.match(/viewBox\s*=\s*["']?\s*([\d.\-\s,]+)/i); if (vb){ const a = vb[1].trim().split(/[\s,]+/).map(Number); if (a.length === 4){ w = w || a[2]; h = h || a[3]; } } }
+    if (!w || !h){ w = w || 1024; h = h || 1024; }
+    const MAX = 2048, m = Math.max(w, h), sc = m > MAX ? MAX / m : 1;
+    const tw = Math.max(1, Math.round(w * sc)), th = Math.max(1, Math.round(h * sc));
+    const url = URL.createObjectURL(new Blob([text], { type: "image/svg+xml" }));
+    try {
+      const img = await loadImg(url);
+      const cv = document.createElement("canvas"); cv.width = tw; cv.height = th;
+      cv.getContext("2d").drawImage(img, 0, 0, tw, th); return cv;
+    } finally { URL.revokeObjectURL(url); }
+  }
+  async function sniff(file){
+    const buf = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+    const a = (i) => buf[i];
+    const str = (i, n) => { let s = ""; for (let k = 0; k < n; k++) s += String.fromCharCode(buf[i + k]); return s; };
+    if (a(0) === 0x89 && a(1) === 0x50 && a(2) === 0x4E && a(3) === 0x47) return { id: "png", label: "PNG" };
+    if (a(0) === 0xFF && a(1) === 0xD8 && a(2) === 0xFF) return { id: "jpeg", label: "JPG" };
+    if (str(0, 4) === "GIF8") return { id: "gif", label: "GIF" };
+    if (str(0, 2) === "BM") return { id: "bmp", label: "BMP" };
+    if (str(0, 4) === "RIFF" && str(8, 4) === "WEBP") return { id: "webp", label: "WEBP" };
+    if ((a(0) === 0x49 && a(1) === 0x49 && a(2) === 0x2A && a(3) === 0x00) || (a(0) === 0x4D && a(1) === 0x4D && a(2) === 0x00 && a(3) === 0x2A)) return { id: "tiff", label: "TIFF" };
+    if (a(0) === 0x00 && a(1) === 0x00 && a(2) === 0x01 && a(3) === 0x00) return { id: "ico", label: "ICO" };
+    if (str(4, 4) === "ftyp"){
+      const brand = str(8, 4);
+      if (/avif|avis/.test(brand)) return { id: "avif", label: "AVIF" };
+      if (/heic|heix|hevc|heim|heis|hevm|hevs|mif1|msf1/.test(brand)) return { id: "heic", label: "HEIC" };
+    }
+    const head = str(0, 6).toLowerCase();
+    if (head.includes("<?xml") || head.includes("<svg")) return { id: "svg", label: "SVG" };
+    // fallback to extension
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    const map = { png:"PNG", jpg:"JPG", jpeg:"JPG", webp:"WEBP", gif:"GIF", bmp:"BMP", tif:"TIFF", tiff:"TIFF", heic:"HEIC", heif:"HEIF", avif:"AVIF", svg:"SVG", ico:"ICO" };
+    const idmap = { png:"png", jpg:"jpeg", jpeg:"jpeg", webp:"webp", gif:"gif", bmp:"bmp", tif:"tiff", tiff:"tiff", heic:"heic", heif:"heic", avif:"avif", svg:"svg", ico:"ico" };
+    if (map[ext]) return { id: idmap[ext], label: map[ext] };
+    if (file.type === "image/svg+xml") return { id: "svg", label: "SVG" };
+    return { id: "native", label: (file.type.split("/")[1] || "BILD").toUpperCase() };
+  }
+  async function decodeFile(file, fmtId){
+    if (fmtId === "heic") return decodeHeic(file);
+    if (fmtId === "tiff") return decodeTiff(file);
+    if (fmtId === "svg") return decodeSVG(file);
+    return decodeNative(file);
+  }
+
+  /* ===================== encode ===================== */
+  function toBlob(cv, type, q){ return new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(new Error("Encode fehlgeschlagen (" + type + ")")), type, q)); }
+  function flatten(cv, bg){ const o = document.createElement("canvas"); o.width = cv.width; o.height = cv.height; const c = o.getContext("2d"); c.fillStyle = bg || "#ffffff"; c.fillRect(0, 0, o.width, o.height); c.drawImage(cv, 0, 0); return o; }
+  function imgData(cv){ return cv.getContext("2d").getImageData(0, 0, cv.width, cv.height); }
+
+  async function canvasAVIF(cv, q){ const b = await new Promise(r => cv.toBlob(r, "image/avif", q)); return (b && b.type === "image/avif") ? b : null; }
+  async function jsquashAVIF(cv, qPct){
+    const mod = await loadModule(URLS.avif);
+    const enc = mod.encode || (mod.default && mod.default.encode);
+    if (!enc) throw new Error("AVIF-Encoder nicht verfügbar");
+    const ab = await enc(imgData(cv), { quality: Math.round(Math.min(100, Math.max(1, qPct))) });
+    return new Blob([ab], { type: "image/avif" });
+  }
+  async function encodeGIF(cv){
+    const mod = await loadModule(URLS.gifenc);
+    const GIFEncoder = mod.GIFEncoder || (mod.default && mod.default.GIFEncoder);
+    const quantize = mod.quantize || (mod.default && mod.default.quantize);
+    const applyPalette = mod.applyPalette || (mod.default && mod.default.applyPalette);
+    if (!GIFEncoder) throw new Error("GIF-Encoder nicht verfügbar");
+    const data = imgData(cv).data, g = GIFEncoder();
+    const pal = quantize(data, 256), idx = applyPalette(data, pal);
+    g.writeFrame(idx, cv.width, cv.height, { palette: pal }); g.finish();
+    return new Blob([g.bytes()], { type: "image/gif" });
+  }
+  async function encodeICOout(cv){
+    let src = cv, w = cv.width, h = cv.height, resized = false;
+    if (w > 256 || h > 256){
+      const s = 256 / Math.max(w, h); w = Math.max(1, Math.round(w * s)); h = Math.max(1, Math.round(h * s));
+      const t = document.createElement("canvas"); t.width = w; t.height = h; t.getContext("2d").drawImage(cv, 0, 0, w, h); src = t; resized = true;
+    }
+    const png = await toBlob(src, "image/png");
+    const u8 = encodeICO(new Uint8Array(await png.arrayBuffer()), w, h);
+    return { blob: new Blob([u8], { type: "image/x-icon" }), ext: "ico", resized: resized, dim: [w, h] };
+  }
+
+  async function encodeCanvas(cv, target, qPct, bg){
+    const q = Math.min(1, Math.max(0.01, qPct / 100));
+    switch (target){
+      case "png":  return { blob: await toBlob(cv, "image/png"), ext: "png" };
+      case "jpeg": return { blob: await toBlob(flatten(cv, bg), "image/jpeg", q), ext: "jpg" };
+      case "webp": { const b = await toBlob(cv, "image/webp", q); if (b.type !== "image/webp") throw new Error("WEBP wird hier nicht unterstützt"); return { blob: b, ext: "webp" }; }
+      case "avif": { let b = await canvasAVIF(cv, q); if (!b) b = await jsquashAVIF(cv, qPct); return { blob: b, ext: "avif" }; }
+      case "bmp":  { const f = flatten(cv, bg); const u8 = encodeBMP(imgData(f).data, f.width, f.height); return { blob: new Blob([u8], { type: "image/bmp" }), ext: "bmp" }; }
+      case "gif":  return { blob: await encodeGIF(flatten(cv, bg)), ext: "gif" };
+      case "tiff": { await loadScript(URLS.utif); const id = imgData(cv); const ab = window.UTIF.encodeImage(id.data, cv.width, cv.height); return { blob: new Blob([ab], { type: "image/tiff" }), ext: "tiff" }; }
+      case "ico":  return encodeICOout(cv);
+      default: throw new Error("Unbekanntes Zielformat");
+    }
+  }
+
+  /* ===================== targets ===================== */
+  const TARGETS = [
+    { id:"png",  label:"PNG",  lossy:false, alpha:true  },
+    { id:"jpeg", label:"JPG",  lossy:true,  alpha:false },
+    { id:"webp", label:"WEBP", lossy:true,  alpha:true  },
+    { id:"avif", label:"AVIF", lossy:true,  alpha:true  },
+    { id:"gif",  label:"GIF",  lossy:false, alpha:false },
+    { id:"bmp",  label:"BMP",  lossy:false, alpha:false },
+    { id:"tiff", label:"TIFF", lossy:false, alpha:true  },
+    { id:"ico",  label:"ICO",  lossy:false, alpha:true  },
+  ];
+  const tInfo = (id) => TARGETS.find(t => t.id === id);
+
+  /* ===================== state ===================== */
+  let items = [], idSeq = 0, target = "png", qPct = 85, bg = "#ffffff", busy = false;
+
+  /* ===================== DOM ===================== */
+  const $ = (s) => document.querySelector(s);
+  const drop = $("#drop"), fileInput = $("#file"), panel = $("#panel"), fmts = $("#fmts"),
+        qrow = $("#qrow"), quality = $("#quality"), qval = $("#qval"),
+        bgrow = $("#bgrow"), bgColor = $("#bgColor"), bgCust = $("#bgCust"),
+        countEl = $("#count"), convertBtn = $("#convert"), zipBtn = $("#zip"), clearBtn = $("#clear"),
+        queue = $("#queue");
+
+  /* ---- build format pills ---- */
+  TARGETS.forEach(t => {
+    const b = document.createElement("button");
+    b.className = "fmt" + (t.id === target ? " on" : "");
+    b.textContent = t.label; b.dataset.fmt = t.id; b.type = "button";
+    b.addEventListener("click", () => setTarget(t.id));
+    fmts.appendChild(b);
+  });
+
+  function setTarget(id){
+    target = id;
+    fmts.querySelectorAll(".fmt").forEach(b => b.classList.toggle("on", b.dataset.fmt === id));
+    invalidateOutputs();
+    renderControls(); renderQueue();
+  }
+  function invalidateOutputs(){
+    items.forEach(i => { if (i.canvas && (i.status === "done" || i.status === "error")){ i.status = "idle"; i.out = null; } });
+  }
+
+  /* ---- quality ---- */
+  function setQ(v){ quality.style.setProperty("--p", v + "%"); qval.textContent = v + "%"; }
+  quality.addEventListener("input", () => { qPct = +quality.value; setQ(qPct); });
+  quality.addEventListener("change", () => { qPct = +quality.value; invalidateOutputs(); renderQueue(); updateButtons(); });
+  setQ(qPct);
+
+  /* ---- background ---- */
+  function setBg(hex, src){
+    bg = hex;
+    bgrow.querySelectorAll(".swatch").forEach(s => s.classList.remove("on"));
+    if (src) src.classList.add("on");
+    invalidateOutputs(); renderQueue(); updateButtons();
+  }
+  bgrow.querySelectorAll(".swatch[data-bg]").forEach(s => s.addEventListener("click", () => setBg(s.dataset.bg, s)));
+  bgColor.addEventListener("input", () => setBg(bgColor.value, bgCust));
+
+  /* ---- file intake ---- */
+  fileInput.addEventListener("change", () => { addFiles(fileInput.files); fileInput.value = ""; });
+  ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+  ["dragleave","dragend"].forEach(ev => drop.addEventListener(ev, e => { if (e.target === drop) drop.classList.remove("drag"); }));
+  drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("drag"); if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+  window.addEventListener("paste", e => { const f = [...((e.clipboardData && e.clipboardData.files) || [])].filter(x => x.type.startsWith("image/")); if (f.length) addFiles(f); });
+
+  async function addFiles(list){
+    const arr = Array.from(list || []).filter(f => f && f.size !== undefined);
+    if (!arr.length) return;
+    const fresh = [];
+    for (const file of arr){
+      const item = { id: "it" + (idSeq++), file, name: file.name || "bild", base: baseName(file.name || "bild"),
+        srcFmt: "…", canvas: null, w: 0, h: 0, status: "decoding", out: null, error: null, thumb: null };
+      items.push(item); fresh.push(item);
+    }
+    panel.hidden = false;
+    renderControls(); renderQueue();
+    fresh.forEach(decodeItem);
+  }
+
+  async function decodeItem(item){
+    try {
+      const fmt = await sniff(item.file);
+      item.srcFmt = fmt.label;
+      const cv = await decodeFile(item.file, fmt.id);
+      item.canvas = cv; item.w = cv.width; item.h = cv.height; item.thumb = makeThumb(cv);
+      item.status = "idle";
+    } catch (e){
+      item.status = "error"; item.error = e.message || "Konnte nicht gelesen werden";
+    }
+    renderQueue(); updateButtons();
+  }
+
+  function makeThumb(cv){
+    const S = 116, r = Math.min(S / cv.width, S / cv.height, 1);
+    const tw = Math.max(1, Math.round(cv.width * r)), th = Math.max(1, Math.round(cv.height * r));
+    const t = document.createElement("canvas"); t.width = tw; t.height = th;
+    t.getContext("2d").drawImage(cv, 0, 0, tw, th);
+    return t.toDataURL("image/png");
+  }
+
+  /* ---- conversion ---- */
+  async function convertItem(item){
+    if (!item.canvas) return;
+    item.status = "working"; item.error = null; renderQueue();
+    try { item.out = await encodeCanvas(item.canvas, target, qPct, bg); item.status = "done"; }
+    catch (e){ item.status = "error"; item.error = e.message || "Umwandlung fehlgeschlagen"; item.out = null; }
+    renderQueue();
+  }
+  async function convertAll(){
+    if (busy) return;
+    busy = true; updateButtons();
+    for (const item of items){ if (item.canvas && item.status === "idle") await convertItem(item); }
+    busy = false; updateButtons();
+  }
+
+  convertBtn.addEventListener("click", convertAll);
+  clearBtn.addEventListener("click", () => { items = []; panel.hidden = true; renderQueue(); });
+  zipBtn.addEventListener("click", downloadZip);
+
+  async function downloadZip(){
+    await convertAll();
+    const done = items.filter(i => i.status === "done" && i.out);
+    if (!done.length) return;
+    const used = new Set(), files = [];
+    for (const i of done){
+      let name = i.base + "." + i.out.ext, k = 1;
+      while (used.has(name.toLowerCase())){ name = i.base + "-" + (k++) + "." + i.out.ext; }
+      used.add(name.toLowerCase());
+      files.push({ name, data: new Uint8Array(await i.out.blob.arrayBuffer()) });
+    }
+    triggerDownload(new Blob([makeZip(files)], { type: "application/zip" }), "formatwerk.zip");
+  }
+
+  function triggerDownload(blob, filename){
+    const url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+
+  /* ---- queue interactions (delegated) ---- */
+  queue.addEventListener("click", e => {
+    const btn = e.target.closest("[data-act]"); if (!btn) return;
+    const item = items.find(i => i.id === btn.dataset.id); if (!item) return;
+    if (btn.dataset.act === "remove"){ items = items.filter(i => i !== item); if (!items.length) panel.hidden = true; renderQueue(); updateButtons(); }
+    else if (btn.dataset.act === "dl" && item.out){ triggerDownload(item.out.blob, item.base + "." + item.out.ext); }
+  });
+
+  /* ===================== render ===================== */
+  function renderControls(){
+    const info = tInfo(target);
+    qrow.style.display = info.lossy ? "" : "none";
+    bgrow.style.display = info.alpha ? "none" : "";
+    const n = items.length;
+    countEl.innerHTML = n ? `<b>${n}</b> ${n === 1 ? "Bild" : "Bilder"} → <b>${info.label}</b>` : "";
+    updateButtons();
+  }
+  function updateButtons(){
+    const ready = items.filter(i => i.canvas).length;
+    const hasOut = items.some(i => i.status === "done");
+    convertBtn.disabled = busy || ready === 0;
+    zipBtn.disabled = busy || (ready === 0 && !hasOut);
+    convertBtn.innerHTML = busy ? `<span class="spin"></span>Wandle um…` : "Alle umwandeln";
+  }
+  function renderQueue(){
+    queue.innerHTML = "";
+    for (const i of items) queue.appendChild(renderItem(i));
+    renderControls();
+  }
+  function renderItem(i){
+    const el = document.createElement("div");
+    el.className = "item" + (i.status === "working" ? " working" : "");
+    const thumb = i.thumb
+      ? `<div class="thumb"><img src="${i.thumb}" alt=""></div>`
+      : (i.status === "error" && !i.canvas
+          ? `<div class="thumb load"><span style="font-size:18px;color:#F2685E">!</span></div>`
+          : `<div class="thumb load"><span class="ph"></span></div>`);
+
+    let line;
+    if (i.status === "error"){
+      line = `<span class="badge">${esc(i.srcFmt)}</span><span class="err-txt">${esc(i.error || "Fehler")}</span>`;
+    } else if (i.status === "done" && i.out){
+      const inSize = i.file.size, outSize = i.out.blob.size;
+      const d = inSize ? Math.round((outSize - inSize) / inSize * 100) : 0;
+      const deltaCls = d <= 0 ? "down" : "up";
+      const deltaTxt = (d <= 0 ? "−" : "+") + Math.abs(d) + "%";
+      const note = i.out.resized ? ` <span class="note">· auf ${i.out.dim[0]}×${i.out.dim[1]} (ICO-Limit)</span>` : "";
+      line = `<span class="badge">${esc(i.srcFmt)}</span><span class="arrow">→</span>`
+        + `<span class="badge out">${esc(tInfo(target).label)}</span>`
+        + `<span>${fmtBytes(outSize)}</span>`
+        + `<span class="delta ${deltaCls}">${deltaTxt}</span>${note}`;
+    } else {
+      const dim = i.w ? `${i.w}×${i.h} · ` : "";
+      const state = i.status === "decoding" ? `<span class="note">wird gelesen…</span>`
+                  : i.status === "working" ? `<span class="note">wird umgewandelt…</span>`
+                  : `<span class="note">bereit</span>`;
+      line = `<span class="badge">${esc(i.srcFmt)}</span><span>${dim}${fmtBytes(i.file.size)}</span>${state}`;
+    }
+
+    const canDl = i.status === "done" && i.out;
+    el.innerHTML = `
+      ${thumb}
+      <div class="meta">
+        <div class="name" title="${esc(i.name)}">${esc(i.name)}</div>
+        <div class="sub">${line}</div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="iact">
+        <button class="ibtn dl" data-act="dl" data-id="${i.id}" ${canDl ? "" : "disabled"} title="Herunterladen" aria-label="Herunterladen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M5 21h14"/></svg>
+        </button>
+        <button class="ibtn" data-act="remove" data-id="${i.id}" title="Entfernen" aria-label="Entfernen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>`;
+    return el;
+  }
+
+  /* ===================== utils ===================== */
+  function baseName(n){ return (n.replace(/\.[^.\/\\]+$/, "") || "bild").trim() || "bild"; }
+  function fmtBytes(n){ const u = ["B","KB","MB","GB"]; let i = 0; while (n >= 1024 && i < u.length - 1){ n /= 1024; i++; } return (i === 0 ? n : n.toFixed(n < 10 ? 1 : 0)) + " " + u[i]; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+  renderControls();
+})();
+</script>
+</body>
+</html>
