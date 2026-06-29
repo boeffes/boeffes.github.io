@@ -308,7 +308,7 @@
 
   function applyPreset(nrw, nrh){
     rw = nrw; rh = nrh;
-    setLinked(true);
+    setLinked(true, true);          // Verhältnis behalten, das wir gerade gesetzt haben
     let w = intval(wEl);
     if(isNaN(w)){ w = 1920; wEl.value = w; }
     hEl.value = Math.max(1, Math.round(w * rh / rw));
@@ -336,12 +336,12 @@
     render();
   }
 
-  function setLinked(state){
+  function setLinked(state, keepRatio){
     linked = state;
     lock.classList.toggle('on', linked);
     lock.setAttribute('aria-pressed', String(linked));
     lockLabel.textContent = linked ? 'Verhältnis verknüpft' : 'Verhältnis gelöst';
-    if(linked){
+    if(linked && !keepRatio){
       const w = intval(wEl), h = intval(hEl);
       if(!isNaN(w) && !isNaN(h)){ rw = w; rh = h; }
     }
@@ -371,11 +371,13 @@
       px.innerHTML = '— <small>px</small>';
       orient.textContent = '—';
       frameDim.textContent = '';
-      highlightChips(null, null);
+      highlightChips(null);
       return;
     }
-    const g = gcd(w, h);
-    const sw = w/g, sh = h/g;
+    const match = matchPreset(w, h);
+    let sw, sh;
+    if(match){ sw = match.rw; sh = match.rh; }
+    else { const g = gcd(w, h); sw = w/g; sh = h/g; }
     ratioVal.innerHTML = `${sw}<span class="colon">:</span>${sh}`;
     dec.textContent = (w/h).toFixed(3);
     const mp = (w*h/1e6);
@@ -384,12 +386,20 @@
       : `${fmt(w*h)} <small>px</small>`;
     orient.textContent = w > h ? 'Querformat' : (w < h ? 'Hochformat' : 'Quadrat');
     drawPreview(w, h);
-    highlightChips(sw, sh);
+    highlightChips(match);
   }
 
-  function highlightChips(sw, sh){
+  function matchPreset(w, h){
+    // Trifft (w,h) genau die Ganzzahl-Umsetzung einer Vorlage? (beide Richtungen)
+    for(const p of PRESETS){
+      if(h === Math.round(w * p.rh / p.rw) || w === Math.round(h * p.rw / p.rh)) return p;
+    }
+    return null;
+  }
+
+  function highlightChips(match){
     [...chipsBox.children].forEach(c => {
-      c.classList.toggle('active', +c.dataset.rw === sw && +c.dataset.rh === sh);
+      c.classList.toggle('active', !!match && +c.dataset.rw === match.rw && +c.dataset.rh === match.rh);
     });
   }
 
