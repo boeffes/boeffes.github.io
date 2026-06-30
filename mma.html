@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MMA · Ranglisten — Boeffes ToolBox</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSI0IiB5MT0iNCIgeDI9IjI4IiB5Mj0iMjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjRkZDQjQ1Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRkZCNDAxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiByeD0iNyIgZmlsbD0idXJsKCNnKSIvPjxyZWN0IHg9IjMuNiIgeT0iMy42IiB3aWR0aD0iMjQuOCIgaGVpZ2h0PSIyNC44IiByeD0iNi42IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjgiLz48dGV4dCB4PSIxNiIgeT0iMjIuNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMWExMzA1Ij5CPC90ZXh0Pjwvc3ZnPgo=">
+<meta name="description" content="Offizielle MMA-Ranglisten von UFC und Oktagon — Champions und Top-15, mit Link aufs offizielle Profil. Läuft im Browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0A0C0F; --steel:#101319; --steel-2:#161A21; --steel-3:#1C212A;
+    --rail:#232932; --rail-2:#333B47; --rail-3:#414B5A;
+    --ink:#ECEFF4; --ink-2:#A2ADBB; --ink-3:#6A7482; --ink-4:#48515E;
+    --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --brand:#FFB401; --brand-2:#FFCB45;
+
+    /* Signalfarbe wechselt mit der Liga — UFC = Rot (Standard) */
+    --ac:#E01B26; --ac-2:#FF5A63; --ac-deep:#A30F18;
+    --ac-w:rgba(224,27,38,.13); --ac-w2:rgba(224,27,38,.24);
+    --ac-ink:#fff;
+  }
+
+  /* Oktagon = Gelb */
+  :root[data-league="oktagon"]{
+    --ac:#FFC400; --ac-2:#FFD54A; --ac-deep:#E0A500;
+    --ac-w:rgba(255,196,0,.13); --ac-w2:rgba(255,196,0,.24);
+    --ac-ink:#1A0E03;
+  }
+
+  /* dauerhaft sichtbare Akzent-Elemente weich überblenden beim Liga-Wechsel */
+  .mono-tile,.brand .word .ff,.eyebrow .pdot,.hero h1 .hl,.src .sd{
+    transition:background-color .45s var(--ease),color .45s var(--ease),box-shadow .45s var(--ease),background .45s var(--ease);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--void); color:var(--ink);
+    font-family:var(--sans); line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    min-height:100vh; overflow-x:hidden;
+  }
+
+  /* ambient material */
+  .sheen{position:fixed;inset:-40% -20%;z-index:0;pointer-events:none;
+    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.018) 49%,rgba(255,255,255,0.04) 50%,rgba(255,255,255,0.018) 51%,transparent 60%);
+    transform:translateX(-30%);animation:sweep 26s linear infinite}
+  @keyframes sweep{to{transform:translateX(30%)}}
+  .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay}
+  .vignette{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(130% 90% at 50% -10%, transparent 55%, rgba(0,0,0,0.5) 100%)}
+
+  /* ---------- Topbar ---------- */
+  .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;padding:11px 22px;
+    background:linear-gradient(180deg,rgba(16,19,25,.92),rgba(14,17,22,.86));
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--rail)}
+  .topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.5}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .mono-tile{width:26px;height:26px;border-radius:7px;flex:none;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,var(--ac-2),var(--ac-deep));color:var(--ac-ink);font-weight:700;font-size:16px;font-family:var(--disp);line-height:1;
+    box-shadow:inset 0 0 0 1px #ffffff33, inset 0 1px 0 #ffffff44, 0 2px 8px -3px var(--ac-deep)}
+  .brand .word{font-family:var(--disp);font-weight:700;font-size:13.5px;letter-spacing:-0.01em;color:var(--ink)}
+  .brand .word .ff{color:var(--ac)}
+  .brand .sep{color:var(--ink-4);font-family:var(--mono);font-size:11px}
+  .brand .tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+  .tb-spacer{flex:1}
+  .tb-status{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  .tb-status .d{width:6px;height:6px;border-radius:50%;background:var(--ink-4)}
+  @media (max-width:540px){ .tb-status .lbl{display:none} }
+
+  .shell{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:46px 0 8px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px;display:flex;align-items:center;gap:10px}
+  .eyebrow .pdot{width:8px;height:8px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 0 var(--ac-w2);animation:pulse 2.6s var(--ease) infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 var(--ac-w2)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(40px,7.5vw,74px);line-height:.95;letter-spacing:-0.035em;margin:0;color:var(--ink)}
+  .hero h1 .hl{color:var(--ac)}
+  .hero p.lead{font-size:clamp(15px,1.9vw,17px);color:var(--ink-2);max-width:56ch;margin:20px 0 0;line-height:1.6}
+
+  /* ---------- Steuerleiste ---------- */
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;margin:30px 0 6px}
+  .seg{position:relative;display:inline-flex;padding:4px;border-radius:13px;background:var(--steel-2);border:1px solid var(--rail);box-shadow:inset 0 1px 2px #0006}
+  .seg .ind{position:absolute;top:4px;left:4px;bottom:4px;width:calc(50% - 4px);border-radius:9px;
+    background:linear-gradient(180deg,var(--ac),var(--ac-deep));box-shadow:0 4px 14px -6px var(--ac), inset 0 1px 0 #ffffff44;
+    transform:translateX(calc(var(--seg,0) * 100%));transition:transform .42s var(--ease),box-shadow .45s var(--ease)}
+  .seg button{position:relative;z-index:1;appearance:none;border:0;background:none;cursor:pointer;
+    font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.01em;color:var(--ink-3);padding:8px 22px;border-radius:9px;min-width:118px;transition:color .3s var(--ease)}
+  .seg button.on{color:var(--ac-ink)}
+  .seg button:not(.on):hover{color:var(--ink-2)}
+  .src{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--ink-3)}
+  .src .sd{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ac)}
+  .src b{color:var(--ink-2);font-weight:500}
+  .src a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--rail-2)}
+  .src a:hover{color:var(--ac);border-color:var(--ac)}
+
+  /* ---------- Divisions-Navigation ---------- */
+  .nav{margin:26px 0 4px;border-top:1px solid var(--rail);padding-top:22px;display:flex;flex-direction:column;gap:16px}
+  .navgrp{display:flex;flex-direction:column;gap:9px}
+  .navgrp .glabel{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-4)}
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{appearance:none;cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--ink-2);
+    background:var(--steel-2);border:1px solid var(--rail);border-radius:9px;padding:7px 13px;white-space:nowrap;
+    transition:border-color .25s var(--ease),color .25s var(--ease),background .25s var(--ease),transform .25s var(--ease)}
+  .pill:hover{border-color:var(--rail-3);color:var(--ink);transform:translateY(-1px)}
+  .pill.on{color:var(--ac-ink);font-weight:500;border-color:transparent;background:linear-gradient(180deg,var(--ac-2),var(--ac));box-shadow:0 5px 16px -8px var(--ac)}
+
+  /* ---------- Inhalt ---------- */
+  .content{padding:30px 0 10px;min-height:240px}
+  .dhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px;margin-bottom:20px}
+  .dhead h2{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,38px);letter-spacing:-0.025em;line-height:1;margin:0;color:var(--ink)}
+  .dhead .gtag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);border:1px solid color-mix(in srgb,var(--ac) 35%,var(--rail));border-radius:6px;padding:3px 9px}
+  .dhead .limit{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-3)}
+
+  /* Champion(s) */
+  .champ-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px}
+  .champ{position:relative;display:flex;align-items:center;gap:16px;flex:1 1 320px;min-width:280px;
+    background:radial-gradient(120% 140% at 0% 0%, var(--ac-w), transparent 55%), linear-gradient(180deg,var(--steel-2),var(--steel));
+    border:1px solid color-mix(in srgb,var(--ac) 30%,var(--rail));border-radius:16px;padding:16px 18px;text-align:left;
+    text-decoration:none;color:inherit;font-family:inherit;cursor:pointer;
+    transition:transform .35s var(--ease),border-color .35s var(--ease),box-shadow .35s var(--ease)}
+  .champ::before{content:"";position:absolute;top:0;left:18px;right:18px;height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.7}
+  .champ:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--ac) 55%,var(--rail));box-shadow:0 24px 44px -26px #000, 0 0 40px -24px var(--ac)}
+  .champ .ava{width:60px;height:60px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 30% 20%, var(--ac-w2), transparent 70%), linear-gradient(160deg,var(--steel-3),var(--steel));
+    border:1px solid color-mix(in srgb,var(--ac) 30%,var(--rail-2));color:var(--ac)}
+  .champ .ava svg{width:30px;height:30px}
+  .ava{position:relative;overflow:hidden;isolation:isolate}
+  .ava>.ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:2;opacity:0;transition:opacity .4s var(--ease)}
+  .ava img.ok{opacity:1}
+  .row .ava{width:40px;height:40px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 30% 20%, var(--ac-w), transparent 70%), linear-gradient(160deg,var(--steel-3),var(--steel));border:1px solid color-mix(in srgb,var(--ac) 22%,var(--rail));color:color-mix(in srgb,var(--ac) 72%,var(--ink-2))}
+  .row .ava .ph svg{width:22px;height:22px}
+  .champ .ci{min-width:0;display:flex;flex-direction:column;gap:5px}
+  .champ .belt{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ac)}
+  .champ .belt svg{width:14px;height:14px}
+  .champ .cn{font-family:var(--disp);font-weight:600;font-size:20px;letter-spacing:-0.01em;line-height:1.1;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+  .champ .cmeta{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .champ .arr{margin-left:auto;align-self:center;color:var(--ink-4);transition:transform .3s var(--ease),color .3s var(--ease);flex:none}
+  .champ:hover .arr{color:var(--ac);transform:translate(2px,-2px)}
+
+  /* Rangliste */
+  .ranklist{display:flex;flex-direction:column;gap:6px}
+  .row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--steel-2);border:1px solid var(--rail);border-radius:11px;
+    padding:11px 14px;text-decoration:none;color:inherit;font-family:inherit;
+    transition:border-color .2s var(--ease),background .2s var(--ease),transform .2s var(--ease)}
+  .row:hover{border-color:var(--rail-3);background:var(--steel-3);transform:translateX(3px)}
+  .row .rk{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--ink-3);width:30px;text-align:center;flex:none}
+  .row .rk.top{color:var(--ac)}
+  .row .nm{font-family:var(--disp);font-weight:500;font-size:16px;letter-spacing:-0.005em;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .cbadge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);border:1px solid color-mix(in srgb,var(--ac) 35%,var(--rail));border-radius:5px;padding:2px 6px;flex:none}
+  .row .cbadge svg{width:11px;height:11px}
+  .row .sp{flex:1}
+  .row .ext{color:var(--ink-4);flex:none;transition:color .2s var(--ease),transform .2s var(--ease)}
+  .row:hover .ext{color:var(--ac);transform:translate(2px,-2px)}
+
+  /* leerer Zustand */
+  .state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:60px 20px;text-align:center}
+  .state .stx{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+
+  /* ---------- Footer ---------- */
+  .foot{border-top:1px solid var(--rail);margin-top:40px;padding:26px 0 70px;display:flex;flex-wrap:wrap;gap:18px 50px;justify-content:space-between}
+  .foot p{font-size:12.5px;color:var(--ink-3);margin:0;line-height:1.7;max-width:52ch}
+  .foot a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--rail-2)}
+  .foot a:hover{color:var(--ac);border-color:var(--ac)}
+  .foot .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-4);margin-bottom:8px}
+
+  @media (max-width:680px){ .seg button{min-width:100px;padding:8px 14px} }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+    .sheen{display:none}
+  }
+</style>
+</head>
+<body>
+  <div class="sheen" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mono-tile">B</div>
+      <span class="word">Boe<span class="ff">ff</span>es</span>
+      <span class="sep">/</span>
+      <span class="tag">MMA</span>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-status"><span class="d"></span><span class="lbl">läuft im Browser · kein Key</span></div>
+  </div>
+
+  <div class="shell">
+    <header class="hero">
+      <p class="eyebrow"><span class="pdot" aria-hidden="true"></span>Boeffes ToolBox · Kampfsport</p>
+      <h1>MMA-<span class="hl">Ranglisten</span></h1>
+      <p class="lead">Offizielle Gewichtsklassen-Ranglisten der UFC und der europäischen Oktagon-Liga — Champions und die Top-15 beider Ligen in einer Ansicht. Jede Zeile verlinkt aufs offizielle Profil.</p>
+
+      <div class="controls">
+        <div class="seg" id="seg" role="tablist" aria-label="Liga wählen">
+          <div class="ind" aria-hidden="true"></div>
+          <button id="segUfc" class="on" role="tab" aria-selected="true">UFC</button>
+          <button id="segOkt" role="tab" aria-selected="false">Oktagon</button>
+        </div>
+        <div class="src" id="src"><span class="sd"></span><span id="srcTxt"></span></div>
+      </div>
+    </header>
+
+    <nav class="nav" id="nav" aria-label="Gewichtsklassen"></nav>
+
+    <main class="content" id="content"></main>
+
+    <footer class="foot">
+      <div>
+        <div class="k">Datenquellen</div>
+        <p>UFC-Ranglisten nach <a href="https://www.ufc.com/rankings" target="_blank" rel="noopener">ufc.com/rankings</a> (Stand <span id="ufcStand"></span>). Oktagon nach <a href="https://oktagonmma.com/en/rankings/" target="_blank" rel="noopener">oktagonmma.com</a> (Stand <span id="oktStand"></span>). UFC-Kämpferfotos live über die <a href="https://www.octagon-api.com/" target="_blank" rel="noopener">Octagon-API</a> — offline erscheinen Platzhalter.</p>
+      </div>
+      <div>
+        <div class="k">Hinweis</div>
+        <p>Feste Momentaufnahmen — bei Titelwechseln müssen die Listen von Hand nachgezogen werden. Kein Login, kein Key. Jeder Kämpfer verlinkt aufs offizielle Profil.</p>
+      </div>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+   *  MMA-Ranglisten — UFC & Oktagon als gepflegte Snapshots
+   * ============================================================ */
+
+  const UFC_BASE = 'https://www.ufc.com/athlete/';
+  const OKT_BASE = 'https://oktagonmma.com/en/fighters/';
+  const UFC_UPDATED = '29.06.2026';
+  const OKT_UPDATED = '10.06.2026';
+
+  /* Gewichtslimits (UFC & Oktagon identisch), Schlüssel = Klasse */
+  const LIMITS = {
+    strawweight:['52,2 kg','115 lbs'], flyweight:['56,7 kg','125 lbs'],
+    bantamweight:['61,2 kg','135 lbs'], featherweight:['65,8 kg','145 lbs'],
+    lightweight:['70,3 kg','155 lbs'], welterweight:['77,1 kg','170 lbs'],
+    middleweight:['83,9 kg','185 lbs'], 'light-heavyweight':['93 kg','205 lbs'],
+    heavyweight:['120,2 kg','265 lbs']
+  };
+  const CLSNAME = {
+    p4p:'Pound for Pound', strawweight:'Strohgewicht', flyweight:'Fliegengewicht',
+    bantamweight:'Bantamgewicht', featherweight:'Federgewicht', lightweight:'Leichtgewicht',
+    welterweight:'Weltergewicht', middleweight:'Mittelgewicht',
+    'light-heavyweight':'Halbschwergewicht', heavyweight:'Schwergewicht'
+  };
+
+  /* ---------- UFC-Snapshot (Stand 29.06.2026, Quelle ufc.com/rankings) ----------
+     Kämpfer: [Name, ufc-Slug]  ·  Champion: [Name, Slug, Label?]  ·  P4P-Eintrag: [Name, Slug, champ?] */
+  const UFC = [
+    { cls:'p4p', gender:'m', group:'men', ord:0,
+      fighters:[['Islam Makhachev','islam-makhachev',true],['Alexander Volkanovski','alexander-volkanovski',true],['Petr Yan','petr-yan',true],['Justin Gaethje','justin-gaethje',true],['Ilia Topuria','ilia-topuria'],['Tom Aspinall','tom-aspinall',true],['Sean Strickland','sean-strickland',true],['Alex Pereira','alex-pereira'],['Merab Dvalishvili','merab-dvalishvili'],['Ciryl Gane','ciryl-gane'],['Joshua Van','joshua-van',true],['Khamzat Chimaev','khamzat-chimaev'],['Alexandre Pantoja','alexandre-pantoja'],['Arman Tsarukyan','arman-tsarukyan'],['Charles Oliveira','charles-oliveira']] },
+    { cls:'flyweight', gender:'m', group:'men', ord:1, champions:[['Joshua Van','joshua-van']],
+      fighters:[['Alexandre Pantoja','alexandre-pantoja'],['Manel Kape','manel-kape'],['Tatsuro Taira','tatsuro-taira'],['Brandon Royval','brandon-royval'],['Kyoji Horiguchi','kyoji-horiguchi'],['Lone\u2019er Kavanagh','loneer-kavanagh'],['Amir Albazi','amir-albazi'],['Brandon Moreno','brandon-moreno'],['Asu Almabayev','asu-almabayev'],['Steve Erceg','steve-erceg'],['Alex Perez','alex-perez'],['Tim Elliott','tim-elliott'],['Tagir Ulanbekov','tagir-ulanbekov'],['Charles Johnson','charles-johnson'],['Edgar Chairez','edgar-chairez']] },
+    { cls:'bantamweight', gender:'m', group:'men', ord:2, champions:[['Petr Yan','petr-yan']],
+      fighters:[['Merab Dvalishvili','merab-dvalishvili'],['Sean O\u2019Malley','sean-omalley'],['Umar Nurmagomedov','umar-nurmagomedov'],['Cory Sandhagen','cory-sandhagen'],['Song Yadong','song-yadong'],['Aiemann Zahabi','aiemann-zahabi'],['Mario Bautista','mario-bautista'],['David Martinez','david-martinez'],['Deiveson Figueiredo','deiveson-figueiredo'],['Marlon Vera','marlon-vera'],['Payton Talbott','payton-talbott'],['Raul Rosas Jr.','raul-rosas-jr'],['Vinicius Oliveira','vinicius-oliveira'],['Raoni Barcelos','raoni-barcelos'],['Marcus McGhee','marcus-mcghee']] },
+    { cls:'featherweight', gender:'m', group:'men', ord:3, champions:[['Alexander Volkanovski','alexander-volkanovski']],
+      fighters:[['Movsar Evloev','movsar-evloev'],['Diego Lopes','diego-lopes'],['Lerone Murphy','lerone-murphy'],['Aljamain Sterling','aljamain-sterling'],['Yair Rodriguez','yair-rodriguez'],['Jean Silva','jean-silva'],['Arnold Allen','arnold-allen'],['Youssef Zalal','youssef-zalal'],['Kevin Vallejos','kevin-vallejos'],['Steve Garcia','steve-garcia'],['Brian Ortega','brian-ortega'],['Aaron Pico','aaron-pico'],['Melquizael Costa','melquizael-costa'],['David Onama','david-onama'],['Josh Emmett','josh-emmett']] },
+    { cls:'lightweight', gender:'m', group:'men', ord:4, champions:[['Justin Gaethje','justin-gaethje']],
+      fighters:[['Ilia Topuria','ilia-topuria'],['Arman Tsarukyan','arman-tsarukyan'],['Charles Oliveira','charles-oliveira'],['Max Holloway','max-holloway'],['Beno\u00eet Saint Denis','benoit-saint-denis'],['Paddy Pimblett','paddy-pimblett'],['Mauricio Ruffy','mauricio-ruffy'],['Mateusz Gamrot','mateusz-gamrot'],['Dan Hooker','dan-hooker'],['Renato Moicano','renato-moicano'],['Rafael Fiziev','rafael-fiziev'],['Quillan Salkilld','quillan-salkilld'],['Tom Nolan','tom-nolan'],['Beneil Dariush','beneil-dariush'],['Manuel Torres','manuel-torres']] },
+    { cls:'welterweight', gender:'m', group:'men', ord:5, champions:[['Islam Makhachev','islam-makhachev']],
+      fighters:[['Ian Machado Garry','ian-machado-garry'],['Carlos Prates','carlos-prates'],['Michael Morales','michael-morales'],['Jack Della Maddalena','jack-della-maddalena'],['Gabriel Bonfim','gabriel-bonfim'],['Sean Brady','sean-brady'],['Belal Muhammad','belal-muhammad'],['Leon Edwards','leon-edwards'],['Kamaru Usman','kamaru-usman'],['Joaquin Buckley','joaquin-buckley'],['Yaroslav Amosov','yaroslav-amosov'],['Mike Malott','mike-malott'],['Michael Venom Page','michael-page'],['Uro\u0161 Medi\u0107','uros-medic'],['Daniel Rodriguez','daniel-rodriguez']] },
+    { cls:'middleweight', gender:'m', group:'men', ord:6, champions:[['Sean Strickland','sean-strickland']],
+      fighters:[['Khamzat Chimaev','khamzat-chimaev'],['Dricus Du Plessis','dricus-du-plessis'],['Nassourdine Imavov','nassourdine-imavov'],['Brendan Allen','brendan-allen'],['Caio Borralho','caio-borralho'],['Anthony Hernandez','anthony-hernandez'],['Joe Pyfer','joe-pyfer'],['Reinier de Ridder','reinier-de-ridder'],['Israel Adesanya','israel-adesanya'],['Robert Whittaker','robert-whittaker'],['Jared Cannonier','jared-cannonier'],['Gregory Rodrigues','gregory-rodrigues'],['Christian Leroy Duncan','christian-leroy-duncan'],['Roman Dolidze','roman-dolidze'],['Bo Nickal','bo-nickal']] },
+    { cls:'light-heavyweight', gender:'m', group:'men', ord:7, champions:[['Carlos Ulberg','carlos-ulberg']],
+      fighters:[['Magomed Ankalaev','magomed-ankalaev'],['Ji\u0159\u00ed Proch\u00e1zka','jiri-prochazka'],['Alex Pereira','alex-pereira'],['Jan B\u0142achowicz','jan-blachowicz'],['Khalil Rountree Jr.','khalil-rountree-jr'],['Jamahal Hill','jamahal-hill'],['Paulo Costa','paulo-costa'],['Azamat Murzakanov','azamat-murzakanov'],['Volkan Oezdemir','volkan-oezdemir'],['Bogdan Guskov','bogdan-guskov'],['Dominick Reyes','dominick-reyes'],['Nikita Krylov','nikita-krylov'],['Johnny Walker','johnny-walker'],['Alonzo Menifield','alonzo-menifield'],['Aleksandar Raki\u0107','aleksandar-rakic']] },
+    { cls:'heavyweight', gender:'m', group:'men', ord:8, champions:[['Tom Aspinall','tom-aspinall','Champion'],['Ciryl Gane','ciryl-gane','Interim-Champion']],
+      fighters:[['Alexander Volkov','alexander-volkov'],['Sergei Pavlovich','sergei-pavlovich'],['Josh Hokit','josh-hokit'],['Waldo Cortes Acosta','waldo-cortes-acosta'],['Serghei Spivac','serghei-spivac'],['Curtis Blaydes','curtis-blaydes'],['Rizvan Kuniev','rizvan-kuniev'],['Tyrell Fortune','tyrell-fortune'],['Ante Delija','ante-delija'],['Derrick Lewis','derrick-lewis'],['Marcin Tybura','marcin-tybura'],['Brando Peri\u010di\u0107','brando-pericic'],['Valter Walker','valter-walker'],['Mick Parkin','mick-parkin']] },
+    { cls:'p4p', gender:'w', group:'women', ord:0,
+      fighters:[['Valentina Shevchenko','valentina-shevchenko',true],['Kayla Harrison','kayla-harrison',true],['Zhang Weili','zhang-weili'],['Natalia Silva','natalia-silva'],['Manon Fiorot','manon-fiorot'],['Mackenzie Dern','mackenzie-dern',true],['Alexa Grasso','alexa-grasso'],['Erin Blanchfield','erin-blanchfield'],['Julianna Pe\u00f1a','julianna-pena'],['Tatiana Suarez','tatiana-suarez'],['Virna Jandiroba','virna-jandiroba'],['Yan Xiaonan','xiaonan-yan'],['Raquel Pennington','raquel-pennington'],['Rose Namajunas','rose-namajunas'],['Maycee Barber','maycee-barber']] },
+    { cls:'strawweight', gender:'w', group:'women', ord:1, champions:[['Mackenzie Dern','mackenzie-dern']],
+      fighters:[['Zhang Weili','zhang-weili'],['Tatiana Suarez','tatiana-suarez'],['Virna Jandiroba','virna-jandiroba'],['Yan Xiaonan','xiaonan-yan'],['Gillian Robertson','gillian-robertson'],['Loopy Godinez','loopy-godinez'],['Amanda Lemos','amanda-lemos'],['Tabatha Ricci','tabatha-ricci'],['J\u00e9ssica Andrade','jessica-andrade'],['Amanda Ribas','amanda-ribas'],['Fatima Kline','fatima-kline'],['Angela Hill','angela-hill'],['Denise Gomes','denise-gomes'],['Alexia Thainara','alexia-thainara'],['Mizuki','mizuki-inoue']] },
+    { cls:'flyweight', gender:'w', group:'women', ord:2, champions:[['Valentina Shevchenko','valentina-shevchenko']],
+      fighters:[['Natalia Silva','natalia-silva'],['Manon Fiorot','manon-fiorot'],['Alexa Grasso','alexa-grasso'],['Erin Blanchfield','erin-blanchfield'],['Rose Namajunas','rose-namajunas'],['Maycee Barber','maycee-barber'],['Jasmine Jasudavicius','jasmine-jasudavicius'],['Tracy Cortez','tracy-cortez'],['Miranda Maverick','miranda-maverick'],['Karine Silva','karine-silva'],['Casey O\u2019Neill','casey-oneill'],['Wang Cong','wang-cong'],['Eduarda Moura','eduarda-moura'],['JJ Aldrich','jj-aldrich'],['Gabriella Fernandes','gabriella-fernandes']] },
+    { cls:'bantamweight', gender:'w', group:'women', ord:3, champions:[['Kayla Harrison','kayla-harrison']],
+      fighters:[['Julianna Pe\u00f1a','julianna-pena'],['Raquel Pennington','raquel-pennington'],['Joselyne Edwards','joselyne-edwards'],['Norma Dumont','norma-dumont'],['Ailin Perez','ailin-perez'],['Irene Aldana','irene-aldana'],['Yana Santos','yana-santos'],['Macy Chiasson','macy-chiasson'],['Luana Santos','luana-santos'],['Jacqueline Cavalcanti','jacqueline-cavalcanti'],['Karol Rosa','karol-rosa'],['Bia Mesquita','bia-mesquita'],['Nora Cornolle','nora-cornolle'],['Michelle Montague','michelle-montague'],['Miesha Tate','miesha-tate']] }
+  ];
+
+  /* ---------- Oktagon-Snapshot (Stand 10.06.2026, Quelle oktagonmma.com) ---------- */
+  const OKT = [
+    { cls:'p4p', gender:'x', group:'p4p', ord:0,
+      fighters:[['Will Fleury','726',true],['Lucia Szabov\u00e1','185',true],['Zhalgas Zhumagulov','823',true],
+        ['Kaik Brito','172'],['Mago Machaev','670'],['Igor Severino','844'],['Mateusz Legierski','119'],
+        ['Krzysztof Jotko','858'],['Kerim Engizek','551'],['Makhmud Muradov','133']] },
+    { cls:'flyweight', gender:'m', group:'men', ord:1, champions:[['Zhalgas Zhumagulov','823']],
+      fighters:[['Beno Adamia','beno-adamia'],['David Dvo\u0159\u00e1k','david-dvorak'],['Sam Creasey','sam-creasey'],['Matheus Severino','matheus-severino'],['Mohammed Walid','mohammed-walid'],['Aaron Aby','aaron-aby'],['Shawn Marcos da Silva','shawn-marcos-da-silva'],['Stipe Br\u010di\u0107','stipe-brcic'],['Christopher Daniel','christopher-daniel']] },
+    { cls:'bantamweight', gender:'m', group:'men', ord:2, champions:[['Igor Severino','844']],
+      fighters:[['Jonas M\u00e5g\u00e5rd','jonas-magard'],['Dastan Amangeldy','dastan-amangeldy'],['Khurshed Kakhorov','khurshed-kakhorov'],['Raul Lemberanskij','raul-lemberanskij'],['Wanderley Junior','wanderley-junior'],['Elvis Silva','elvis-silva'],['Ali G\u00fcnd\u00fcz','ali-gunduz'],['Roman Paulus','roman-paulus'],['Harun Kurt','harun-kurt'],['Abdullah Sultani','abdullah-sultani']] },
+    { cls:'featherweight', gender:'m', group:'men', ord:3, champions:[['Mago Machaev','670']],
+      fighters:[['Gjoni Palokaj','gjoni-palokaj'],['Max Holzer','max-holzer'],['Niko Samsonidse','niko-samsonidse'],['Zafar Mohsen','zafar-mohsen'],['Richie Smullen','richie-smullen'],['Radek Rou\u0161al','radek-rousal'],['Khalid Taha','khalid-taha'],['Jakub Batfalsk\u00fd','jakub-batfalsky'],['James Hendin','james-hendin'],['Ayton De Paepe','ayton-paepe']] },
+    { cls:'lightweight', gender:'m', group:'men', ord:4, champions:[['Mateusz Legierski','119']],
+      fighters:[['Ivan Buchinger','ivan-buchinger'],['G\u00f6khan Aksu','gokhan-aksu'],['Attila Korkmaz','attila-korkmaz'],['Fedor Duric','fedor-duric'],['Ozan Aslaner','ozan-aslaner'],['Denis Frimpong','denis-frimpong'],['Arijan Topallaj','arijan-topallaj'],['Hafeni Nafuka','hafeni-nafuka'],['Konrad Dyrschka','konrad-dyrschka'],['Jan Stanovsk\u00fd','jan-stanovsky']] },
+    { cls:'welterweight', gender:'m', group:'men', ord:5, champions:[['Kaik Brito','172']],
+      fighters:[['Amiran Gogoladze','amiran-gogoladze'],['Jack Grant','jack-grant'],['Ion Surdu','ion-surdu'],['Ronald Paradeiser','ronald-paradeiser'],['Jessin Ayari','jessin-ayari'],['Felix Klinkhammer','felix-klinkhammer'],['Andrej Kala\u0161nik','andrej-kalasnik'],['Marcel Mohamed Grabinski','marcel-mohamed-grabinski'],['Christian Jungwirth','christian-jungwirth'],['Christian Eckerlin','christian-eckerlin']] },
+    { cls:'middleweight', gender:'m', group:'men', ord:6, champions:[['Kerim Engizek','551','Champion'],['Makhmud Muradov','133','Interim-Champion']],
+      fighters:[['Krzysztof Jotko','krzysztof-jotko'],['Patrik Kincl','patrik-kincl'],['Dominik Humburger','dominik-humburger'],['Hojat Khajevand','hojat-khajevand'],['Piotr Wawrzyniak','piotr-wawrzyniak'],['Jaime Cordero','jaime-cordero'],['Kamil Oniszczuk','kamil-oniszczuk'],['Mick Stanton','mick-stanton'],['Robert Puka\u010d','robert-pukac'],['Marek Maz\u00fach','marek-mazuch']] },
+    { cls:'light-heavyweight', gender:'m', group:'men', ord:7, champions:[['Will Fleury','726']],
+      fighters:[['Alexander Poppeck','alexander-poppeck'],['Daniel \u0160kvor','daniel-skvor'],['Pavol Langer','pavol-langer'],['Emilio Quissua','emilio-quissua'],['Frederic Vosgr\u00f6ne','frederic-vosgrone'],['Tomasz Narkun','tomasz-narkun'],['Vojt\u011bch Garba','vojtech-garba'],['Jesus Samuel Chavarr\u00eda','jesus-samuel-chavarria'],['Mateusz Strzelczyk','mateusz-strzelczyk'],['Jorick Montagnac','jorick-montagnac']] },
+    { cls:'heavyweight', gender:'m', group:'men', ord:8, champions:[['Will Fleury','726']],
+      fighters:[['Lazar Todev','lazar-todev'],['Kasim Aras','kasim-aras'],['Martin Buday','martin-buday'],['Adam Pa\u0142asz','adam-palasz'],['Micha\u0142 Piwowarski','michal-piwowarski'],['Simon Biyong','simon-biyong'],['Patrick Vespaziani','patrick-vespaziani'],['Olutobi Kalejaiye','olutobi-kalejaiye'],['Yevgeny Orlov','yevgeny-orlov'],['Nicolaj Wagner','nicolaj-wagner']] },
+    { cls:'flyweight', gender:'w', group:'women', ord:1, champions:[['Lucia Szabov\u00e1','185']],
+      fighters:[['Veronika Smolkov\u00e1','veronika-smolkova'],['Leidiane Fernandes','leidiane-fernandes'],['Lisa Kyriacou','lisa-kyriacou'],['Mileide Simplicio','mileide-simplicio'],['Aitana \u00c1lvarez','aitana-alvarez'],['Marta S\u00f3s','marta-sos'],['Jovana \u0110uki\u0107','jovana-djukic']] },
+    { cls:'bantamweight', gender:'w', group:'women', ord:2, champions:[['Lucia Szabov\u00e1','185']],
+      fighters:[['Cecilie Bolander','cecilie-bolander'],['Alina Dalaslan','alina-dalaslan'],['Lucie Pudilov\u00e1','lucie-pudilova'],['Ivana Petrovi\u0107','ivana-petrovic'],['Niamh Kinehan','niamh-kinehan'],['Karolina Sobek','karolina-sobek'],['Stephanie Egger','stephanie-egger'],['Katharina Lehner','katharina-lehner'],['Danielle Misteli','danielle-misteli'],['Kalindra Faria','kalindra-faria']] }
+  ];
+
+  /* ---------- DOM ---------- */
+  const $ = s => document.querySelector(s);
+  const navEl = $('#nav'), contentEl = $('#content'), srcEl = $('#src'), srcTxt = $('#srcTxt');
+  const seg = $('#seg'), segUfc = $('#segUfc'), segOkt = $('#segOkt');
+  $('#ufcStand').textContent = UFC_UPDATED;
+  $('#oktStand').textContent = OKT_UPDATED;
+
+  /* ---------- Status ---------- */
+  let league = 'ufc';
+  let currentUid = null;
+  let built = { ufc:null, oktagon:null };
+
+  /* ---------- Helfer ---------- */
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function profileUrl(lg, ref){ return lg==='ufc' ? (UFC_BASE+ref) : (OKT_BASE+ref+'/'); }
+
+  const beltSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v6H3z"/><circle cx="12" cy="12" r="3.2"/><path d="M7 15v3M17 15v3"/></svg>';
+  const extSvg  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+  const personSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>';
+
+  /* ---------- UFC-Kämpferfotos (live, Octagon-API) ----------
+   *  Bilder kommen aus api.octagon-api.com (UFC-CDN), Schlüssel = Slug aus Snapshot.
+   *  Kein Key, einmaliger Abruf beim ersten UFC-Wechsel. Offline → Platzhalter bleibt.   */
+  const IMG_API = 'https://api.octagon-api.com/fighters';
+  const imgMap = Object.create(null);   // slug → imgUrl
+  const byName = Object.create(null);   // normalisierter Name → imgUrl (Fallback)
+  let imgTried = false;
+  function normName(s){
+    return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
+  }
+  function loadImages(){
+    if(imgTried) return; imgTried = true;
+    fetch(IMG_API).then(r=> r.ok ? r.json() : null).then(data=>{
+      if(!data || typeof data!=='object') return;
+      let got = false;
+      for(const slug in data){
+        const f = data[slug]; if(!f) continue;
+        const url = f.imgUrl || f.imageUrl || '';
+        if(!url || /placeholder|silhouette/i.test(url)) continue;
+        imgMap[slug] = url; got = true;
+        if(f.name) byName[normName(f.name)] = url;
+      }
+      if(got && league==='ufc') renderContent();
+    }).catch(()=>{});
+  }
+  function fighterImg(ref, name){
+    return imgMap[ref] || byName[normName(name)] || '';
+  }
+  function avaInner(ref, name, phSvg){
+    const url = fighterImg(ref, name);
+    const ph = '<span class="ph">'+phSvg+'</span>';
+    if(!url) return ph;
+    return ph + '<img alt="" loading="lazy" src="'+esc(url)+'">';
+  }
+  function wireImages(){
+    contentEl.querySelectorAll('.ava img').forEach(img=>{
+      img.addEventListener('load', ()=> img.classList.add('ok'));
+      img.addEventListener('error', ()=> img.remove());
+      if(img.complete && img.naturalWidth>0) img.classList.add('ok');
+    });
+  }
+
+  /* ---------- Modell aus Snapshot bauen ---------- */
+  function buildLeague(lg){
+    if(built[lg]) return built[lg];
+    const data = lg==='ufc' ? UFC : OKT;
+    built[lg] = data.map(d => {
+      const isP4P = d.cls==='p4p';
+      return {
+        uid:lg+':'+d.cls+':'+d.gender, league:lg, cls:d.cls, gender:d.gender, group:d.group, ord:d.ord, isP4P,
+        champions: (d.champions||[]).map(c=>({ name:c[0], ref:c[1], label:c[2]||'Champion' })),
+        fighters: (d.fighters||[]).map((f,i)=>({ rank:i+1, name:f[0], ref:f[1], champ: f[2]===true }))
+      };
+    });
+    return built[lg];
+  }
+  function divisionsFor(lg){ return buildLeague(lg); }
+  function findUid(lg, uid){ return divisionsFor(lg).find(d=>d.uid===uid) || null; }
+
+  const GROUP_ORDER = {p4p:0, men:1, women:2};
+  const GROUP_LABEL = {men:'Männer', women:'Frauen'};
+  function sortedDivs(lg){
+    return divisionsFor(lg).slice().sort((a,b)=>{
+      const g = (GROUP_ORDER[a.group]||0) - (GROUP_ORDER[b.group]||0);
+      return g!==0 ? g : (a.ord-b.ord);
+    });
+  }
+
+  function pillLabel(d){ return d.cls==='p4p' ? 'P4P' : CLSNAME[d.cls]; }
+
+  function renderNav(){
+    const divs = sortedDivs(league);
+    const groups = [];
+    divs.forEach(d=>{
+      let g = groups.find(x=>x.key===d.group);
+      if(!g){ g={key:d.group, items:[]}; groups.push(g); }
+      g.items.push(d);
+    });
+    let html='';
+    groups.forEach(g=>{
+      const lbl = GROUP_LABEL[g.key];
+      html += '<div class="navgrp">';
+      if(lbl) html += '<div class="glabel">'+esc(lbl)+'</div>';
+      html += '<div class="pills">';
+      g.items.forEach(d=>{
+        html += '<button class="pill'+(d.uid===currentUid?' on':'')+'" data-uid="'+esc(d.uid)+'"'+(d.uid===currentUid?' aria-current="true"':'')+'>'+esc(pillLabel(d))+'</button>';
+      });
+      html += '</div></div>';
+    });
+    navEl.innerHTML = html;
+  }
+
+  function champCard(c){
+    const ava = league==='ufc' ? avaInner(c.ref, c.name, beltSvg) : beltSvg;
+    const inner =
+      '<div class="ava">'+ava+'</div>'+
+      '<div class="ci">'+
+        '<span class="belt">'+beltSvg+esc(c.label||'Champion')+'</span>'+
+        '<span class="cn">'+esc(c.name)+'</span>'+
+        '<span class="cmeta">'+(league==='ufc'?'ufc.com':'oktagonmma.com')+' · Profil ansehen</span>'+
+      '</div>'+
+      '<span class="arr">'+extSvg+'</span>';
+    return '<a class="champ" href="'+esc(profileUrl(league,c.ref))+'" target="_blank" rel="noopener">'+inner+'</a>';
+  }
+
+  function rankRow(f){
+    const top = f.rank===1 ? ' top' : '';
+    const cb = f.champ ? '<span class="cbadge">'+beltSvg+'Champ</span>' : '';
+    const ava = league==='ufc' ? '<span class="ava">'+avaInner(f.ref, f.name, personSvg)+'</span>' : '';
+    return '<a class="row" href="'+esc(profileUrl(league,f.ref))+'" target="_blank" rel="noopener">'+
+      '<span class="rk'+top+'">'+f.rank+'</span>'+ ava +
+      '<span class="nm">'+esc(f.name)+'</span>'+ cb +
+      '<span class="sp"></span>'+
+      '<span class="ext">'+extSvg+'</span>'+
+    '</a>';
+  }
+
+  function renderContent(){
+    const d = findUid(league, currentUid);
+    if(!d){ contentEl.innerHTML = '<div class="state"><div class="stx">Keine Rangliste vorhanden</div></div>'; return; }
+
+    const lim = LIMITS[d.cls];
+    const genderTag = d.gender==='w' ? '<span class="gtag">Frauen</span>' : '';
+    const title = d.cls==='p4p' ? 'Pound for Pound' : CLSNAME[d.cls];
+    const limHtml = lim ? '<span class="limit">'+lim[0]+' · '+lim[1]+'</span>' : (d.cls==='p4p'?'<span class="limit">divisionsübergreifend</span>':'');
+
+    let html = '<div class="dhead"><h2>'+esc(title)+'</h2>'+genderTag+limHtml+'</div>';
+    if(d.champions && d.champions.length){
+      html += '<div class="champ-row">'+ d.champions.map(champCard).join('') +'</div>';
+    }
+    html += '<div class="ranklist">'+ d.fighters.map(rankRow).join('') +'</div>';
+    contentEl.innerHTML = html;
+    wireImages();
+  }
+
+  function renderSrc(){
+    const date = league==='ufc' ? UFC_UPDATED : OKT_UPDATED;
+    const site = league==='ufc' ? 'ufc.com' : 'oktagonmma.com';
+    srcTxt.innerHTML = '<b>Snapshot</b> · Stand '+date+' · '+site;
+  }
+
+  function renderAll(){ renderSrc(); renderNav(); renderContent(); }
+
+  /* ---------- Liga wählen (Klasse + Geschlecht halten, sonst P4P) ---------- */
+  function selectLeague(lg, keepUid){
+    league = lg;
+    const isUfc = lg==='ufc';
+    document.documentElement.setAttribute('data-league', lg);
+    segUfc.classList.toggle('on', isUfc); segOkt.classList.toggle('on', !isUfc);
+    segUfc.setAttribute('aria-selected', isUfc); segOkt.setAttribute('aria-selected', !isUfc);
+    seg.style.setProperty('--seg', isUfc?0:1);
+    if(isUfc) loadImages();
+
+    const divs = sortedDivs(lg);
+    let target = null;
+    if(keepUid && currentUid){
+      const prev = currentUid.split(':'); const cls = prev[1], gender = prev[2];
+      if(cls==='p4p') target = divs.find(d=>d.cls==='p4p' && d.gender===gender) || divs.find(d=>d.cls==='p4p');
+      else target = divs.find(d=>d.cls===cls && d.gender===gender);
+    }
+    if(!target) target = divs.find(d=>d.cls==='p4p') || divs[0];
+    currentUid = target ? target.uid : null;
+    renderAll();
+  }
+
+  /* ---------- Events ---------- */
+  segUfc.addEventListener('click', ()=>{ if(league!=='ufc') selectLeague('ufc', true); });
+  segOkt.addEventListener('click', ()=>{ if(league!=='oktagon') selectLeague('oktagon', true); });
+  navEl.addEventListener('click', e=>{
+    const p = e.target.closest('.pill'); if(!p) return;
+    currentUid = p.dataset.uid;
+    renderNav(); renderContent();
+  });
+
+  /* ---------- Start: standardmässig UFC ---------- */
+  selectLeague('ufc', false);
+
+})();
+</script>
+</body>
+</html>
