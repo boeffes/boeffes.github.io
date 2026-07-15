@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Elementarium — Sandkasten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ToolBox Steel-Palette */
+    --bg:#0A0C0F;
+    --panel:rgba(16,19,25,0.86);
+    --panel-solid:#161A21;
+    --line:rgba(255,255,255,0.07);
+    --line-strong:rgba(255,255,255,0.12);
+    --ink:#ECEFF4;
+    --muted:#A2ADBB;
+    --muted-dim:#6A7482;
+    /* Signalfarbe dieses Tools */
+    --accent:#22C55E;
+    --accent-dim:rgba(163,230,53,0.18);
+    --ac-12:rgba(163,230,53,0.12);
+    --ac-22:rgba(163,230,53,0.22);
+    --track:rgba(255,255,255,0.10);
+    --brand:#FFB401;
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --mono:"JetBrains Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sans:system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    display:flex; flex-direction:column;
+  }
+
+  /* ── Kopfleiste ─────────────────────────────── */
+  #top{
+    flex:none;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:12px 16px 10px;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(16,19,25,.55), rgba(16,19,25,0));
+  }
+  #brand{display:flex; align-items:center; gap:11px; user-select:none; margin-right:2px}
+  #brand .dot{
+    width:8px; height:8px; border-radius:50%; flex:none;
+    background:var(--accent);
+    box-shadow:0 0 12px var(--accent);
+    animation:brandpulse 2.6s var(--ease) infinite;
+  }
+  @keyframes brandpulse{
+    0%{box-shadow:0 0 0 0 var(--ac-22), 0 0 12px var(--accent)}
+    70%{box-shadow:0 0 0 8px rgba(163,230,53,0), 0 0 12px var(--accent)}
+    100%{box-shadow:0 0 0 0 rgba(163,230,53,0), 0 0 12px var(--accent)}
+  }
+  #brand .t{font-family:var(--disp); font-size:15px; font-weight:700; letter-spacing:.015em; line-height:1}
+  #brand .s{margin-top:5px; font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--muted-dim); white-space:nowrap}
+  #brand .s b{color:var(--accent); font-weight:500}
+
+  #actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-left:auto}
+  .abtn{
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    height:36px; min-width:36px; padding:0 10px; border-radius:10px;
+    background:rgba(255,255,255,.04); border:1px solid var(--line-strong);
+    color:var(--ink); cursor:pointer;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    transition:background .15s, border-color .15s, transform .1s, color .15s;
+  }
+  .abtn svg{flex:none}
+  .abtn:hover{background:rgba(255,255,255,.09)}
+  .abtn:active{transform:scale(.96)}
+  .abtn:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+  .abtn.on{color:var(--accent); border-color:var(--accent); background:var(--ac-12)}
+  .abtn .lbl{display:inline}
+
+  #brush{display:flex; align-items:center; gap:10px; min-width:170px}
+  #brush label{font-family:var(--mono); font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted-dim)}
+  #brush .val{font-family:var(--mono); font-size:11px; color:var(--ink); width:2.2em; text-align:right}
+  input[type=range]{
+    --p:30%;
+    -webkit-appearance:none; appearance:none;
+    width:110px; height:18px; background:transparent; cursor:pointer; margin:0; display:block;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:3px; border-radius:3px;
+    background:linear-gradient(90deg,var(--accent) 0 var(--p),var(--track) var(--p) 100%);
+  }
+  input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:var(--track)}
+  input[type=range]::-moz-range-progress{height:3px;border-radius:3px;background:var(--accent)}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:14px; height:14px; margin-top:-5.5px; border-radius:50%;
+    background:#fff; border:0;
+    box-shadow:0 0 0 4px var(--ac-12), 0 1px 4px rgba(0,0,0,.5);
+    transition:box-shadow .15s;
+  }
+  input[type=range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 6px var(--ac-22), 0 1px 4px rgba(0,0,0,.5)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:#fff;box-shadow:0 0 0 4px var(--ac-12)}
+  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--accent)}
+
+  .swrap{display:flex; align-items:center; gap:9px}
+  .swrap span{font-family:var(--mono); font-size:9.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted-dim)}
+  .sw-toggle{
+    position:relative; width:40px; height:23px; border-radius:23px;
+    background:var(--track); border:1px solid var(--line); cursor:pointer; flex:0 0 auto;
+    transition:background .18s, border-color .18s;
+  }
+  .sw-toggle.on{background:var(--accent-dim); border-color:var(--accent)}
+  .sw-toggle::after{
+    content:""; position:absolute; top:2px; left:2px; width:17px; height:17px; border-radius:50%;
+    background:#fff; transition:transform .2s cubic-bezier(.4,0,.2,1);
+  }
+  .sw-toggle.on::after{transform:translateX(17px); background:var(--accent)}
+  .sw-toggle.dis{opacity:.35; cursor:not-allowed}
+  .sw-toggle:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  /* ── Spielfeld ──────────────────────────────── */
+  #stage{
+    flex:1; min-height:0; position:relative;
+    display:flex; align-items:center; justify-content:center;
+    padding:14px;
+  }
+  #field{
+    position:relative; border-radius:12px; overflow:hidden;
+    border:1px solid var(--line-strong);
+    box-shadow:0 24px 70px -30px rgba(0,0,0,.85), inset 0 0 0 1px rgba(255,255,255,.02);
+    touch-action:none; cursor:crosshair;
+    background:#10131A;
+  }
+  #field canvas{
+    position:absolute; inset:0; width:100%; height:100%; display:block;
+    image-rendering:pixelated; image-rendering:crisp-edges;
+    pointer-events:none;
+  }
+  #gl{display:none}
+  body.shader #gl{display:block}
+  #ring{
+    position:absolute; border:1px solid rgba(255,255,255,.55); border-radius:50%;
+    pointer-events:none; transform:translate(-50%,-50%); display:none;
+    box-shadow:0 0 0 1px rgba(0,0,0,.4);
+  }
+  #hint{
+    position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em; white-space:nowrap;
+    color:var(--muted); background:rgba(10,12,15,.55); backdrop-filter:blur(6px);
+    padding:6px 12px; border-radius:8px; border:1px solid var(--line);
+    pointer-events:none; user-select:none; transition:opacity .8s ease;
+  }
+  #hint.gone{opacity:0}
+
+  /* ── Elementleiste ──────────────────────────── */
+  #dock{
+    flex:none; display:flex; gap:0; align-items:stretch;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    padding:10px 14px 13px;
+    border-top:1px solid var(--line);
+    background:linear-gradient(0deg, rgba(16,19,25,.55), rgba(16,19,25,0));
+    scrollbar-width:thin;
+  }
+  #dock::-webkit-scrollbar{height:7px}
+  #dock::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:8px}
+  .egrp{flex:none; padding:0 12px; border-right:1px solid var(--line); display:flex; flex-direction:column; gap:7px}
+  .egrp:first-child{padding-left:2px}
+  .egrp:last-child{border-right:none}
+  .egrp .glabel{
+    font-family:var(--mono); font-size:8.5px; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--muted-dim); margin:0; white-space:nowrap;
+  }
+  .erow{display:flex; gap:7px}
+  .chip{
+    display:flex; align-items:center; gap:7px;
+    padding:7px 11px 7px 9px; border-radius:9px;
+    background:rgba(255,255,255,.035); border:1px solid var(--line-strong);
+    color:var(--muted); cursor:pointer; white-space:nowrap;
+    font-family:var(--mono); font-size:11px; letter-spacing:.03em;
+    transition:background .13s, border-color .13s, color .13s, transform .1s;
+  }
+  .chip:hover{background:rgba(255,255,255,.08); color:var(--ink)}
+  .chip:active{transform:scale(.96)}
+  .chip:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+  .chip.on{
+    color:var(--ink); border-color:var(--c);
+    background:color-mix(in srgb, var(--c) 14%, transparent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--c) 45%, transparent);
+  }
+  .chip .cd{
+    width:11px; height:11px; border-radius:4px; flex:none;
+    background:var(--c); box-shadow:0 0 6px color-mix(in srgb, var(--c) 55%, transparent);
+  }
+  .chip.on .cd{box-shadow:0 0 10px var(--c)}
+
+  /* ── Hilfe-Overlay ──────────────────────────── */
+  #help{
+    position:fixed; inset:0; z-index:40; display:none;
+    align-items:center; justify-content:center; padding:22px;
+    background:rgba(6,8,10,.62); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  }
+  #help.open{display:flex}
+  #help .card{
+    width:560px; max-width:100%; max-height:86vh; overflow-y:auto;
+    background:var(--panel-solid); border:1px solid var(--line-strong); border-radius:14px;
+    padding:20px 22px 24px;
+    box-shadow:0 40px 120px -40px rgba(0,0,0,.9);
+  }
+  #help .card::-webkit-scrollbar{width:8px}
+  #help .card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:8px}
+  #help .phead{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding-bottom:13px; margin-bottom:4px; border-bottom:1px solid var(--line);
+  }
+  #help h1{margin:0; font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:.26em; text-transform:uppercase}
+  #help .x{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:2px 4px;border-radius:6px}
+  #help .x:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+  #help h2{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--muted-dim); margin:18px 0 9px; font-weight:500;
+  }
+  #help ul{list-style:none; margin:0; padding:0}
+  #help li{
+    font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    padding:4px 0; letter-spacing:.02em; line-height:1.5;
+  }
+  #help li b{color:var(--ink); font-weight:500}
+  #help kbd{
+    display:inline-block; font-family:var(--mono); font-size:10px; color:var(--ink);
+    background:rgba(255,255,255,.06); border:1px solid var(--line-strong); border-bottom-width:2px;
+    border-radius:5px; padding:1px 6px; margin-right:3px;
+  }
+  #help p.note{font-size:11.5px; color:var(--muted); line-height:1.55; margin:8px 0 0}
+
+  @media (max-width:640px){
+    #top{gap:10px; padding:10px 12px 9px}
+    #brand .s{display:none}
+    .abtn .lbl{display:none}
+    .abtn{padding:0 9px}
+    #brush{min-width:0}
+    #brush input[type=range]{width:78px}
+    #stage{padding:9px}
+    #hint{font-size:8.5px; letter-spacing:.08em}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .sw-toggle::after,.abtn,.chip{transition:none}
+    #brand .dot{animation:none}
+  }
+</style>
+</head>
+<body>
+
+  <header id="top">
+    <div id="brand">
+      <span class="dot" aria-hidden="true"></span>
+      <div class="meta">
+        <div class="t">Elementarium</div>
+        <div class="s">SANDKASTEN · <b id="stCount">0</b> TEILCHEN · <b id="stFps">—</b> FPS</div>
+      </div>
+    </div>
+
+    <div id="actions">
+      <div id="brush">
+        <label for="brushR">Pinsel</label>
+        <input type="range" id="brushR" min="1" max="24" step="1" value="4">
+        <span class="val" id="brushVal">4</span>
+      </div>
+
+      <button class="abtn" id="pauseBtn" title="Pause / Weiter  (Leertaste)" aria-label="Pause">
+        <svg id="icPause" viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><rect x="6" y="4.5" width="4" height="15" rx="1.2"/><rect x="14" y="4.5" width="4" height="15" rx="1.2"/></svg>
+        <svg id="icPlay" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="display:none"><path d="M7 4.8v14.4c0 .9 1 1.5 1.8 1L20 13c.8-.5.8-1.6 0-2.1L8.8 3.8C8 3.3 7 3.9 7 4.8z"/></svg>
+      </button>
+      <button class="abtn" id="speedBtn" title="Simulationstempo">1×</button>
+      <button class="abtn" id="worldBtn" title="Neue Welt erzeugen  (G)">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19L9.5 8l4 6.5L16.5 11 21 19z"/><circle cx="17.5" cy="6" r="2"/></svg>
+        <span class="lbl">Welt</span>
+      </button>
+      <button class="abtn" id="clearBtn" title="Alles leeren  (C)">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9.5 7V5.3c0-.7.6-1.3 1.3-1.3h2.4c.7 0 1.3.6 1.3 1.3V7M6.5 7l1 12.2c.1.6.6 1.1 1.2 1.1h6.6c.6 0 1.1-.5 1.2-1.1l1-12.2"/></svg>
+        <span class="lbl">Leeren</span>
+      </button>
+      <button class="abtn" id="shotBtn" title="Bild als PNG speichern  (F)">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5c0-1 .8-1.8 1.8-1.8h1.9l1.4-2c.2-.3.6-.5 1-.5h3.8c.4 0 .8.2 1 .5l1.4 2h1.9c1 0 1.8.8 1.8 1.8v8.7c0 1-.8 1.8-1.8 1.8H5.8c-1 0-1.8-.8-1.8-1.8z"/><circle cx="12" cy="12.6" r="3.2"/></svg>
+        <span class="lbl">Foto</span>
+      </button>
+      <button class="abtn" id="helpBtn" title="Hilfe & Reaktionen">?</button>
+      <div class="swrap">
+        <span>Shader</span>
+        <div class="sw-toggle" id="shaderToggle" role="switch" aria-checked="false" tabindex="0" title="WebGL-Verschönerung: Glühen, Licht, Schimmer"></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="stage">
+    <div id="field">
+      <canvas id="sim"></canvas>
+      <canvas id="gl"></canvas>
+      <div id="ring"></div>
+      <div id="hint">Zeichnen mit Maus oder Finger · Element unten wählen</div>
+    </div>
+  </main>
+
+  <footer id="dock" aria-label="Elemente"></footer>
+
+  <div id="help" role="dialog" aria-modal="true" aria-label="Hilfe">
+    <div class="card">
+      <div class="phead">
+        <h1>Elementarium</h1>
+        <button class="x" id="helpClose" aria-label="Schliessen">×</button>
+      </div>
+      <h2>Reaktionen</h2>
+      <ul>
+        <li><b>Wasser + Lava</b> → Stein und Dampf</li>
+        <li><b>Feuer</b> entzündet Holz, Öl, Pflanzen — <b>Pulver und TNT</b> explodieren</li>
+        <li><b>Säure</b> zersetzt fast alles · nur <b>Glas</b> hält stand</li>
+        <li><b>Lava + Sand</b> → Glas · <b>Lava + Metall</b> → schmilzt</li>
+        <li><b>Wasser + Metall</b> → Rost, der abbröckelt</li>
+        <li><b>Eis</b> lässt Wasser gefrieren · Hitze schmilzt Eis und Schnee</li>
+        <li><b>Samen</b> auf Erde wächst zur Pflanze · Pflanzen wuchern ins Wasser</li>
+        <li><b>Dampf</b> steigt auf und kondensiert wieder zu Wasser</li>
+        <li><b>Virus</b> frisst sich durch alles — ausser Glas</li>
+        <li><b>Wolke</b> regnet · <b>Quelle</b> sprudelt · <b>Abfluss</b> schluckt</li>
+      </ul>
+      <h2>Tastatur</h2>
+      <ul>
+        <li><kbd>Leertaste</kbd> Pause · <kbd>[</kbd> <kbd>]</kbd> Pinselgrösse · <kbd>E</kbd> Radierer</li>
+        <li><kbd>G</kbd> Neue Welt · <kbd>C</kbd> Leeren · <kbd>F</kbd> Foto · <kbd>1</kbd>–<kbd>9</kbd> Elemente</li>
+      </ul>
+      <h2>Shader</h2>
+      <p class="note">Der Shader-Schalter aktiviert eine WebGL-Nachbearbeitung: Lava und Feuer glühen und beleuchten ihre Umgebung, Flüssigkeiten schimmern, dazu Himmelsverlauf und Vignette. Standardmässig ist er aus — das Spiel läuft dann als reine Pixelgrafik.</p>
+    </div>
+  </div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════
+   ELEMENTARIUM — Falling-Sand-Sandkasten · Boeffes ToolBox
+   Zellulärer Automat + optionaler WebGL-Shader (Bloom/Licht)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Grid ─────────────────────────────────────── */
+const MOBILE = matchMedia("(max-width:640px)").matches;
+const GW = MOBILE ? 176 : 288;
+const GH = MOBILE ? 214 : 180;
+const N  = GW * GH;
+
+const cells = new Uint8Array(N);   // Element-ID
+const life  = new Uint8Array(N);   // Lebensdauer / Zähler
+const shade = new Uint8Array(N);   // Farbvariation
+const moved = new Uint8Array(N);   // Frame-Stempel gegen Doppel-Updates
+
+/* ── Element-IDs ──────────────────────────────── */
+const LEER=0, SAND=1, ERDE=2, SCHNEE=3, PULVER=4,
+      WASSER=5, OEL=6, LAVA=7, SAEURE=8, HONIG=9,
+      STEIN=10, HOLZ=11, EIS=12, GLAS=13, METALL=14, TNT=15, PFLANZE=16,
+      FEUER=17, DAMPF=18, RAUCH=19,
+      SAMEN=20, VIRUS=21, WOLKE=22, QUELLE=23, ABFLUSS=24,
+      ROST=25, WAND=26;
+const ERASE = 255; // Werkzeug, kein Element
+
+/* Eigenschaften */
+const DENS = new Float32Array(32);          // Dichte (Verdrängung)
+DENS[WASSER]=2; DENS[SAEURE]=2; DENS[OEL]=1; DENS[HONIG]=3; DENS[LAVA]=4;
+DENS[SAND]=5; DENS[ERDE]=5; DENS[SCHNEE]=1.5; DENS[PULVER]=5; DENS[ROST]=5; DENS[SAMEN]=5; DENS[VIRUS]=5;
+
+const isLiquid = t => t===WASSER || t===OEL || t===LAVA || t===SAEURE || t===HONIG;
+const isGas    = t => t===DAMPF || t===RAUCH || t===FEUER;
+const isStatic = t => t===STEIN || t===HOLZ || t===EIS || t===GLAS || t===METALL ||
+                      t===TNT || t===PFLANZE || t===WOLKE || t===QUELLE || t===ABFLUSS;
+const DISSOLVES = new Uint8Array(32); // von Säure zersetzbar
+[SAND,ERDE,SCHNEE,PULVER,STEIN,HOLZ,EIS,METALL,TNT,PFLANZE,ROST,SAMEN,HONIG,OEL].forEach(t=>DISSOLVES[t]=1);
+
+const rnd = Math.random;
+const idx = (x,y) => y*GW + x;
+function cellAt(x,y){ return (x<0||x>=GW||y<0||y>=GH) ? WAND : cells[idx(x,y)]; }
+
+let frame = 1;
+let stamp = 1;
+
+function defaultLife(t){
+  if (t===FEUER) return 22 + (rnd()*22)|0;
+  if (t===DAMPF) return 110 + (rnd()*90)|0;
+  if (t===RAUCH) return 80 + (rnd()*90)|0;
+  if (t===WOLKE) return 150 + (rnd()*105)|0;
+  return 0;
+}
+function setCell(i, t, lf){
+  cells[i] = t;
+  life[i]  = (lf === undefined) ? defaultLife(t) : lf;
+  shade[i] = (rnd()*256)|0;
+}
+function moveTo(i, j){        // i → j (j war leer/Gas ohne Erhalt)
+  cells[j]=cells[i]; life[j]=life[i]; shade[j]=shade[i];
+  cells[i]=LEER; life[i]=0;
+  moved[i]=stamp; moved[j]=stamp;
+}
+function swapCells(i, j){     // Verdrängung
+  const t=cells[i], l=life[i], s=shade[i];
+  cells[i]=cells[j]; life[i]=life[j]; shade[i]=shade[j];
+  cells[j]=t; life[j]=l; shade[j]=s;
+  moved[i]=stamp; moved[j]=stamp;
+}
+
+/* ── Explosionen (Warteschlange) ──────────────── */
+const boomQ = [];
+function requestBoom(x,y,r){ if (boomQ.length < 220) boomQ.push({x,y,r}); }
+function runBooms(){
+  let guard = 0;
+  while (boomQ.length && guard++ < 240){
+    const b = boomQ.shift();
+    const r2 = b.r*b.r;
+    const x0=Math.max(0,b.x-b.r), x1=Math.min(GW-1,b.x+b.r);
+    const y0=Math.max(0,b.y-b.r), y1=Math.min(GH-1,b.y+b.r);
+    for (let y=y0;y<=y1;y++){
+      for (let x=x0;x<=x1;x++){
+        const dx=x-b.x, dy=y-b.y, d2=dx*dx+dy*dy;
+        if (d2 > r2) continue;
+        const i = idx(x,y);
+        const t = cells[i];
+        if (t===TNT){ setCell(i,LEER); requestBoom(x,y,13); continue; }
+        if (t===PULVER){ setCell(i,LEER); requestBoom(x,y,6); continue; }
+        if (d2 < r2*0.55){
+          if (t!==LEER || rnd()<0.5) setCell(i, FEUER, 14+(rnd()*22)|0);
+        } else if (t!==LEER){
+          setCell(i, rnd()<0.45 ? RAUCH : LEER);
+        }
+      }
+    }
+  }
+}
+
+/* ── Simulation ───────────────────────────────── */
+function neighbors4(x,y,out){
+  out[0]=cellAt(x,y-1); out[1]=cellAt(x,y+1); out[2]=cellAt(x-1,y); out[3]=cellAt(x+1,y);
+}
+const NB = [0,0,0,0];
+const NDX = [0,0,-1,1], NDY = [-1,1,0,0];
+
+function igniteCheck(x,y,i,t,chanceF,chanceL){
+  // wird von brennbaren Materialien aufgerufen
+  for (let k=0;k<4;k++){
+    const nt = cellAt(x+NDX[k], y+NDY[k]);
+    if (nt===FEUER && rnd()<chanceF) { setCell(i,FEUER, t===HOLZ?110+(rnd()*60)|0 : t===PFLANZE?55+(rnd()*30)|0 : t===OEL?70+(rnd()*50)|0 : 34+(rnd()*20)|0); return true; }
+    if (nt===LAVA  && rnd()<chanceL) { setCell(i,FEUER, t===HOLZ?120+(rnd()*60)|0 : t===OEL?80+(rnd()*50)|0 : 60+(rnd()*30)|0); return true; }
+  }
+  return false;
+}
+
+function stepPowder(x,y,i,t){
+  // Reaktionen
+  if (t===SCHNEE){
+    for (let k=0;k<4;k++){
+      const nt = cellAt(x+NDX[k],y+NDY[k]);
+      if (nt===LAVA || nt===FEUER){ setCell(i, rnd()<0.6?WASSER:DAMPF); return; }
+      if (nt===WASSER && rnd()<0.012){ setCell(i,WASSER); return; }
+    }
+  } else if (t===SAND){
+    for (let k=0;k<4;k++){
+      if (cellAt(x+NDX[k],y+NDY[k])===LAVA && rnd()<0.03){ setCell(i,GLAS); return; }
+    }
+  } else if (t===PULVER){
+    for (let k=0;k<4;k++){
+      const nt = cellAt(x+NDX[k],y+NDY[k]);
+      if (nt===FEUER || nt===LAVA){ setCell(i,LEER); requestBoom(x,y,6); return; }
+    }
+  } else if (t===SAMEN){
+    const below = cellAt(x,y+1);
+    if (below===ERDE || below===SAND || below===PFLANZE){ setCell(i, PFLANZE, 4+(rnd()*6)|0); return; }
+    if (igniteCheck(x,y,i,t,0.4,0.8)) return;
+  }
+
+  // Bewegung
+  if (t===SCHNEE && rnd()<0.42) return;           // Schnee rieselt träge
+  const yb = y+1;
+  if (yb < GH){
+    const ib = i+GW, tb = cells[ib];
+    if (tb===LEER){ moveTo(i,ib); return; }
+    if (isGas(tb)){ swapCells(i,ib); return; }
+    if (isLiquid(tb) && DENS[t]>DENS[tb] && rnd()<0.65){ swapCells(i,ib); return; }
+    // diagonal
+    const dir = rnd()<0.5 ? 1 : -1;
+    for (let s=0;s<2;s++){
+      const dx = s===0 ? dir : -dir;
+      const nx = x+dx;
+      if (nx<0||nx>=GW) continue;
+      const j = ib + dx, tj = cells[j];
+      if (tj===LEER){ moveTo(i,j); return; }
+      if (isLiquid(tj) && DENS[t]>DENS[tj] && rnd()<0.4){ swapCells(i,j); return; }
+    }
+  }
+}
+
+function stepLiquid(x,y,i,t){
+  // Reaktionen
+  if (t===LAVA){
+    for (let k=0;k<4;k++){
+      const nx=x+NDX[k], ny=y+NDY[k];
+      const nt = cellAt(nx,ny);
+      if (nt===WASSER){ setCell(idx(nx,ny),DAMPF); setCell(i,STEIN); return; }
+      if (nt===EIS || nt===SCHNEE){ setCell(idx(nx,ny), rnd()<0.7?WASSER:DAMPF); }
+    }
+  } else if (t===WASSER){
+    let iceN = 0;
+    for (let k=0;k<4;k++){
+      const nt = cellAt(x+NDX[k],y+NDY[k]);
+      if (nt===EIS) iceN++;
+    }
+    if (iceN>0 && rnd() < 0.0022*iceN){ setCell(i,EIS); return; }
+  } else if (t===OEL){
+    if (igniteCheck(x,y,i,t,0.5,0.7)) return;
+  } else if (t===SAEURE){
+    const k = (rnd()*4)|0;
+    const nx=x+NDX[k], ny=y+NDY[k];
+    const nt = cellAt(nx,ny);
+    if (nt!==WAND && DISSOLVES[nt] && rnd()<0.16){
+      setCell(idx(nx,ny), rnd()<0.3 ? RAUCH : LEER);
+      if (rnd()<0.32){ setCell(i, rnd()<0.4?RAUCH:LEER); return; }
+    }
+  }
+
+  if (t===HONIG && rnd()<0.55) return;            // Honig ist zäh
+  if (t===LAVA  && rnd()<0.30) return;            // Lava fliesst träge
+
+  // Bewegung
+  const yb = y+1;
+  if (yb < GH){
+    const ib = i+GW, tb = cells[ib];
+    if (tb===LEER){ moveTo(i,ib); return; }
+    if (isGas(tb) && tb!==FEUER){ swapCells(i,ib); return; }
+    if (isLiquid(tb) && DENS[t]>DENS[tb] && rnd()<0.5){ swapCells(i,ib); return; }
+    const dir = rnd()<0.5 ? 1 : -1;
+    for (let s=0;s<2;s++){
+      const dx = s===0 ? dir : -dir;
+      const nx = x+dx;
+      if (nx<0||nx>=GW) continue;
+      const j = ib+dx;
+      if (cells[j]===LEER){ moveTo(i,j); return; }
+    }
+  }
+  // horizontal ausbreiten
+  const disp = t===WASSER ? 5 : (t===SAEURE||t===OEL) ? 4 : 1;
+  const dir = rnd()<0.5 ? 1 : -1;
+  let target = -1;
+  for (let s=1;s<=disp;s++){
+    const nx = x+dir*s;
+    if (nx<0||nx>=GW) break;
+    const j = idx(nx,y);
+    if (cells[j]===LEER) target = j; else break;
+  }
+  if (target>=0){ moveTo(i,target); }
+}
+
+function stepGas(x,y,i,t){
+  if (t===FEUER){
+    // löschen
+    for (let k=0;k<4;k++){
+      const nt = cellAt(x+NDX[k],y+NDY[k]);
+      if (nt===WASSER){ setCell(i, rnd()<0.5?DAMPF:RAUCH); return; }
+    }
+    // brennendes Material (hohe Lebensdauer) bleibt an Ort und wirft Flammen
+    if (life[i] > 46){
+      if (y>0 && cells[i-GW]===LEER){
+        const r = rnd();
+        if (r<0.20) setCell(i-GW, FEUER, 10+(rnd()*16)|0);
+        else if (r<0.30) setCell(i-GW, RAUCH, 40+(rnd()*50)|0);
+      }
+      life[i]--;
+      if (life[i]===0) setCell(i, rnd()<0.5?RAUCH:LEER);
+      return;
+    }
+    if (rnd()<0.10 && y>0 && cells[i-GW]===LEER && rnd()<0.5) setCell(i-GW, RAUCH, 40+(rnd()*50)|0);
+  }
+  // Lebenszeit
+  if (life[i]>0) life[i]--;
+  if (life[i]===0){
+    if (t===DAMPF && rnd()<0.35) setCell(i,WASSER);
+    else if (t===FEUER && rnd()<0.28) setCell(i,RAUCH);
+    else setCell(i,LEER);
+    return;
+  }
+  // Dampf kondensiert an Decken
+  if (t===DAMPF && y>0){
+    const up = cells[i-GW];
+    if ((up===STEIN||up===GLAS||up===METALL||up===EIS||up===HOLZ) && rnd()<0.012){ setCell(i,WASSER); return; }
+  }
+  // Bewegung nach oben
+  const yu = y-1;
+  const pUp = t===FEUER ? 0.62 : 0.82;
+  if (yu>=0 && rnd()<pUp){
+    const iu = i-GW, tu = cells[iu];
+    if (tu===LEER){ moveTo(i,iu); return; }
+    if (isLiquid(tu) && t!==FEUER && rnd()<0.35){ swapCells(i,iu); return; } // blubbern
+    const dir = rnd()<0.5?1:-1;
+    for (let s=0;s<2;s++){
+      const dx = s===0?dir:-dir;
+      const nx = x+dx;
+      if (nx<0||nx>=GW) continue;
+      const j = iu+dx;
+      if (cells[j]===LEER){ moveTo(i,j); return; }
+    }
+  }
+  // seitlich flackern / wabern
+  if (rnd()<0.45){
+    const dx = rnd()<0.5?1:-1;
+    const nx = x+dx;
+    if (nx>=0 && nx<GW && cells[i+dx]===LEER) moveTo(i,i+dx);
+  }
+}
+
+function stepStatic(x,y,i,t){
+  switch(t){
+    case HOLZ:
+      igniteCheck(x,y,i,t,0.09,0.22);
+      return;
+    case PFLANZE: {
+      if (igniteCheck(x,y,i,t,0.30,0.60)) return;
+      if (life[i]>0 && rnd()<0.32){
+        if (y>0 && cells[i-GW]===LEER){
+          setCell(i-GW, PFLANZE, life[i]-1);
+          if (life[i]<=2){
+            if (x>0 && cells[i-1]===LEER && rnd()<0.7) setCell(i-1,PFLANZE,0);
+            if (x<GW-1 && cells[i+1]===LEER && rnd()<0.7) setCell(i+1,PFLANZE,0);
+          }
+          life[i]=0;
+        } else life[i]=0;
+      }
+      // wuchert langsam ins Wasser
+      if (rnd()<0.02){
+        const k=(rnd()*4)|0, nx=x+NDX[k], ny=y+NDY[k];
+        if (cellAt(nx,ny)===WASSER && rnd()<0.5) setCell(idx(nx,ny),PFLANZE,0);
+      }
+      return;
+    }
+    case EIS:
+      for (let k=0;k<4;k++){
+        const nt = cellAt(x+NDX[k],y+NDY[k]);
+        if (nt===FEUER && rnd()<0.4){ setCell(i,WASSER); return; }
+        if (nt===LAVA){ setCell(i,WASSER); return; }
+      }
+      return;
+    case METALL: {
+      for (let k=0;k<4;k++){
+        const nx=x+NDX[k], ny=y+NDY[k];
+        const nt = cellAt(nx,ny);
+        if (nt===WASSER && rnd()<0.0016){ setCell(i,ROST); return; }
+        if (nt===LAVA && rnd()<0.0035){ setCell(i,LAVA); return; }
+      }
+      return;
+    }
+    case TNT:
+      for (let k=0;k<4;k++){
+        const nt = cellAt(x+NDX[k],y+NDY[k]);
+        if (nt===FEUER || nt===LAVA){ setCell(i,LEER); requestBoom(x,y,13); return; }
+      }
+      return;
+    case WOLKE:
+      if (rnd()<0.05 && y<GH-1 && cells[i+GW]===LEER){
+        setCell(i+GW, WASSER);
+        if (life[i]>0) life[i]--;
+        if (life[i]===0){ setCell(i, rnd()<0.5?DAMPF:LEER); return; }
+      }
+      if (rnd()<0.006){
+        const dx = rnd()<0.5?1:-1;
+        const nx=x+dx;
+        if (nx>=0&&nx<GW&&cells[i+dx]===LEER) moveTo(i,i+dx);
+      }
+      return;
+    case QUELLE:
+      if (y<GH-1 && cells[i+GW]===LEER && rnd()<0.5) setCell(i+GW, WASSER);
+      return;
+    case ABFLUSS:
+      for (let k=0;k<4;k++){
+        const nx=x+NDX[k], ny=y+NDY[k];
+        const nt = cellAt(nx,ny);
+        if (nt!==WAND && nt!==LEER && !isStatic(nt)) setCell(idx(nx,ny), LEER);
+      }
+      return;
+  }
+}
+
+function stepVirus(x,y,i){
+  let food = 0;
+  for (let k=0;k<4;k++){
+    const nt = cellAt(x+NDX[k],y+NDY[k]);
+    if (nt!==WAND && nt!==LEER && nt!==VIRUS && nt!==GLAS && nt!==ABFLUSS) food++;
+  }
+  if (rnd() < (food ? 0.010 : 0.09)){ setCell(i,LEER); return; }
+  if (food && rnd()<0.30){
+    const k=(rnd()*4)|0, nx=x+NDX[k], ny=y+NDY[k];
+    const nt = cellAt(nx,ny);
+    if (nt!==WAND && nt!==LEER && nt!==VIRUS && nt!==GLAS && nt!==ABFLUSS){
+      setCell(idx(nx,ny), VIRUS);
+    }
+  }
+  // fällt wie zähes Pulver
+  if (rnd()<0.5) stepPowder(x,y,i,VIRUS);
+}
+
+function simStep(){
+  stamp = (stamp % 250) + 1;
+  for (let y=GH-1; y>=0; y--){
+    const ltr = ((y + frame) & 1) === 0;
+    const row = y*GW;
+    for (let k=0;k<GW;k++){
+      const x = ltr ? k : GW-1-k;
+      const i = row + x;
+      const t = cells[i];
+      if (t===LEER || moved[i]===stamp) continue;
+      if (t===SAND||t===ERDE||t===SCHNEE||t===PULVER||t===ROST||t===SAMEN){ stepPowder(x,y,i,t); }
+      else if (isLiquid(t)){ stepLiquid(x,y,i,t); }
+      else if (isGas(t)){ stepGas(x,y,i,t); }
+      else if (t===VIRUS){ stepVirus(x,y,i); }
+      else { stepStatic(x,y,i,t); }
+    }
+  }
+  runBooms();
+  frame++;
+}
+
+/* ── Farben / Rendering (2D) ──────────────────── */
+const simCv = document.getElementById("sim");
+simCv.width = GW; simCv.height = GH;
+const ctx = simCv.getContext("2d", { alpha:false });
+const img = ctx.createImageData(GW, GH);
+const px  = new Uint32Array(img.data.buffer);
+
+function rgb(r,g,b){ return 0xFF000000 | (b<<16) | (g<<8) | r; }
+function hexU32(h){
+  const v = parseInt(h.slice(1),16);
+  return rgb((v>>16)&255,(v>>8)&255,v&255);
+}
+function lerpU32(h1,h2,f){
+  const a=parseInt(h1.slice(1),16), b=parseInt(h2.slice(1),16);
+  const r=((a>>16)&255)+(((b>>16)&255)-((a>>16)&255))*f;
+  const g=((a>>8)&255)+(((b>>8)&255)-((a>>8)&255))*f;
+  const bl=(a&255)+((b&255)-(a&255))*f;
+  return rgb(r|0,g|0,bl|0);
+}
+function shades(hex, spread){
+  const out = new Uint32Array(8);
+  const v = parseInt(hex.slice(1),16);
+  const r=(v>>16)&255, g=(v>>8)&255, b=v&255;
+  for (let s=0;s<8;s++){
+    const f = 1 + spread*((s/7)-0.5)*2;
+    out[s] = rgb(Math.min(255,r*f)|0, Math.min(255,g*f)|0, Math.min(255,b*f)|0);
+  }
+  return out;
+}
+
+const BG = hexU32("#10131A");
+const LUT = {};                       // pro Element 8 Schattierungen
+LUT[SAND]   = shades("#E4BC6C", .14);
+LUT[ERDE]   = shades("#96683C", .16);
+LUT[SCHNEE] = shades("#EDF3F8", .05);
+LUT[PULVER] = shades("#4C525A", .18);
+LUT[WASSER] = shades("#2F7FD6", .12);
+LUT[OEL]    = shades("#4C3B20", .14);
+LUT[SAEURE] = shades("#7CE83A", .16);
+LUT[HONIG]  = shades("#DFA22E", .12);
+LUT[STEIN]  = shades("#7E838B", .13);
+LUT[HOLZ]   = shades("#8A5A2B", .17);
+LUT[EIS]    = shades("#A9D8F2", .07);
+LUT[GLAS]   = shades("#C6E6F0", .05);
+LUT[METALL] = shades("#9AA6B0", .12);
+LUT[TNT]    = shades("#D0342C", .15);
+LUT[PFLANZE]= shades("#3FA34D", .18);
+LUT[DAMPF]  = shades("#C2CFD8", .07);
+LUT[RAUCH]  = shades("#565B61", .16);
+LUT[SAMEN]  = shades("#BCE26A", .12);
+LUT[VIRUS]  = shades("#C24FE0", .15);
+LUT[WOLKE]  = shades("#D8E1EA", .06);
+LUT[QUELLE] = shades("#3FB9E8", .12);
+LUT[ABFLUSS]= shades("#23272C", .22);
+LUT[ROST]   = shades("#A65B2A", .17);
+const GRAS  = shades("#54BE4C", .14);
+
+const LUT_FIRE = new Uint32Array(32);
+for (let s=0;s<32;s++){
+  const f = s/31;
+  LUT_FIRE[s] = f<0.5 ? lerpU32("#B3241A","#FF8A2A",f*2) : lerpU32("#FF8A2A","#FFE9A0",(f-0.5)*2);
+}
+const LUT_LAVA = new Uint32Array(16);
+for (let s=0;s<16;s++){
+  const w = 0.5 - 0.5*Math.cos(s/16*Math.PI*2);
+  LUT_LAVA[s] = lerpU32("#8C2606","#FF9A2E", w);
+}
+
+let particleCount = 0;
+function render2D(){
+  let count = 0;
+  const f2 = frame>>2, f4 = frame>>4;
+  for (let y=0, i=0; y<GH; y++){
+    for (let x=0; x<GW; x++, i++){
+      const t = cells[i];
+      if (t===LEER){ px[i]=BG; continue; }
+      count++;
+      let c;
+      if (t===FEUER){
+        c = LUT_FIRE[Math.min(31, life[i])];
+      } else if (t===LAVA){
+        c = LUT_LAVA[(shade[i] + f2) & 15];
+      } else if (t===WASSER){
+        c = LUT[WASSER][(shade[i] + f4) & 7];
+      } else if (t===ERDE && y>0 && cells[i-GW]===LEER){
+        c = GRAS[shade[i] & 7];
+      } else if (t===METALL){
+        c = LUT[METALL][((y&3)<<1) | (shade[i]&1)];
+      } else if (t===VIRUS){
+        c = LUT[VIRUS][(shade[i] + f2) & 7];
+      } else if (t===QUELLE){
+        c = LUT[QUELLE][(shade[i] + f4) & 7];
+      } else {
+        c = LUT[t][shade[i] & 7];
+      }
+      px[i] = c;
+    }
+  }
+  particleCount = count;
+  ctx.putImageData(img, 0, 0);
+}
+
+/* ── WebGL-Shader (optional) ──────────────────── */
+const glCv = document.getElementById("gl");
+let GL = null;   // Kontext + Ressourcen
+let shaderOn = false;
+
+const VS = `attribute vec2 aP; varying vec2 vUv;
+void main(){ vUv = aP*0.5+0.5; gl_Position = vec4(aP,0.,1.); }`;
+
+const FS_BRIGHT = `precision mediump float; varying vec2 vUv;
+uniform sampler2D uCol, uMat;
+void main(){
+  vec3 c = texture2D(uCol, vUv).rgb;
+  float id = texture2D(uMat, vUv).r * 255.0;
+  float e = 0.0;
+  if (abs(id-7.0)  < 0.5) e = 1.05;   // Lava
+  else if (abs(id-17.0) < 0.5) e = 1.35;   // Feuer
+  else if (abs(id-8.0)  < 0.5) e = 0.22;   // Saeure
+  else if (abs(id-21.0) < 0.5) e = 0.30;   // Virus
+  else if (abs(id-23.0) < 0.5) e = 0.28;   // Quelle
+  gl_FragColor = vec4(c*e, 1.0);
+}`;
+
+const FS_BLUR = `precision mediump float; varying vec2 vUv;
+uniform sampler2D uTex; uniform vec2 uDir;
+void main(){
+  vec3 s = texture2D(uTex, vUv).rgb * 0.227027;
+  s += texture2D(uTex, vUv + uDir*1.3846).rgb * 0.316216;
+  s += texture2D(uTex, vUv - uDir*1.3846).rgb * 0.316216;
+  s += texture2D(uTex, vUv + uDir*3.2308).rgb * 0.070270;
+  s += texture2D(uTex, vUv - uDir*3.2308).rgb * 0.070270;
+  gl_FragColor = vec4(s, 1.0);
+}`;
+
+const FS_FINAL = `precision mediump float; varying vec2 vUv;
+uniform sampler2D uCol, uMat, uBloom;
+uniform vec2 uGrid; uniform float uTime;
+void main(){
+  vec2 tuv = (floor(vUv*uGrid)+0.5)/uGrid;      // Pixel-Look erhalten
+  vec3 col = texture2D(uCol, tuv).rgb;
+  float id = texture2D(uMat, tuv).r * 255.0;
+  if (id < 0.5){                                 // Leere: Himmelsverlauf
+    float g = smoothstep(0.0, 1.0, vUv.y);
+    col = mix(vec3(0.045,0.052,0.075), vec3(0.075,0.095,0.150), g);
+    col += vec3(0.010,0.012,0.016)*sin(vUv.x*3.1415);
+  }
+  bool liq = abs(id-5.0)<0.5 || abs(id-6.0)<0.5 || abs(id-8.0)<0.5 || abs(id-9.0)<0.5;
+  if (liq){
+    float s = sin(tuv.x*uGrid.x*0.9 + uTime*2.4 + tuv.y*uGrid.y*0.35)
+            + 0.6*sin(tuv.x*uGrid.x*0.31 - uTime*1.3);
+    col *= 1.0 + 0.055*s;
+  }
+  if (abs(id-13.0)<0.5){                         // Glas glitzert leicht
+    col *= 1.0 + 0.08*sin(uTime*1.7 + tuv.x*uGrid.x*1.7 + tuv.y*uGrid.y*2.3);
+  }
+  vec3 bloom = texture2D(uBloom, vUv).rgb;
+  col += bloom * 1.25;
+  float d = distance(vUv, vec2(0.5,0.52));
+  col *= 1.0 - 0.30*smoothstep(0.40, 0.95, d);
+  float l = dot(col, vec3(0.299,0.587,0.114));
+  col = mix(vec3(l), col, 1.12);
+  col = pow(col, vec3(0.95));
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+function glCompile(gl, type, src){
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
+    console.error(gl.getShaderInfoLog(s)); return null;
+  }
+  return s;
+}
+function glProgram(gl, fs){
+  const p = gl.createProgram();
+  const v = glCompile(gl, gl.VERTEX_SHADER, VS);
+  const f = glCompile(gl, gl.FRAGMENT_SHADER, fs);
+  if (!v || !f) return null;
+  gl.attachShader(p,v); gl.attachShader(p,f); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)){ console.error(gl.getProgramInfoLog(p)); return null; }
+  return p;
+}
+function glTexture(gl, filter){
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return t;
+}
+function glFBO(gl, w, h){
+  const tex = glTexture(gl, gl.LINEAR);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  const fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  return { tex, fb, w, h };
+}
+
+function initGL(){
+  const gl = glCv.getContext("webgl", { alpha:false, antialias:false, preserveDrawingBuffer:true })
+          || glCv.getContext("experimental-webgl", { alpha:false, antialias:false, preserveDrawingBuffer:true });
+  if (!gl) return false;
+  const prgBright = glProgram(gl, FS_BRIGHT);
+  const prgBlur   = glProgram(gl, FS_BLUR);
+  const prgFinal  = glProgram(gl, FS_FINAL);
+  if (!prgBright || !prgBlur || !prgFinal) return false;
+
+  const quad = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  const colTex = glTexture(gl, gl.NEAREST);
+  const matTex = glTexture(gl, gl.NEAREST);
+  const bloomA = glFBO(gl, GW, GH);
+  const bloomB = glFBO(gl, GW, GH);
+
+  function bindQuad(prg){
+    gl.useProgram(prg);
+    const loc = gl.getAttribLocation(prg, "aP");
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  }
+  GL = { gl, prgBright, prgBlur, prgFinal, colTex, matTex, bloomA, bloomB, bindQuad };
+  return true;
+}
+
+function renderGL(now){
+  const { gl, prgBright, prgBlur, prgFinal, colTex, matTex, bloomA, bloomB, bindQuad } = GL;
+
+  // Texturen aktualisieren (FLIP_Y: Bilddaten oben-nach-unten → GL-Raum)
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, colTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, simCv);
+  gl.bindTexture(gl.TEXTURE_2D, matTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, GW, GH, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, cells);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+
+  // 1) Helligkeits-Pass
+  bindQuad(prgBright);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, bloomA.fb);
+  gl.viewport(0,0,bloomA.w,bloomA.h);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, colTex);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, matTex);
+  gl.uniform1i(gl.getUniformLocation(prgBright,"uCol"), 0);
+  gl.uniform1i(gl.getUniformLocation(prgBright,"uMat"), 1);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  // 2) Blur, zwei Runden mit wachsendem Radius
+  bindQuad(prgBlur);
+  const uDir = gl.getUniformLocation(prgBlur,"uDir");
+  const uTex = gl.getUniformLocation(prgBlur,"uTex");
+  gl.uniform1i(uTex, 0);
+  gl.activeTexture(gl.TEXTURE0);
+  const passes = [
+    [bloomA, bloomB, 1.0/GW, 0], [bloomB, bloomA, 0, 1.0/GH],
+    [bloomA, bloomB, 2.4/GW, 0], [bloomB, bloomA, 0, 2.4/GH],
+  ];
+  for (const [src, dst, dx, dy] of passes){
+    gl.bindFramebuffer(gl.FRAMEBUFFER, dst.fb);
+    gl.viewport(0,0,dst.w,dst.h);
+    gl.bindTexture(gl.TEXTURE_2D, src.tex);
+    gl.uniform2f(uDir, dx, dy);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  // 3) Komposition auf den Schirm
+  bindQuad(prgFinal);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.viewport(0,0,glCv.width,glCv.height);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, colTex);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, matTex);
+  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, bloomA.tex);
+  gl.uniform1i(gl.getUniformLocation(prgFinal,"uCol"), 0);
+  gl.uniform1i(gl.getUniformLocation(prgFinal,"uMat"), 1);
+  gl.uniform1i(gl.getUniformLocation(prgFinal,"uBloom"), 2);
+  gl.uniform2f(gl.getUniformLocation(prgFinal,"uGrid"), GW, GH);
+  gl.uniform1f(gl.getUniformLocation(prgFinal,"uTime"), now*0.001);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+}
+
+/* ── Weltgenerator ────────────────────────────── */
+function noise1D(n, seg, seed){
+  const K = Math.ceil(n/seg)+2;
+  const knots = [];
+  for (let k=0;k<K;k++) knots.push(rnd());
+  const out = new Float32Array(n);
+  for (let x=0;x<n;x++){
+    const t = x/seg, i0 = t|0, f = t-i0;
+    const w = 0.5 - 0.5*Math.cos(f*Math.PI);
+    out[x] = knots[i0]*(1-w) + knots[i0+1]*w;
+  }
+  return out;
+}
+function clearAll(){
+  cells.fill(LEER); life.fill(0); boomQ.length=0;
+}
+function genWorld(){
+  clearAll();
+  const a1 = noise1D(GW, MOBILE?26:36);
+  const a2 = noise1D(GW, 9);
+  const surf = new Int16Array(GW);
+  for (let x=0;x<GW;x++){
+    surf[x] = Math.max(6, Math.min(GH-8, Math.round(GH*0.80 - a1[x]*GH*0.42 - a2[x]*GH*0.07)));
+  }
+  const waterLevel = Math.round(GH*0.66);
+  for (let x=0;x<GW;x++){
+    const s = surf[x];
+    const stoneTop = Math.min(GH-1, s + 12 + (a2[x]*8)|0);
+    for (let y=s;y<GH;y++){
+      setCell(idx(x,y), y<stoneTop ? ERDE : STEIN);
+    }
+    if (s > waterLevel){
+      for (let y=waterLevel;y<s;y++) setCell(idx(x,y), WASSER);
+    }
+  }
+  // Bäume auf trockenem Land
+  const trees = MOBILE ? 3 : 5;
+  for (let t=0;t<trees;t++){
+    const x = 6 + (rnd()*(GW-12))|0;
+    if (surf[x] >= waterLevel-1) continue;
+    const h = 5 + (rnd()*4)|0;
+    const topY = surf[x]-h;
+    if (topY < 4) continue;
+    for (let y=surf[x]-1; y>=topY; y--) setCell(idx(x,y), HOLZ);
+    const r = 2 + (rnd()*2)|0;
+    for (let dy=-r; dy<=r; dy++){
+      for (let dx=-r; dx<=r; dx++){
+        if (dx*dx+dy*dy > r*r+1) continue;
+        const nx=x+dx, ny=topY+dy-1;
+        if (nx<0||nx>=GW||ny<0||ny>=GH) continue;
+        const j = idx(nx,ny);
+        if (cells[j]===LEER) setCell(j, PFLANZE, 0);
+      }
+    }
+  }
+  // Lava-Tasche im Sockel
+  if (rnd()<0.85){
+    const cx = 14 + (rnd()*(GW-28))|0;
+    const cy = Math.min(GH-8, surf[cx] + 20 + (rnd()*8)|0);
+    const r = 5 + (rnd()*4)|0;
+    for (let dy=-r;dy<=r;dy++){
+      for (let dx=-r;dx<=r;dx++){
+        if (dx*dx + dy*dy*2.2 > r*r) continue;
+        const nx=cx+dx, ny=cy+dy;
+        if (nx<1||nx>=GW-1||ny<1||ny>=GH-1) continue;
+        const j = idx(nx,ny);
+        if (cells[j]===STEIN || cells[j]===ERDE) setCell(j, LAVA);
+      }
+    }
+  }
+  // Wolken
+  const clouds = 2 + (rnd()*2)|0;
+  for (let c=0;c<clouds;c++){
+    const cx = 10 + (rnd()*(GW-20))|0;
+    const cy = 6 + (rnd()*10)|0;
+    const rx = 5 + (rnd()*5)|0;
+    for (let dy=-2;dy<=2;dy++){
+      for (let dx=-rx;dx<=rx;dx++){
+        if ((dx*dx)/(rx*rx) + (dy*dy)/4 > 1) continue;
+        const nx=cx+dx, ny=cy+dy;
+        if (nx<0||nx>=GW||ny<0||ny>=GH) continue;
+        if (cells[idx(nx,ny)]===LEER && rnd()<0.85) setCell(idx(nx,ny), WOLKE);
+      }
+    }
+  }
+}
+
+/* ── Elemente-Palette (UI) ────────────────────── */
+const PALETTE = [
+  { grp:"Pulver", items:[
+    { id:SAND,   name:"Sand",   col:"#E4BC6C" },
+    { id:ERDE,   name:"Erde",   col:"#96683C" },
+    { id:SCHNEE, name:"Schnee", col:"#EDF3F8" },
+    { id:PULVER, name:"Pulver", col:"#4C525A", title:"Schiesspulver — explodiert" },
+  ]},
+  { grp:"Flüssig", items:[
+    { id:WASSER, name:"Wasser", col:"#3B8DE0" },
+    { id:OEL,    name:"Öl",     col:"#7A5C2E" },
+    { id:HONIG,  name:"Honig",  col:"#DFA22E" },
+    { id:SAEURE, name:"Säure",  col:"#7CE83A" },
+    { id:LAVA,   name:"Lava",   col:"#FF7A24" },
+  ]},
+  { grp:"Fest", items:[
+    { id:STEIN,  name:"Stein",  col:"#8A9099" },
+    { id:HOLZ,   name:"Holz",   col:"#8A5A2B" },
+    { id:METALL, name:"Metall", col:"#9AA6B0" },
+    { id:EIS,    name:"Eis",    col:"#A9D8F2" },
+    { id:GLAS,   name:"Glas",   col:"#C6E6F0" },
+    { id:PFLANZE,name:"Pflanze",col:"#3FA34D" },
+    { id:TNT,    name:"TNT",    col:"#E04438" },
+  ]},
+  { grp:"Feuer & Gas", items:[
+    { id:FEUER,  name:"Feuer",  col:"#FF9A3C" },
+    { id:DAMPF,  name:"Dampf",  col:"#C2CFD8" },
+    { id:RAUCH,  name:"Rauch",  col:"#6E747B" },
+  ]},
+  { grp:"Leben", items:[
+    { id:SAMEN,  name:"Samen",  col:"#BCE26A" },
+    { id:VIRUS,  name:"Virus",  col:"#C24FE0" },
+  ]},
+  { grp:"Himmel & Co.", items:[
+    { id:WOLKE,  name:"Wolke",  col:"#D8E1EA" },
+    { id:QUELLE, name:"Quelle", col:"#3FB9E8" },
+    { id:ABFLUSS,name:"Abfluss",col:"#5A626B" },
+  ]},
+  { grp:"Werkzeug", items:[
+    { id:ERASE,  name:"Radierer", col:"#ECEFF4" },
+  ]},
+];
+
+let tool = SAND;
+const dock = document.getElementById("dock");
+const chipByTool = {};
+const ORDER = [];
+for (const g of PALETTE){
+  const eg = document.createElement("div"); eg.className = "egrp";
+  const gl2 = document.createElement("p"); gl2.className = "glabel"; gl2.textContent = g.grp;
+  const row = document.createElement("div"); row.className = "erow";
+  for (const it of g.items){
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button";
+    b.style.setProperty("--c", it.col);
+    b.title = it.title || it.name;
+    const d = document.createElement("span"); d.className = "cd";
+    b.appendChild(d); b.appendChild(document.createTextNode(it.name));
+    b.addEventListener("click", () => selectTool(it.id));
+    row.appendChild(b);
+    chipByTool[it.id] = b;
+    ORDER.push(it.id);
+  }
+  eg.appendChild(gl2); eg.appendChild(row); dock.appendChild(eg);
+}
+function selectTool(id){
+  tool = id;
+  for (const k in chipByTool) chipByTool[k].classList.toggle("on", +k === id);
+}
+selectTool(SAND);
+
+/* ── Zeichnen ─────────────────────────────────── */
+const field = document.getElementById("field");
+const ring  = document.getElementById("ring");
+const hint  = document.getElementById("hint");
+let brushR = 4;
+let drawing = false;
+let curX = -1, curY = -1, prevX = -1, prevY = -1;
+let hinted = false;
+
+function placeAt(cx, cy){
+  const r = brushR;
+  const r2 = r*r;
+  for (let dy=-r; dy<=r; dy++){
+    const y = cy+dy;
+    if (y<0||y>=GH) continue;
+    for (let dx=-r; dx<=r; dx++){
+      if (dx*dx+dy*dy > r2) continue;
+      const x = cx+dx;
+      if (x<0||x>=GW) continue;
+      const i = idx(x,y);
+      if (tool===ERASE){ if (cells[i]!==LEER) setCell(i,LEER); continue; }
+      if (cells[i]!==LEER) continue;
+      let p = 1;
+      if (tool===SAMEN) p = 0.10;
+      else if (tool===FEUER||tool===DAMPF||tool===RAUCH) p = 0.45;
+      else if (tool===WOLKE) p = 0.6;
+      else if (!isStatic(tool)) p = 0.62;
+      if (p<1 && rnd()>p) continue;
+      setCell(i, tool);
+    }
+  }
+}
+function paintLine(x0,y0,x1,y1){
+  const dx = Math.abs(x1-x0), dy = Math.abs(y1-y0);
+  const sx = x0<x1?1:-1, sy = y0<y1?1:-1;
+  let err = dx-dy, x=x0, y=y0;
+  for (let g=0; g<600; g++){
+    placeAt(x,y);
+    if (x===x1 && y===y1) break;
+    const e2 = 2*err;
+    if (e2 > -dy){ err-=dy; x+=sx; }
+    if (e2 <  dx){ err+=dx; y+=sy; }
+  }
+}
+function toGrid(e){
+  const r = field.getBoundingClientRect();
+  const gx = Math.floor((e.clientX - r.left) / r.width  * GW);
+  const gy = Math.floor((e.clientY - r.top ) / r.height * GH);
+  return [
+    Math.max(0, Math.min(GW-1, gx)),
+    Math.max(0, Math.min(GH-1, gy)),
+  ];
+}
+field.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  field.setPointerCapture(e.pointerId);
+  drawing = true;
+  [curX,curY] = toGrid(e); prevX=curX; prevY=curY;
+  if (!hinted){ hinted=true; hint.classList.add("gone"); }
+});
+field.addEventListener("pointermove", e => {
+  const [gx,gy] = toGrid(e);
+  curX=gx; curY=gy;
+  if (e.pointerType === "mouse"){
+    const r = field.getBoundingClientRect();
+    ring.style.display = "block";
+    ring.style.left = (e.clientX - r.left) + "px";
+    ring.style.top  = (e.clientY - r.top ) + "px";
+    const d = brushR*2 * (r.width/GW);
+    ring.style.width = d+"px"; ring.style.height = d+"px";
+  }
+});
+field.addEventListener("pointerleave", () => { ring.style.display="none"; });
+window.addEventListener("pointerup", () => { drawing=false; prevX=-1; });
+field.addEventListener("contextmenu", e => e.preventDefault());
+
+/* ── UI-Verdrahtung ───────────────────────────── */
+const stCount = document.getElementById("stCount");
+const stFps   = document.getElementById("stFps");
+const brushIn = document.getElementById("brushR");
+const brushVal= document.getElementById("brushVal");
+function syncBrush(){
+  brushR = +brushIn.value;
+  brushVal.textContent = brushR;
+  brushIn.style.setProperty("--p", ((brushR-1)/(24-1)*100)+"%");
+}
+brushIn.addEventListener("input", syncBrush);
+syncBrush();
+
+let paused = false, speed = 1;
+const pauseBtn = document.getElementById("pauseBtn");
+const icPause = document.getElementById("icPause");
+const icPlay  = document.getElementById("icPlay");
+function setPaused(p){
+  paused = p;
+  icPause.style.display = p ? "none" : "";
+  icPlay.style.display  = p ? "" : "none";
+  pauseBtn.classList.toggle("on", p);
+}
+pauseBtn.addEventListener("click", () => setPaused(!paused));
+
+const speedBtn = document.getElementById("speedBtn");
+speedBtn.addEventListener("click", () => {
+  speed = speed===1 ? 2 : speed===2 ? 3 : 1;
+  speedBtn.textContent = speed + "×";
+});
+
+document.getElementById("worldBtn").addEventListener("click", genWorld);
+document.getElementById("clearBtn").addEventListener("click", clearAll);
+
+document.getElementById("shotBtn").addEventListener("click", savePhoto);
+function savePhoto(){
+  const scale = 4;
+  const out = document.createElement("canvas");
+  out.width = GW*scale; out.height = GH*scale;
+  const octx = out.getContext("2d");
+  octx.imageSmoothingEnabled = false;
+  octx.drawImage(shaderOn && GL ? glCv : simCv, 0, 0, out.width, out.height);
+  out.toBlob(b => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b);
+    a.download = "elementarium-" + String(Date.now()).slice(-6) + ".png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }, "image/png");
+}
+
+const helpEl = document.getElementById("help");
+document.getElementById("helpBtn").addEventListener("click", () => helpEl.classList.add("open"));
+document.getElementById("helpClose").addEventListener("click", () => helpEl.classList.remove("open"));
+helpEl.addEventListener("click", e => { if (e.target===helpEl) helpEl.classList.remove("open"); });
+
+const shaderToggle = document.getElementById("shaderToggle");
+let glReady = null; // null = ungetestet
+function setShader(on){
+  if (on && glReady===null){ glReady = initGL(); }
+  if (on && !glReady){
+    shaderToggle.classList.add("dis");
+    shaderToggle.title = "WebGL steht in diesem Browser nicht zur Verfügung";
+    return;
+  }
+  shaderOn = on;
+  shaderToggle.classList.toggle("on", on);
+  shaderToggle.setAttribute("aria-checked", String(on));
+  document.body.classList.toggle("shader", on);
+  if (on) fitField();
+}
+shaderToggle.addEventListener("click", () => setShader(!shaderOn));
+shaderToggle.addEventListener("keydown", e => {
+  if (e.key===" "||e.key==="Enter"){ e.preventDefault(); setShader(!shaderOn); }
+});
+
+window.addEventListener("keydown", e => {
+  if (e.target.tagName==="INPUT") return;
+  if (e.key===" "){ e.preventDefault(); setPaused(!paused); }
+  else if (e.key==="["){ brushIn.value = Math.max(1, brushR-1); syncBrush(); }
+  else if (e.key==="]"){ brushIn.value = Math.min(24, brushR+1); syncBrush(); }
+  else if (e.key==="e"||e.key==="E"){ selectTool(ERASE); }
+  else if (e.key==="g"||e.key==="G"){ genWorld(); }
+  else if (e.key==="c"||e.key==="C"){ clearAll(); }
+  else if (e.key==="f"||e.key==="F"){ savePhoto(); }
+  else if (e.key==="Escape"){ helpEl.classList.remove("open"); }
+  else if (e.key>="1" && e.key<="9"){
+    const n = +e.key - 1;
+    if (n < ORDER.length) selectTool(ORDER[n]);
+  }
+});
+
+/* ── Layout ───────────────────────────────────── */
+const stage = document.getElementById("stage");
+function fitField(){
+  const pw = stage.clientWidth - 30, ph = stage.clientHeight - 30;
+  const s = Math.min(pw/GW, ph/GH);
+  const w = Math.max(1, Math.floor(GW*s)), h = Math.max(1, Math.floor(GH*s));
+  field.style.width = w+"px"; field.style.height = h+"px";
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  glCv.width = Math.round(w*dpr); glCv.height = Math.round(h*dpr);
+}
+new ResizeObserver(fitField).observe(stage);
+fitField();
+
+/* ── Hauptschleife ────────────────────────────── */
+let lastT = performance.now(), fpsAcc = 0, fpsN = 0, fpsShown = 0;
+function loop(now){
+  const dt = now - lastT; lastT = now;
+  fpsAcc += dt; fpsN++;
+  if (fpsAcc >= 500){
+    fpsShown = Math.round(1000/(fpsAcc/fpsN));
+    stFps.textContent = fpsShown;
+    fpsAcc = 0; fpsN = 0;
+  }
+  if (drawing && curX>=0){
+    if (prevX>=0) paintLine(prevX,prevY,curX,curY); else placeAt(curX,curY);
+    prevX=curX; prevY=curY;
+  }
+  if (!paused){
+    for (let s=0;s<speed;s++) simStep();
+  }
+  render2D();
+  stCount.textContent = particleCount;
+  if (shaderOn && GL) renderGL(now);
+  requestAnimationFrame(loop);
+}
+
+genWorld();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
