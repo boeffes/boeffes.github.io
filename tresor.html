@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tresor — Boeffes ToolBox</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSI0IiB5MT0iNCIgeDI9IjI4IiB5Mj0iMjgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjN0ZCNEZGIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNEY3REYwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiByeD0iNyIgZmlsbD0idXJsKCNnKSIvPjxyZWN0IHg9IjMuNiIgeT0iMy42IiB3aWR0aD0iMjQuOCIgaGVpZ2h0PSIyNC44IiByeD0iNi42IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1vcGFjaXR5PSIuMjgiLz48dGV4dCB4PSIxNiIgeT0iMjIuNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIj5CPC90ZXh0Pjwvc3ZnPgo=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0A0C0F; --steel:#101319; --steel-2:#161A21; --steel-3:#1C212A;
+    --rail:#232932; --rail-2:#333B47; --rail-3:#414B5A;
+    --ink:#ECEFF4; --ink-2:#A2ADBB; --ink-3:#6A7482; --ink-4:#48515E;
+    --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --brand:#FFB401;
+    --ac:#FB7185;                      /* Tresor — Koralle */
+    --ac-soft:color-mix(in srgb, var(--ac) 14%, transparent);
+    --bo-1:#7FB4FF; --bo-2:#4F7DF0;
+    --sym:#8FC4FF;
+    --ok:#3CCB8E; --warn:#F2A33C; --err:#F2685E;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--void); color:var(--ink); font-family:var(--sans); line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; min-height:100vh; overflow-x:hidden;
+  }
+  button,input{font:inherit;color:inherit}
+  /* ambient */
+  .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .aura{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(60% 42% at 70% -8%, color-mix(in srgb,var(--ac) 10%, transparent), transparent 70%);}
+  .vig{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(130% 90% at 50% -10%, transparent 58%, rgba(0,0,0,0.5) 100%);}
+
+  .wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:0 24px 80px}
+
+  /* ---------- topbar ---------- */
+  .top{display:flex;align-items:center;gap:16px;justify-content:space-between;
+    padding:16px 0 14px;border-bottom:1px solid var(--rail);
+    position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--void) 72%,transparent);
+    backdrop-filter:blur(6px);}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex:none}
+  .logo{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
+    font:700 15px/1 var(--disp);color:#fff;background:linear-gradient(150deg,var(--bo-1),var(--bo-2));
+    box-shadow:inset 0 0 0 1px #ffffff30, 0 2px 9px #4f7df055;}
+  .word{font:600 16px/1 var(--disp);letter-spacing:-.01em;color:var(--ink)}
+  .word .x{color:#6E97F2}
+  .crumb{display:flex;align-items:center;gap:9px;min-width:0;
+    font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+  .crumb .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);
+    animation:dotp 2.6s var(--ease) infinite;flex:none}
+  @keyframes dotp{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 55%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .crumb b{color:var(--ink-2);font-weight:600;letter-spacing:.1em}
+  .crumb .sep{color:var(--ink-4)}
+  .loc{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);flex:none}
+  .loc i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:7px;vertical-align:middle}
+  @media (max-width:620px){.crumb .sep,.crumb .kick,.loc{display:none}}
+
+  /* ---------- intro ---------- */
+  .intro{padding:46px 0 30px;max-width:62ch}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-3);
+    margin:0 0 20px;display:flex;align-items:center;gap:12px}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--rail-3)}
+  h1{font-family:var(--disp);font-weight:700;font-size:clamp(40px,8vw,76px);line-height:.94;letter-spacing:-.035em;margin:0;color:var(--ink)}
+  .lead{font-size:clamp(15px,2vw,17px);color:var(--ink-2);margin:22px 0 0;line-height:1.6}
+
+  /* ---------- vault (output) ---------- */
+  .vault{border:1px solid var(--rail);border-radius:20px;overflow:hidden;
+    background:
+      radial-gradient(120% 140% at 50% -30%, color-mix(in srgb,var(--ac) 9%, transparent), transparent 55%),
+      linear-gradient(180deg,var(--steel-2),var(--steel));
+    box-shadow:0 30px 80px -42px #000, inset 0 1px 0 #ffffff08}
+  .vhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px 0;flex-wrap:wrap}
+  .modes{display:inline-flex;gap:4px;padding:5px;background:var(--void);border:1px solid var(--rail);border-radius:13px}
+  .mode{appearance:none;cursor:pointer;border:none;background:none;border-radius:9px;padding:9px 16px;
+    font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+    display:inline-flex;align-items:center;gap:8px;transition:.18s var(--ease)}
+  .mode i{width:6px;height:6px;border-radius:50%;background:var(--rail-3);transition:.18s var(--ease)}
+  .mode:hover{color:var(--ink-2)}
+  .mode[aria-selected="true"]{background:var(--steel-3);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rail-2)}
+  .mode[aria-selected="true"] i{background:var(--ac);box-shadow:0 0 8px var(--ac)}
+  .mode:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .vtag{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4)}
+  .vtag b{color:var(--ink-3);font-weight:500}
+
+  .display{position:relative;margin:14px 16px 0;border:1px solid var(--rail);border-radius:15px;
+    background:linear-gradient(180deg,#0B0D11,#0D1015);padding:26px 22px 24px;min-height:118px;
+    display:flex;align-items:center;box-shadow:inset 0 2px 16px #0009}
+  .display::before,.display::after{content:"";position:absolute;width:12px;height:12px;border-color:color-mix(in srgb,var(--ac) 55%, transparent);border-style:solid;pointer-events:none}
+  .display::before{left:9px;top:9px;border-width:1.5px 0 0 1.5px;border-radius:4px 0 0 0}
+  .display::after{right:9px;bottom:9px;border-width:0 1.5px 1.5px 0;border-radius:0 0 4px 0}
+  .pw{flex:1;min-width:0;font-family:var(--mono);font-weight:500;font-size:var(--fs,30px);line-height:1.32;letter-spacing:.015em;
+    word-break:break-all;overflow-wrap:anywhere;color:var(--ink);cursor:text;user-select:all}
+  .pw .d{color:var(--ac)}
+  .pw .s{color:var(--sym)}
+  .pw.masked{letter-spacing:.12em;color:var(--ink-2);user-select:none}
+  .pw.err{font-family:var(--sans);font-size:15px;color:var(--warn);user-select:none;cursor:default;letter-spacing:0}
+  .pw.flash{animation:fl .5s var(--ease)}
+  @keyframes fl{0%{text-shadow:0 0 18px color-mix(in srgb,var(--ac) 70%,transparent)}100%{text-shadow:none}}
+
+  .vbar{display:flex;align-items:center;gap:14px;padding:16px;flex-wrap:wrap}
+  .meter{display:flex;align-items:center;gap:12px;flex:1;min-width:230px;--mc:var(--rail-3)}
+  .segs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:150px;flex:none}
+  .segs i{height:6px;border-radius:3px;background:var(--rail-2);transition:background .3s var(--ease), box-shadow .3s var(--ease)}
+  .meter[data-lv="1"] .segs i:nth-child(-n+1),
+  .meter[data-lv="2"] .segs i:nth-child(-n+2),
+  .meter[data-lv="3"] .segs i:nth-child(-n+3),
+  .meter[data-lv="4"] .segs i:nth-child(-n+4),
+  .meter[data-lv="5"] .segs i{background:var(--mc);box-shadow:0 0 10px -2px var(--mc)}
+  .meter[data-lv="1"]{--mc:var(--err)}
+  .meter[data-lv="2"]{--mc:var(--warn)}
+  .meter[data-lv="3"],.meter[data-lv="4"],.meter[data-lv="5"]{--mc:var(--ok)}
+  .mlab{font:600 14px/1 var(--disp);color:var(--ink);white-space:nowrap}
+  .mbits{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+  .mbits b{color:var(--mc);font-weight:600}
+  .acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+  .btn{appearance:none;cursor:pointer;font:600 13.5px/1 var(--disp);letter-spacing:.01em;
+    color:var(--ink);background:var(--steel-3);border:1px solid var(--rail-2);border-radius:11px;padding:11px 16px;
+    display:inline-flex;align-items:center;gap:8px;transition:.18s var(--ease);white-space:nowrap}
+  .btn:hover{border-color:var(--rail-3);background:var(--rail)}
+  .btn.primary{color:var(--void);background:var(--ac);border-color:var(--ac);box-shadow:0 8px 26px -14px var(--ac)}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.done{background:var(--ok);border-color:var(--ok);color:var(--void);box-shadow:0 8px 26px -14px var(--ok)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .btn svg{width:15px;height:15px;flex:none}
+  .btn.icon{padding:10px 11px}
+  .btn.sm{padding:8px 12px;font-size:12.5px;border-radius:9px}
+  .btn .spinr{transition:transform .5s var(--ease)}
+  .btn:active .spinr{transform:rotate(-180deg)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rail);border-top:1px solid var(--rail)}
+  .stat{background:var(--steel);padding:13px 16px;min-width:0}
+  .stat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:5px}
+  .stat .v{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stat .v small{color:var(--ink-3);font-weight:500;font-size:11px}
+
+  /* ---------- panels ---------- */
+  .ptitle{display:flex;align-items:center;gap:12px;margin:34px 0 12px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3)}
+  .ptitle::after{content:"";flex:1;height:1px;background:var(--rail)}
+  .panel{border:1px solid var(--rail);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,var(--steel-2),var(--steel))}
+  .panel[hidden]{display:none}
+  .prow{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--rail);flex-wrap:wrap}
+  .prow:last-child{border-bottom:none}
+  .prow[hidden]{display:none}
+  .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);flex:none;width:118px}
+  .grow{flex:1;min-width:200px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+  .fmts{display:flex;flex-wrap:wrap;gap:7px}
+  .fmt{appearance:none;cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.05em;
+    color:var(--ink-2);background:var(--steel-3);border:1px solid var(--rail-2);border-radius:9px;padding:7px 13px;
+    transition:.18s var(--ease);display:inline-flex;align-items:center;gap:7px}
+  .fmt small{font-size:10px;letter-spacing:.06em;color:var(--ink-4);font-weight:500}
+  .fmt:hover{color:var(--ink);border-color:var(--rail-3)}
+  .fmt.on{color:var(--void);background:var(--ac);border-color:var(--ac);font-weight:700;box-shadow:0 0 22px -8px var(--ac)}
+  .fmt.on small{color:color-mix(in srgb,var(--void) 65%,var(--ac))}
+  .fmt:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .fmt:disabled{opacity:.35;cursor:not-allowed}
+
+  /* range + number */
+  .rng{display:flex;align-items:center;gap:14px;flex:1;min-width:200px}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:3px;flex:1;min-width:120px;margin:0;
+    background:linear-gradient(90deg,var(--ac) var(--p,50%),var(--rail-2) var(--p,50%));outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid var(--ac);box-shadow:0 1px 4px #0008;cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid var(--ac);cursor:pointer}
+  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--ac-soft)}
+  .num{display:inline-flex;align-items:center;border:1px solid var(--rail-2);border-radius:10px;background:var(--void);overflow:hidden;flex:none}
+  .num button{appearance:none;border:none;background:none;cursor:pointer;width:32px;height:34px;color:var(--ink-3);font:500 16px/1 var(--mono);transition:.15s}
+  .num button:hover{color:var(--ac);background:var(--steel-3)}
+  .num input{width:52px;height:34px;border:none;background:none;text-align:center;font:600 14px/1 var(--mono);color:var(--ink);outline:none;
+    -moz-appearance:textfield;border-left:1px solid var(--rail);border-right:1px solid var(--rail)}
+  .num input::-webkit-outer-spin-button,.num input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .num input:focus{background:var(--steel-2)}
+
+  /* switches */
+  .opts{display:flex;flex-direction:column;gap:11px;flex:1;min-width:200px}
+  .sw{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;font-size:14px;color:var(--ink-2)}
+  .sw input{position:absolute;opacity:0;pointer-events:none}
+  .sw .tr{width:34px;height:20px;border-radius:11px;background:var(--rail-2);position:relative;flex:none;transition:.2s var(--ease);border:1px solid var(--rail-3)}
+  .sw .tr::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--ink-3);transition:.2s var(--ease)}
+  .sw input:checked + .tr{background:color-mix(in srgb,var(--ac) 30%,var(--steel-3));border-color:var(--ac)}
+  .sw input:checked + .tr::after{left:16px;background:var(--ac)}
+  .sw input:focus-visible + .tr{box-shadow:0 0 0 2px var(--ac)}
+  .sw input:disabled + .tr{opacity:.4}
+  .sw:has(input:disabled){cursor:not-allowed;color:var(--ink-4)}
+  .sw:hover input:not(:disabled) + .tr{border-color:var(--ink-4)}
+  .sw input:checked:hover + .tr{border-color:var(--ac)}
+  .sw em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--ink-4);margin-left:4px}
+
+  .txt{flex:1;min-width:150px;display:flex;flex-direction:column;gap:6px}
+  .txt span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4)}
+  .txt input{height:36px;border:1px solid var(--rail-2);border-radius:10px;background:var(--void);padding:0 12px;
+    font:500 14px/1 var(--mono);color:var(--ink);outline:none;transition:.15s;width:100%}
+  .txt input:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-soft)}
+  .txt input::placeholder{color:var(--ink-4)}
+  .hint{font-size:12.5px;color:var(--ink-4);line-height:1.5}
+  .hint code{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+
+  /* ---------- batch ---------- */
+  .bhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--rail);background:var(--steel)}
+  .bcount{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3);margin-right:auto;text-transform:uppercase}
+  .bcount b{color:var(--ink);font-weight:600}
+  .list{list-style:none;margin:0;padding:6px 0;max-height:440px;overflow:auto;counter-reset:n}
+  .list li{display:flex;align-items:center;gap:14px;padding:7px 12px 7px 18px;transition:background .15s;animation:rise .28s var(--ease) both}
+  .list li:hover{background:var(--steel-3)}
+  @keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .list .no{font-family:var(--mono);font-size:11px;color:var(--ink-4);width:34px;flex:none;text-align:right}
+  .list .val{flex:1;min-width:0;font-family:var(--mono);font-size:14px;color:var(--ink);word-break:break-all;user-select:all}
+  .list .val .d{color:var(--ac)} .list .val .s{color:var(--sym)}
+  .list .val.masked{color:var(--ink-3);letter-spacing:.1em;user-select:none}
+  .ibtn{appearance:none;cursor:pointer;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;
+    background:transparent;border:1px solid transparent;color:var(--ink-3);transition:.16s var(--ease)}
+  .ibtn:hover{color:var(--ac);border-color:var(--rail-2);background:var(--steel-2)}
+  .ibtn.ok{color:var(--ok)}
+  .ibtn svg{width:15px;height:15px}
+  .ibtn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .list::-webkit-scrollbar{width:10px}
+  .list::-webkit-scrollbar-thumb{background:var(--rail-2);border-radius:6px;border:3px solid var(--steel)}
+
+  /* ---------- toast ---------- */
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);opacity:0;pointer-events:none;z-index:50;
+    font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--steel-3);
+    border:1px solid var(--rail-2);border-radius:11px;padding:10px 15px;box-shadow:0 14px 40px -12px #000;
+    display:flex;align-items:center;gap:9px;transition:.25s var(--ease)}
+  .toast i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  .foot{margin-top:42px;padding-top:18px;border-top:1px solid var(--rail);
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink-4);line-height:1.8}
+  .foot b{color:var(--ink-3);font-weight:500}
+  .foot a{color:var(--ink-3);text-decoration:none;border-bottom:1px solid var(--rail-2)}
+  .foot a:hover{color:var(--ac);border-color:var(--ac)}
+  .foot kbd{font-family:var(--mono);font-size:10px;color:var(--ink-2);background:var(--steel-3);border:1px solid var(--rail-2);border-bottom-width:2px;border-radius:5px;padding:1px 6px}
+
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  @media (max-width:720px){
+    .stats{grid-template-columns:1fr 1fr}
+    .lab{width:100%}
+    .prow{gap:10px}
+    .intro{padding:34px 0 24px}
+    .vbar{flex-direction:column;align-items:stretch}
+    .acts{justify-content:flex-end}
+    .acts .btn.primary{flex:1;justify-content:center}
+  }
+  @media (max-width:460px){
+    .modes{width:100%}
+    .mode{flex:1;justify-content:center;padding:9px 6px;letter-spacing:.08em}
+    .display{padding:22px 16px 20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div><div class="aura"></div><div class="vig"></div>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html" title="Zurück zur ToolBox">
+      <span class="logo">B</span>
+      <span class="word">Boe<span class="x">ff</span>es</span>
+    </a>
+    <div class="crumb">
+      <span class="dot"></span>
+      <b>Tresor</b><span class="sep">/</span><span class="kick">Generator</span>
+    </div>
+    <div class="loc"><i></i>100% lokal</div>
+  </header>
+
+  <section class="intro">
+    <p class="eyebrow">Passwortgenerator</p>
+    <h1>Tresor</h1>
+    <p class="lead">Starke Passwörter, merkbare Passphrasen und PINs erzeugen. Kryptografischer Zufall direkt im Browser, nichts wird gespeichert oder übertragen.</p>
+  </section>
+
+  <!-- ================= OUTPUT ================= -->
+  <section class="vault" aria-label="Erzeugtes Passwort">
+    <div class="vhead">
+      <div class="modes" role="tablist" aria-label="Modus">
+        <button class="mode" role="tab" data-mode="chars"  aria-selected="true"><i></i>Zeichen</button>
+        <button class="mode" role="tab" data-mode="phrase" aria-selected="false"><i></i>Passphrase</button>
+        <button class="mode" role="tab" data-mode="pin"    aria-selected="false"><i></i>PIN</button>
+      </div>
+      <span class="vtag" id="vtag">crypto · <b>CSPRNG</b></span>
+    </div>
+
+    <div class="display">
+      <div class="pw" id="pw" aria-live="polite" title="Klicken markiert das ganze Passwort"></div>
+    </div>
+
+    <div class="vbar">
+      <div class="meter" id="meter" data-lv="0">
+        <div class="segs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="mlab" id="mLab">–</span>
+        <span class="mbits" id="mBits"></span>
+      </div>
+      <div class="acts">
+        <button class="btn icon" id="mask" type="button" title="Verbergen / anzeigen" aria-label="Passwort verbergen" aria-pressed="false">
+          <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M9.9 5.2A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.7 3.6M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"/><path d="M3 3l18 18"/></svg>
+        </button>
+        <button class="btn" id="regen" type="button" title="Neu erzeugen (Leertaste)">
+          <svg class="spinr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.7-4.4L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.7 4.4L20 16"/><path d="M20 21v-5h-5"/></svg>
+          Neu
+        </button>
+        <button class="btn primary" id="copy" type="button" title="In die Zwischenablage kopieren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/></svg>
+          <span>Kopieren</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="k">Entropie</div><div class="v" id="sBits">–</div></div>
+      <div class="stat"><div class="k" id="kPool">Zeichenvorrat</div><div class="v" id="sPool">–</div></div>
+      <div class="stat"><div class="k">Länge</div><div class="v" id="sLen">–</div></div>
+      <div class="stat" title="Durchschnittliche Suchzeit bei angenommenen 100 Mrd. Versuchen pro Sekunde"><div class="k">Suchzeit *</div><div class="v" id="sTime">–</div></div>
+    </div>
+  </section>
+
+  <!-- ================= OPTIONS: ZEICHEN ================= -->
+  <div class="ptitle" id="optTitle">Einstellungen · Zeichen</div>
+
+  <div class="panel" data-panel="chars">
+    <div class="prow">
+      <span class="lab">Länge</span>
+      <div class="rng">
+        <input type="range" id="cLenR" min="4" max="64" step="1" aria-label="Länge">
+        <div class="num">
+          <button type="button" data-step="cLen" data-d="-1" aria-label="kürzer">−</button>
+          <input type="number" id="cLen" min="4" max="128" step="1" inputmode="numeric" aria-label="Länge in Zeichen">
+          <button type="button" data-step="cLen" data-d="1" aria-label="länger">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Gruppen</span>
+      <div class="fmts" id="groups">
+        <button type="button" class="fmt" data-g="U">A–Z <small>gross</small></button>
+        <button type="button" class="fmt" data-g="L">a–z <small>klein</small></button>
+        <button type="button" class="fmt" data-g="D">0–9 <small>Ziffern</small></button>
+        <button type="button" class="fmt" data-g="S">!#$ <small>Sonderzeichen</small></button>
+      </div>
+    </div>
+    <div class="prow" id="symRow">
+      <span class="lab">Sonderzeichen</span>
+      <div class="grow">
+        <div class="fmts" id="symSet">
+          <button type="button" class="fmt" data-v="std">Standard <small>12</small></button>
+          <button type="button" class="fmt" data-v="all">Alle <small>32</small></button>
+        </div>
+        <span class="hint" id="symHint"></span>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Regeln</span>
+      <div class="opts">
+        <label class="sw"><input type="checkbox" id="cEvery"><span class="tr"></span>Aus jeder Gruppe mindestens ein Zeichen</label>
+        <label class="sw"><input type="checkbox" id="cFirst"><span class="tr"></span>Beginnt mit einem Buchstaben</label>
+        <label class="sw"><input type="checkbox" id="cAmb"><span class="tr"></span>Verwechselbare Zeichen weglassen <em>0 O o 1 l I | ' " ` , . ; :</em></label>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Eigene</span>
+      <div class="grow">
+        <label class="txt"><span>Zusätzlich erlauben</span><input type="text" id="cExtra" spellcheck="false" autocomplete="off" placeholder="z. B. äöü€"></label>
+        <label class="txt"><span>Ausschliessen</span><input type="text" id="cExcl" spellcheck="false" autocomplete="off" placeholder="z. B. &lt;&gt;\^"></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OPTIONS: PASSPHRASE ================= -->
+  <div class="panel" data-panel="phrase" hidden>
+    <div class="prow">
+      <span class="lab">Wörter</span>
+      <div class="rng">
+        <input type="range" id="pWordsR" min="3" max="12" step="1" aria-label="Anzahl Wörter">
+        <div class="num">
+          <button type="button" data-step="pWords" data-d="-1" aria-label="weniger Wörter">−</button>
+          <input type="number" id="pWords" min="3" max="12" step="1" inputmode="numeric" aria-label="Anzahl Wörter">
+          <button type="button" data-step="pWords" data-d="1" aria-label="mehr Wörter">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Wortliste</span>
+      <div class="grow">
+        <div class="fmts" id="pList">
+          <button type="button" class="fmt" data-v="kurz">Kurz <small>1'296 · 4–8 Zeichen</small></button>
+          <button type="button" class="fmt" data-v="lang">Lang <small>7'776 · 5–19 Zeichen</small></button>
+        </div>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Trennzeichen</span>
+      <div class="fmts" id="pSep">
+        <button type="button" class="fmt" data-v="-">-</button>
+        <button type="button" class="fmt" data-v=".">.</button>
+        <button type="button" class="fmt" data-v="_">_</button>
+        <button type="button" class="fmt" data-v=" ">Leerzeichen</button>
+        <button type="button" class="fmt" data-v="">keins</button>
+        <button type="button" class="fmt" data-v="#">Zufallsziffer</button>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Zahl am Ende</span>
+      <div class="fmts" id="pNum">
+        <button type="button" class="fmt" data-v="0">keine</button>
+        <button type="button" class="fmt" data-v="1">1 Stelle</button>
+        <button type="button" class="fmt" data-v="2">2 Stellen</button>
+        <button type="button" class="fmt" data-v="3">3 Stellen</button>
+        <button type="button" class="fmt" data-v="4">4 Stellen</button>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Regeln</span>
+      <div class="opts">
+        <label class="sw"><input type="checkbox" id="pCap"><span class="tr"></span>Wortanfang gross</label>
+        <label class="sw"><input type="checkbox" id="pSym"><span class="tr"></span>Sonderzeichen anhängen <em>! # $ % &amp; * + - = ? @ _</em></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OPTIONS: PIN ================= -->
+  <div class="panel" data-panel="pin" hidden>
+    <div class="prow">
+      <span class="lab">Stellen</span>
+      <div class="rng">
+        <input type="range" id="nLenR" min="4" max="12" step="1" aria-label="Anzahl Stellen">
+        <div class="num">
+          <button type="button" data-step="nLen" data-d="-1" aria-label="weniger Stellen">−</button>
+          <input type="number" id="nLen" min="4" max="12" step="1" inputmode="numeric" aria-label="Anzahl Stellen">
+          <button type="button" data-step="nLen" data-d="1" aria-label="mehr Stellen">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="prow">
+      <span class="lab">Regeln</span>
+      <div class="opts">
+        <label class="sw"><input type="checkbox" id="nTriv"><span class="tr"></span>Triviale Muster vermeiden <em>000000 · 123456 · 654321</em></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= BATCH ================= -->
+  <div class="ptitle">Stapel</div>
+  <div class="panel" id="batch">
+    <div class="prow">
+      <span class="lab">Anzahl</span>
+      <div class="grow">
+        <div class="num">
+          <button type="button" data-step="bN" data-d="-1" aria-label="weniger">−</button>
+          <input type="number" id="bN" min="2" max="500" step="1" inputmode="numeric" aria-label="Anzahl Passwörter">
+          <button type="button" data-step="bN" data-d="1" aria-label="mehr">+</button>
+        </div>
+        <div class="fmts" id="bPre">
+          <button type="button" class="fmt" data-v="5">5</button>
+          <button type="button" class="fmt" data-v="10">10</button>
+          <button type="button" class="fmt" data-v="25">25</button>
+          <button type="button" class="fmt" data-v="50">50</button>
+          <button type="button" class="fmt" data-v="100">100</button>
+        </div>
+        <button class="btn primary" id="bGo" type="button" style="margin-left:auto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1.5"/><rect x="3" y="10" width="18" height="4" rx="1.5" opacity=".7"/><rect x="3" y="16" width="18" height="4" rx="1.5" opacity=".45"/></svg>
+          Stapel erzeugen
+        </button>
+      </div>
+    </div>
+    <div id="bOut" hidden>
+      <div class="bhead">
+        <span class="bcount" id="bCount"></span>
+        <button class="btn sm" id="bCopy" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/></svg>
+          <span>Alle kopieren</span>
+        </button>
+        <button class="btn sm" id="bCsv" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg>
+          CSV
+        </button>
+        <button class="btn sm" id="bXlsx" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg>
+          Excel
+        </button>
+        <button class="btn sm icon" id="bClear" type="button" title="Liste leeren" aria-label="Liste leeren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <ol class="list" id="bList"></ol>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div><b>Alles läuft lokal in deinem Browser.</b> Zufall aus <code>crypto.getRandomValues</code>, ohne Modulo-Verzerrung. Passwörter werden weder gespeichert noch übertragen; nur deine Einstellungen merkt sich der Browser.</div>
+    <div>* Suchzeit = Durchschnitt bei einem Angriff offline mit angenommenen 100 Mrd. Versuchen pro Sekunde. Gilt nur, solange das Passwort wirklich zufällig bleibt.</div>
+    <div>Wortlisten: <a href="https://github.com/dys2p/wordlists-de" target="_blank" rel="noopener">dys2p/wordlists-de</a> (CC0) · Tastatur: <kbd>Leertaste</kbd> neu · <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>C</kbd> ohne Markierung kopiert</div>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><i></i><span id="toastTxt">Kopiert</span></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  /* ===================== Zeichensätze ===================== */
+  const RANGE = (a, b) => Array.from({length: b.charCodeAt(0) - a.charCodeAt(0) + 1}, (_, i) => String.fromCharCode(a.charCodeAt(0) + i));
+  const UPPER = RANGE('A', 'Z');
+  const LOWER = RANGE('a', 'z');
+  const DIGIT = RANGE('0', '9');
+  const SYM_STD = Array.from('!#$%&*+-=?@_');
+  const SYM_ALL = Array.from('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~');
+  const AMBIG = new Set(Array.from('0Oo1lI|\'"`,.;:'));
+  const IS = {
+    U: c => c >= 'A' && c <= 'Z',
+    L: c => c >= 'a' && c <= 'z',
+    D: c => c >= '0' && c <= '9',
+    S: c => SYM_ALL.includes(c),
+  };
+  const isLetter = c => /\p{L}/u.test(c);
+
+  /* ===================== Wortlisten (dys2p/wordlists-de, CC0) ===================== */
+  const WL = {
+    kurz: "abbild abbruch abdruck abend abfall abflug abgrund abitur abkommen ablauf abreise abriss abschied absicht abstand abteil abwarten achse acht acker adapter adler adresse advent affe agent ahorn akademie akte aktie akustik akzent alarm albatros album alge allee allianz alltag alpen alptraum alter altglas altstadt alufolie amboss ameise ampel amsel amulett ananas anfang angel anker anlage anruf anstalt antik antrag antwort anwalt anwesen anwohner anzahl anzug apfel apotheke april arbeit archiv armband aroma arzt asche asphalt atelier atem athlet atlas atom aufgabe aufstand auftrag aufzug auge august auktion aula ausbruch ausflug ausgang auto baby bach backen baden bagger bahn balkon ball balsam bambus banane band bank bargeld barsch bart basteln batterie bauch bauer baum baumarkt bauplan bausatz bauwagen bauzaun beben becher becken beere befund beifall beil bein beitrag benzin berg beruf besen besuch beton betrieb bett beule beute bewegen bewohner bezahlen biber biene bier biest bieten bild binden biologie biotonne birke birne blasen blatt blau blech blick blitz blume boden bogen bohne bohren boje bolzen bombe bonus boot bord botanik bote boxen braten braun brei bremsen brennen brett brief brille bringen brokkoli bronze brosche brot bruder brunnen brust bube buch bude bunker bunt burg busch busfahrt bussard butter campen caravan chaos chemie chor clown code computer couch creme dach dame damm dampf darm datei dattel dauer daumen decke deich delfin delle denkmal detektiv dezember dichter dieb dienstag digital dill diskette distel doktor dokument dolch donner dorf dorn dose drache draht dreck drei drossel drucker ducken duft dunkel durst dusche ebbe echo echse ecke efeu eichel eidechse eier eimer eingang einladen einrad eins eisberg eisen eistee eisvogel elch elefant element elster eltern engel enkel ente entwurf erbe erbse erdbeere erde erdgas erdnuss erfinden erfolg erhalten erinnern erkennen ernte ersatz esel essen essig esstisch etage etappe ethik etikett eule event experte export express fabel fabrik fach fackel faden fahne fahrrad falke fallen falter familie fangen fantasie farbe farn fasching fass faultier fauna faust favorit februar feder fegen feier feile feld fell fels fenchel fenster ferien fern ferse fest feuer fichte fieber figur filiale film filter finden finger fink firma fisch flach flamme flasche fleck fliege flocke floh flora flucht flugzeug flur fluss flut folie forelle forst foto foyer fracht frage frau frech freizeit freude freund frieden friseur frosch frucht fuchs futter gabel galerie gang ganove gans garage gardine garn garten gasse gast gauner gazelle geben gebiet geboren gecko gedanke gedicht geduld gegend gehirn geier geige geist gelb geld gelee genie gepard gerade gericht gern gerste geruch geschenk gespenst gestalt gesund getreide gewitter gewonnen giebel gipfel gips giraffe gitarre gitter glas gleis glitzer globus glocke glut gold golf gondel gorilla grab grafik granit gras grau greifen griff grill grinsen grotte grube gruft grund gruppe gulasch gully gummi gurke gurt haar habicht hacken hafen hagel hahn haken halle halm hals halten hammer hamster hand hanger hantel harfe harke hart hase haufen haus haut hebamme hebel hecht hecke heft heilen heim heizung held helfen hell helm hemd henkel herbst herd hering herz heute himbeere himmel hirte hitze hoch holen holunder holz honig hopfen horizont horn hose hotel hufeisen huhn hummer hund hunger hupe husten hydrant idee igel imbiss imker impfen ingwer insel jacht jacke jagd jaguar januar jazz joggen joghurt juli jung juni juwel kabel kabine kaffee kajak kakao kaktus kalender kalt kamera kamin kamm kampf kanal kandidat kanister kanne kante kanu kapelle kapsel karneval karotte karte kasse kasten katalog katze kaufhaus kauz kegel kehren keks kelch keller keramik kern kerze kessel ketchup kette keule kiefer kiesel kind kino kiosk kirsche kissen kiste kittel kiwi klammer klavier kleben klee kleid klettern klinik klon klopfen klotz kneipe knie knochen knopf knoten koala kochen koffer kohle koje kolibri kollege konzert kopf kopie korb korn krabbe kraft kralle kran kraut krawatte krebs kredit kreis kresse kreuz krokodil krone krug krumm kuchen kugel kuhstall kulisse kultur kunde kunst kupfer kurier kurz kuss kutsche labor lachen lack laden ladung lager lama lamm lampe lang lappen larve laterne latte laub lauch laufen lavendel lawine leer legen lehm lehrer leicht leim leinwand leiste leiter lemming lenken leopard lernen lesen lesung leuchte leute lexikon libelle licht lied liegen lila lilie limette linde lineal linie lippe liste loch locke lohn luchs luft lunge lupe lustig made magazin magen magie magnet mais malen mama mango mann mantel marder markt marmor maschine maske mast matrose matte mauer maulwurf maus medaille medizin meer mehl mehrweg melden melken melone mensch messer metall miene milan milch minigolf minze mittag mode molch monat mond monitor monster montag moos moped morgen motor motte mulde mund muschel museum musik muskel muster mutter nacht nacken nadel nagel nahrung napf narbe narr narzisse nase nashorn nass natter natur nebel nehmen nektar nest nett netz neubau neun nilpferd nobel norden note november nudel null nuss oase oben objekt obst ofen ohren ohrring oktober olive omelett oper orgel orkan ostern otter paket palast palette palme panda papagei papier pappe paprika parade park party pause pavian pedal pegel peitsche pelikan pelz pendel perle person pfad pfahl pfanne pfau pfeffer pfeil pferd pfirsich pflaume pflegen pflug pforte pfosten pfote physik picknick pigment pille pilot pilz pinguin pink pinsel pinzette pirat pixel plakat planet platz podest podium pokal pollen polster pommes pony pool portrait post praxis probe produkt profil projekt prospekt pudding puder puls pulver puma pumpe punkt punsch puppe pute putzen puzzel pyjama pyramide quadrat qualle quark quelle quittung quiz rabe radio radtour radweg rahmen rakete rampe rand rang ranke raps rasen rast ratgeber rathaus ratte rauch raum raupe raus rechnen reden redner regal regen rehkitz reibe reifen reihe reim reise reiten rekord rennen rentier reporter reptil residenz respekt retten rezept riechen riegel riesig rind ring rinnsaal riss ritter robbe roboter rock roggen rohr roller roman rosa rose rosine rost rotkohl rucksack rudel rufen ruhig ruine rummel rund rute rutsche saal saat sack safran saft sahne saison salat salbe saloon salz samen sammeln samstag samt sand sardine satellit sattel sauber sauna saurier schabe schaf schere schirm schlange schmuck schnee schrank schuh schwan sechs seefahrt seehund seekuh seestern segel sehen seide seife seil seite sekunde sellerie selten semester seminar senden senf senior sense serie serum server sessel shop sichel sieb siedlung signal silber singen sirene sirup sitzen skizze skulptur socke sofa sohle sohn soja sommer sonne sorte spachtel spagat spange spargel spaten specht speise spende sperling spiegel spinne spion spitze sport sprechen springen sprotte sprung spur stabil stachel stadt stahl stall stamm standort stapel stark station staub stehen stein stempel steppe stern stier stift still stimme stirn stock stoff stoppen storch strand strecke strom strumpf stube studium stufe stuhl stumm stunde sturm suche summe suppe surfen szenario tabelle tacker tafel tagebuch tango tanne tante tanz tapir tarnen tasche tasse tastatur taube tauchen taxi team technik teekanne teer teesieb teich teig teilen telefon teller tennis teppich termin terrasse teuer text theater tief tier tiger tinte tisch tochter toilette tomate tonband tonne topf torbogen torte tracht tragen training trapez trasse traum treffen treppe tresor triangel trinken trommel tropfen truhe trunk truthahn tuch tukan tulpe tunnel turbine turm turnen tusche ufer uhrwerk umbau umfrage umhang umkreis umriss umsonst umwelt umzug unfall unikat unrat urkunde urlaub vanille vase vater veranda verband verein verkehr video vieh vier villa virus vitamine vitrine vogel voliere voll vorbild vorort vorrat vortrag vulkan waage wachs wade waffel wagen waggon wahl wald walnuss walze wand wanne ware warm warten waschen wasser webstuhl wechsel wecker weich weide wein weit weizen welle welpe welt werbung werfen werkzeug wespe weste wetter widder wiegen wiese wimper wind winter winzig wippe wischen wisent wissen witz woche wohnen wolf wolke wolle wurm wurzel zahl zahn zander zange zapfen zauber zaun zebra zecke zehe zehn zeichen zeigen zeit zelt zement zentrum zettel ziege ziehen ziel ziffer zimmer zimt zirkus zitrone zocken zollfrei zorn zucchini zucker zufall zugang zukunft zunge zwei zwiebel zwilling zwirn".split(" "),
+    lang: "aalen abarbeiten abartig abbaden abbaggern abbauen abbekommen abberufen abbezahlen abbiegen abbild abbitten abblendlicht abblitzen abbrechen abbruch abbuchung abdanken abdecken abdichtung abdrehen abdruck abend abenteuer aberglaube aberkennen abermals abertausende aberwitz abfahren abfallen abfangen abfedern abfertigung abfeuern abfinden abflauen abflug abfolgen abfragen abfuhr abgaben abgang abgas abgearbeitet abgebaut abgedankt abgeebbt abgefackelt abgegangen abgehackt abgeladen abgemacht abgeneigt abgeordnete abgepfiffen abgeraten abgesackt abgetan abgeurteilt abgewandelt abgezapft abgibt abging abgleichen abgraben abgrenzen abgrund abhaken abhalten abhandeln abhauen abheben abhelfen abhielt abhilfe abhob abitur abkam abkassieren abkaufen abkehr abklatsch abklingen abklopfen abkommen abkoppeln abladen ablagen ablassen ablauf ableben ablegen ablehnen ableisten ablenken ablesen ablichten ablief abluft abmachung abmahnung abmarsch abmelden abmessungen abmildern abmontieren abnahmen abnehmen abneigung abnimmt abnormal abnutzung abonnement abordnung abpfiff abprallen abraten abrechnen abreden abreibung abrieb abringen abriss abruf abrunden abrupt abrutschen absacken absagen absatz absaugen abschaffen absegnen absehbar abseilen absender abserviert absetzbar absicht absieht absinken absitzen absolut absondern absorbieren abspaltung abspecken abspielen absprachen abstammen abstecher abstieg abstrahiert abstufung absuchen absurd abtasten abtauchen abtragen abtreiben abtropfen abtun abverlangen abwahl abwandern abwarten abwaschen abwechseln abwegen abwehren abweichen abwenden abwerben abwesend abwickeln abwinken abwirft abwurf abzeichen abziehen abzocken abzug abzweigen achsen achtbar achten achtfach achthundert achtlos achtmal achtsamkeit achttausend achtung achtzehn acker adapter addieren addition adelstitel aderlass adern adipositas adjektiv adler administration adoptieren adrenalin adressieren adrett advent advokat aerodynamik affekt affen affront agenda agent aggregat agieren agitation agonie agrarkultur ahnden ahndung ahnen ahnte ahnung ahornbaum akademie akkord akkreditieren akkubetrieben akkurat akkusativ akquirieren akribisch akrobatisch aktenordner akteur aktienhandel aktionen aktivieren aktualisieren aktuell akupunktur akustik akutmedizin akzentfrei akzeptabel alarm albatros alben albern albtraum album algebra algen alias alibi alimente alkohol allabendlich allee allegorie allein allemal allenfalls allerlei allesamt allgegenwart allheilmittel alligator alliierte allmacht allmorgendlich allrad allseits alltag allumfassend allzeit allzu almanach almosen alphabet alpinsport altbacken altbekannt alteingesessen altersangabe altgedienten altglas althergebrachten altkleider altlasten altmodisch altpapier altschulden altstadt alufelgen alufolie aluminium alzheimer amateur ambiente ambitioniert ambivalent amboss ambulant ameisen ammoniak amnesie amortisieren ampel amphibien ampullen amputation amsel amten amtieren amtlich amtsmissbrauch amtssiegel amtszeit amulett anachronismus anakonda analog analphabeten analysen ananas anarchie anbahnen anbauen anbeginn anbelangt anberaumt anbetracht anbiedern anbinden anblicken anbot anbraten anbrechen anbringen anbruch andacht andauern andeuten andocken androhung aneignen aneinander anekdote anerkannt anfahren anfallen anfangen anfassen anfechtbar anfeindungen anfertigen anfeuern anfielen anfingen anfliegen anflug anfordern anfragen anfreunden angabe angebahnt angedacht angeeignet angegangen angehalten angekauft angeln angemacht angenehm angeordnet angepackt angesagt angetan angewachsen angezapft angibt angleichen angliederung angreifbar angriff angst angucken anhaben anhaften anhalten anhand anheben anheuern anhieb anhob animieren ankam ankaufen anklagen anklicken anklopfen ankommen ankreiden ankunft ankurbeln anlagen anlangt anlassen anlaufen anlegen anlehnen anleihen anlief anlocken anmachen anmarsch anmeldung anmerken anmieten anmut annahme annalen annehmbar annektieren annexion annimmt annonce annullieren anomalie anonym anorak anordnen anpacken anpassen anpeilen anpfiff anpflanzen anprangern anpreisen anproben anraten anrechnen anreden anregen anreichern anrichten anrief anrollen anrufen ansagen ansah ansammeln ansatz anschaffen ansehen ansetzen ansichten ansiedeln ansonsten anspannung anspielen ansporn ansprachen anstalt anstecken anstieg anstreben ansturm anteil antennen antibiotika antifaschistisch antihelden antik antilopen antiseptisch antitoxisch antlitz antrag antreffen antrieb antworten anvertrauen anvisiert anwachsen anwalt anwandlungen anweisen anwendbar anwerben anwesen anwohner anzahl anzapfen anzeichen anzetteln anziehen anzog anzug anzweifeln apathisch apfelbaum aphorismen apokalypse apotheke apparat appell appetit applaudieren aprikosen april arbeit archaisch areal arena arglos argument argwohn arithmetik arkaden armaturen armband armbinde armbrust armer armselig armut aromen arrest arsch artefakte arten arterien artgenossen artig artikel artischocken arznei arztbesuch arztpraxen asche askese asketisch asozial aspekt asphalt assimilieren assoziieren asthma astronaut asymmetrie atelier atemberaubend atemlos atemnot atempause atemschutz atemtechnik atemwege atemzug atheismus athletisch atlas atmen atmung atomkraftgegner atomphysik attacken attentat attest attraktion attribut auberginen audienz auerhahn aufarbeiten aufatmen aufbau aufbegehren aufblasbar aufbrach aufdecken aufdrehen aufeinander aufenthalt auferlegen auffahren auffiel aufflammen auffordern auffressen auffuhr aufgaben aufgearbeitet aufgibt aufgreifen aufguss aufhalten aufheben aufhielt aufhob aufkam aufkeimen aufkleber aufkochen aufkreuzen aufladen aufleben auflockern aufmachen aufmerksam aufmischen aufmunternd aufnahmen aufnehmen aufnimmt aufopfern aufpassen aufpeppen aufpolieren aufprallen aufraffen aufrechnung aufrichten aufrollen aufruf aufsagen aufscheinen aufsehen aufsicht aufspaltung aufstand aufsuchen auftakt aufteilen auftischen auftrag auftun aufwachen aufweichen aufwiegen aufwuchs aufzeichnen aufziehen aufzuarbeiten aufzwingen augapfel augen august auktion ausarbeiten ausbaden ausbilden ausbleiben ausbrechen ausdauer ausdehnen ausdiskutiert ausdruck auseinander auserkoren ausfahren ausfechten ausfiel ausfliegen ausformuliert ausfuhr ausgaben ausgearbeitet ausgibt ausgleichen ausgraben aushalten aushebeln aushilfen ausholen auskam auskennen ausklammern auskommen auskunft ausladend ausleben auslosung ausmachen ausmerzen ausmusterung ausnahmen ausnehmen ausnimmt ausnutzen auspacken ausprobieren auspuff ausradieren ausrechnen ausrichten ausrollen ausrufen aussaat ausschalten aussehen aussicht aussortieren ausspannen aussuchen austoben austragen ausufern ausverkauf auswachsen auswechseln auswies auszahlen ausziehen auszog auszuarbeiten autark authentisch autobahn autodidaktisch autofrei autogramm autohandel autokauf automation autonom autopilot autor autoteile autoverkehr autowerkstatt avancieren avocado axthieb babybett babykleidung babynahrung babypuppen babysitten bachbett bachforelle bachlauf backblech backen backfisch backofen backpulver backt backwaren badeanstalt badegast badehaus bademantel baden badeort badet badeunfall badeverbot badewanne badezimmer bagatellisieren bagger bahnanlagen bahndamm bahnen bahnfahren bahnhof bahnnetz bahnstation bahnt bahnverbindung bakterien baldigen baldrian balken balkon ballen ballhaus ballkontakt ballnacht ballon ballungszentrum ballverlust ballwechsel balsam bambus banal bananen bandbreite banden banditen bandmitglieder bangen bankautomat bankdaten banken bankfilialen bankgeheimnis bankintern bankkonto banknoten bankraub bankverbindung bankwesen bannen bannmeile baracken bareinlage bares bargeld barhocker barmherzigen barometer barrikaden barsch barthaar bartlos barzahlung basen basisarbeit basteln batterie batzen bauabschnitt bauamt bauarbeiten bauaufsicht baubeginn baubranche bauch baucontainer bauelemente bauen bauer baufahrzeuge baufinanzierung bauformen baugebiet baugrube bauhof bauindustrie baujahr baukasten bauland bauleistung baulich baumethode baumhaus baumkrone baumwipfel bauordnung bauphase bauplan baurecht bauruine bausatz baustart bausubstanz bauwagen bauweise bauzaun bauzeit bazillus beabsichtigen beackern beamtenstatus beanspruchen beantragen bearbeiten beatmen bebauen beben bebildert bebte becher beckenrand bedacht bedanken bedarf bedauerlich bedecken bedenken bedeuten bedienen bedingen bedrohen bedrucken beehrt beeilen beeindrucken beenden beengt beerdigen beeren befahl befallen befanden befassen befehlen befestigen befeuern befiehlt befinden beflissen befohlen befolgen befragen befreien befrieden befruchten befugnis befund begabung begangen begeben begegnen begehbar begeistern begibt begierde beginnen beglaubigt begleichen beglichen begnadet begonnen begossen begraben begreifbar begriffen begruben begutachten behaarten behaftet behagen behalten behandelbar beharren behaupten beheben beheimatet behelfen beherbergen behielt behilflich behindern behoben behutsam beibehalten beichten beide beidseitig beieinander beifahrersitz beigaben beige beikommen beilagen beilegen beilhieb beimessen beimischen beinah beinbruch beinen beinfreiheit beinhalten beinverletzungen beipackzettel beipflichten beirat beirren beisammen beischlaf beisein beispiel beistand beitrag beiwagen beiwerk beiwohnen beizeiten bejahen bejubeln bekam bekannt bekehren bekennen beklagen beklebt bekochen bekommen bekriegen bekunden beladen belag belangen belassen belaufen beleben belegen belehren beleidigen beleuchten belichtet belieben bellt belogen belohnen belustigen bemalen bemannten bemerken bemessen bemisst benachbarten benahm benannt benehmen beneiden benennen benimm bennent benommen benoten benutzbar benzinkanister beobachten beordern bepacken bepflanzen bequem berappen beraten berauben berben berechenbar bereden bereichern bereuen bergab bergbahn bergdorf bergen berggipfel berghang bergkette berglandschaft bergregion bergtour bergung bergwacht berichten berieseln beritten bernhardiner bernstein bersten berufen beruhen besagen besang besatzung beschaffen beseelt besehen beseitigen besen besessen besetzen besichtigen besiedeln besingen besitzen besoffen besoldung besonderen besorgen bespannt bespielbar besprach bespucken besser bestanden bestbezahlt besten bestform bestialisch bestleistung bestmarke bestnote bestochen bestrafen bestseller bestuhlung bestzeit besuchen besungen betagten betanken beteiligen beteuern betiteln betonen betrachen betreffen betrieben betroffen betrug bettdecken bettlaken bettruhe bettzeug betuchte beugen beugt beulen beunruhigen beurkunden beurlauben beurteilen beute bevor bewachsen bewaffnen bewahren bewalden bewandern bewarben bewegen beweis bewenden bewerben bewiesen bewilligen bewirbt bewogen bewohnbar beworben bewuchs bewundere bewusst bezahlbar bezaubern bezeichnen bezeugen bezichtigen beziehen beziffern bezirk bezog bezug bezuschussen bezwangen bezwecken bezwingen bezwungen biberbau bibliothek bieder biegen biegt biegung bienen bierdeckel biergarten bierkrug biest bieten bildband bilden bildhaft bildlich bildmaterial bildrand bildschirm bildt bildung bildverarbeitung binden bindung binnenmeer binokular binsenweisheit biobauer biochemie biodiesel bioenergie biogas biografie bioladen biologen biomasse biomedizin bioprodukte biotechnologie biotonne birgt birkenbaum birnbaum birnen bisher bislang bison bisschen bissfest bissig bisswunde bisweilen bitten bittsteller bitumen blamabel blamieren blankziehen blasen blasinstrument blaskapelle blasmusik blasorchester blass blatt blaulicht blaumeise blaupausen blechnapf bleiben bleichen bleifrei bleistift blenden blicken blind blinken blinzeln blitzen blocken blumen blumig blusen bluten blutig blutjung blutkonserven blutplasma blutwerte blutzellen bockig bodennah bogen bohnenkraut bohren bohrinsel bohrloch bohrmaschine bohrung boiler bojen bollwerk bolzen bombensicher bonus bonzen boomen boomt boote bootshaus bordstein borgen borniert boshaft bosheit bosse botanik boten botschaft boxen boxhandschuhe boxkampf boxring boxte boykott branche brand brannten braten bratkartoffeln bratpfanne bratwurst brauch brauen brauhaus braumeister braun braut brecheisen breitengrad bremsen brennen brenzlig bretter bricht briefe brillant bringen brisant brodeln brokkoli brombeeren bronzen broschen brotaufstrich brotkrumen brotscheiben brote brotzeit bruchfest bruder brummen brust brutkasten buche buchhaltung buchladen buchmacher buchpreis bucht buchung buchverlag buddeln buden bugsieren buhlen bullen bullige bundesweit bungalow bunker buntstift burganlage burgen burgfrieden burggraben busbahnhof busfahren bushaltestelle bussard busse busspur butterbrot campen campieren canceln caravan chancenreich chaostheorie chaoten charakter charmant chatbot chatten chauffieren checken chefsessel chemie chiffrieren chihuahua chilipulver chillen chinchilla chiphersteller chipkarte chipsatz chirurgisch chloren choreografieren chorgesang chorkonzert chorleitung chorprobe chronisch clever clinchen clown clubhaus clubmitglieder clusteranalyse coachen codenamen codewort codiert computer container couch covern crashtest cremig cybernaut dabei dachboden dachdecker dachfenster dachgeschoss dachkonstruktion dachorganisation dachrinnen dachsbau dachten dachverband dachwohnung dachziegel dackel dadurch dagegen dagewesen daheim daher dahin damen damit dammbruch damoklesschwert dampf danach daneben dankbar danken danksagung dankt dannen daran darauf darben darbieten darfst dargeboten darin darlegen darmentleerung darnieder darstellen darum darunter dasein dastanden dastehen datei daten dates datieren datteln datum dauer daumen davon davor dazugeben dazukommen dazulernen dazuverdienen dazwischen debakel debatten deckblatt decken deckmantel deckname deckung deeskalation defekt definieren defizit deformation deftig degen degradieren dehnen dehnt dehnung deich deine dekaden dekan deklamieren dekorativ dekret delegation delfin delikat delinquent delirium dellen demagogen dementieren demografie demolieren demonstrieren demoralisieren demotiviert demut denen denkbar denken denkfabrik denkmal denkpause denkspiel denkt denkweise denkzettel dennoch dentalhygiene denunziant depesche deplatziert deponie deportation depot deppen depression deprimierend derart deregulierung deretwegen dergleichen derivate dermatologisch derzeit desaster deshalb designen desillusionieren desinfektion desolat desorientiert dessert destabilisieren destillation deswegen detailgetreu detektiv detonieren deuten deutlich deutung devotionalien dezember dezent dezernat dezibel dezidiert dezimieren diagnose diagonal diagramm dialekt dialog diamant diametral diavortrag dichten dickdarm dickicht diebe diebstahl dielenboden dienen dienlich dienstag dient diese diesmal diesseits dietrich diffamieren differenz diffizile diffus digital diktieren dilemma dilettanten dinge dingfest dingo dinkelbrot dinosaurier diplom direkt diskette diskreditieren diskurs disponieren disput disqualifikation dissens dissident dissonanz distanz distel distribuieren disziplin divers dividende division dohle doktor doktrin dokumentieren dolch dolmetscher domizil dompteur donnerstag dopen dorfbewohner dorffest dorfgemeinschaft dorfjugend dorfleben dorfplatz dornen dorthin dortig dossier dotiert dozent drachen draht drakonische drama dramen dranbleiben drapieren drastisch drechsel dreck dreharbeiten drehbaren drehen drehkreuz drehleiter drehmoment dreht drehung drehzahl dreidimensional dreieck dreifach dreihundert dreikampf dreimal dreirad dreisatz dreitausend dreiviertel dreizehn dreschen driften drillen drinnen drohbrief drohen drohnen droht drohung drollig dromedar drosseln drucken dschungel dubios ducken duckt dudelsack duell duett duften duftstoffe duktus dulden duldung dumpf dunkel durften durst duschen dutzend duzen dystopie ebenfalls ebenso ebnen echoartig echsen echten echtheit eckball eckdaten ecken eckig eckpfeiler eckpunkte eckwerte edelherzig edelmut edelsinnig editieren efeubewachsen efeuranke effekt effizient egalisieren ehebett ehebruch ehedrama ehegatte ehejahren ehekrise eheleben ehemaligen ehepaar eheprobleme eheringe ehevertrag ehrbaren ehren ehrerbietung ehrfurcht ehrgeiz ehrlich ehrte ehrung eichenbaum eichhorn eidechsen eidesstattlich eierkuchen eiern eiertanz eifrig eigelb eigen eigne eignung eilte eilverfahren eilzug einander einatmen einband einbehalten einbiegen einblick einbog einchecken eindecken eindimensional einfach einfiel einfliegen einfordern einfrieren einfuhr eingaben eingearbeitet eingibt eingleisig eingraviert einhalten einhorn einhundert einige einjagen einkalkulieren einkehr einkochen einladen einlegen einlieferung einlud einmal einmieten einnahmen einnehmen einnimmt einordnen einpacken einplanen einquartieren einrad einreden einrichten einsam einschalten einsehen einsicht einspannen einstellen eintagsfliege eintopf einundzwanzig einverleiben einwand einweichen einwickeln einwohner einwurf einzahlen einzeln einziehen einzog einzuarbeiten eisbahn eisbein eisblock eisbrecher eisdecke eisdiele eisen eisern eisfrei eisglatten eishalle eishockey eisig eiskalt eiskunstlauf eislauf eisschicht eisstadion eistee eisvogel eiswasser eiszapfen eiszeit eitel eiter ekelhaft eklat eklig ekstase elanvoll elastisch elche elefant elegant elektrisch element elend elfenbein elfmal eliminieren elixier ellbogen ellenlang eloquent elstern elternabend emanzipation embargo emblem emittenten emotional empathie empfahl empfehlen empfinden empfohlen empfunden emporsteigen emsig endabrechnung endausbau endeffekt enden endet endfassung endkampf endkunde endlager endlich endlos endmontage endoskopie endphase endpreis endpunkt endrunde endsieg endspiel endstadium endung endverbraucher endzeit endziel energetisch engel engpass engste enkel enklave enorm ensemble entbehren entbinden entbrennen entbunden entdecken enteignen enten entern entfachen entfernen entfiel entflammen entfremden entfuhr entgangen entgegen entgiften entgleisen enthalten entheben enthielt enthoben enthusiasmus entkam entkernen entkleidet entkommen entkriminalisierung entladen entledigen entlocken entlud entmachten entmilitarisieren entmutigen entnahmen entnehmen entnimmt entnommen entpolitisierung entpuppen entrechteten entrichten entrollt entsagen entscheiden entsenden entsolidarisierung entspannen entstammen enttarnen entwachsen entweder entworfen entwurf entzaubern entziehen entzogen entzug entzwei enzianblau epidemie epilepsie epilog episch episoden epizentrum epochal equipment erachten erahnen erarbeiten erbarmen erbauen erbeben erben erbeten erbeuten erbfolge erbgut erbitten erblassen erbleichen erbmaterial erbost erbpacht erbrachten erbrechen erbringen erbschaft erbsen erbten erdacht erdarbeiten erdaushub erdball erdbeben erdboden erden erdgas erdgeschichte erdig erdkruste erdkugel erdloch erdreich erdrosselt erdrutsch erdteil erdtrabanten erdulden erdumlaufbahn erdwall ereifern ereignen ereilen eremit erfahrbar erfanden erfassen erfinden erfolg erfordern erfragen erfreuen erfrieren erfroren erfuhren erfunden ergaben ergattern ergaunern ergeben ergehen ergibt ergiebig erging ergonomisch ergoss ergotherapie ergrauen ergreifen ergriffen erhaben erhalten erhaschen erheben erheiterung erhellen erhielten erhitzen erhoben erhoffen erholen erinnern erkaufen erkennbar erklangen erklettern erklimmen erklommen erkranken erkunden erlahmen erlangen erlassen erlauben erleben erledigen erlegen erleichtern erlenholz erlesen erleuchten erliegen erlischt erlitt erlogen erloschen ermahnen ermangelung ermatten ermessen ermitteln ermorden ermuntern ermutigen ernannt ernennen erneuerbar ernst ernten erobern erosion erpicht erpressbar erproben erraten errechnen erregen erreichbar errichten errungenschaft ersatzlos erschaffen ersehen ersetzbar ersichtlich ersonnen ersparen erspielen erstach erstbesteigung erstflug ersticht erstklassig erstmal erstochen erstplatzierten erstrahlen erstsemester erstversorgung ersuchen ertappen ertasten erteilen ertrag ertrinken ertrugen eruieren eruption erwachen erwandern erwarben erwecken erwehren erweichen erwerben erwidern erwiesen erwirbt erwischen erwogen erworben erwuchsen erzeugen erzfeind erzhaltig erziehen erzittern erzogen erzrivalen erzwang erzwingen erzwungen eschenholz eselsfell eskalation eskapaden eskortieren essen essgewohnheiten essig esskultur esslingen esstisch essverhalten esszimmer estrich etablieren etage etappen etatplanung ethik ethisch etikettieren etliche etwas eulen euphorie eurem euren eurer euter evakuieren evaluieren evidenz ewiggestrigen ewigkeit exakt examen exekutive exempel exerzierplatz exhumieren exilregierung exklamieren exklusiv exkremente exkurs exorbitant exotisch expandieren expedition experiment explizit explosionsartig exponentiell export express exquisit extensiv extern extra extrem exzellent exzentrik exzess fabelhaft fabuliert fachabteilung fachbegriff fachdienst fachgebiet fachhandel fachjargon fachkenntnis fachlehrer fachmagazin fachpersonal fachrichtung fachsimpeln fachtagung fachverband fachwelt fachzeitschrift fackeln faden fahnden fahnenflucht fahrbahn fahrdienst fahren fahrfehler fahrgast fahrkarte fahrlehrer fahrplan fahrrad fahrschein fahrverbot fahrwasser fahrzeit faible faken fakten faktisch faktor falken fallbeil fallobst fallpauschalen fallweise fallzahlen falschaussagen faltblatt falter famos fanal fanartikel fanatiker fanblock fanden fangen fangruppen fankurve fanpost fanshop farbaufnahme farbbeutel farben farbfernseher farbgebung farbig farbkombinationen farblich farbpalette farbschichten farbton farmen fasching fassaden fassbar fassen fassung fasten fastnacht faszination faucht faulen faulheit faultiere fauna faust favorisieren faxen faxnummer fazit februar fechten federn fegefeuer fegen fegten fehden fehlalarm fehlbesetzung fehlen fehlgriff fehlinformation fehlleiten fehlpass fehlschlag fehlten fehlverhalten fehlzeiten feiern feigen feigheit feigling feilbieten feilen feilschen feilt feinabstimmung feind feinheit feinkost feinmechaniker feinschliff feldarbeit feldforschung feldhasen feldversuch felgen felsbrocken felsen felsvorsprung felswand fenchel fenster ferien ferkel fernab fernbedienung fernfahrt ferngeblieben fernhalten fernreise fernsteuern fernverkehr fernweh fertig fesseln festakt festbesuch festgebunden festhalle festigen festland festmachen festnageln festplatten festrede festtag festumzug festwagen festzelt fettarme fettgehalt fetzen fetzig feucht feuerzeug feuilleton feurig fichtenwald fieber fiebrigen fielen fiktion filialen filigran filmabend filmhochschule filmindustrie filmmaterial filmpreis filmt filmverleih filmwelt filter filzen filzstift findig finessenreich fingen fingiert finken finster finte firma firmen firmieren fischen fiskalisch fiskus fixieren fixkosten fixpunkt fixstern flach flackern fladenbrot flaggen flagrant flamingo flammen flanieren flanke flapsig flaschen flatterhaft flausen flaute flechten flecken fledermaus flegel flehen fleht fleischfrei flexibel flieder fliegen fliehen fliesen flink flirten flitzen flocken flogen flohen flohmarkt flora floskel flossen flott fluchen flugaufnahme flugbereit flugfeld fluggast flughafen flugobjekt flugreisen flugtauglich flugverbindung flugzeit fluktuation fluor flurbeleuchtung flurschaden fluss fluten flutlicht flutwelle fochten fokussieren folgen folglich folgsam folgt folien forcieren fordern forensik formel formfrage formgebend formieren formlos formt forschen forsten fortan fortbestand fortdauer fortfahren fortgehen fortkommen fortlaufen fortpflanzen fortsetzen fortziehen fotoalben fotoband fotogalerie fotokopien fotomodell fotoreporter fotos fototermin fotowettbewerb fracht fracksausen fragen fragil fraglich fragment fragst fragt fraktionslos frappierend fratze frech freibad freie freifahrt freigaben freihalten freikarte freimachen freiraum freischaffend freitag freizeit fremd frequentieren fressen frettchen freuden freuen freunde freut frevel frieden frieren frisch friseur frisieren frisst frist frisur frivol frohe frohgemut frohlocken frohnatur frohsinn froren frosch frost frucht frust fuchs fuchtel fugen fuhren fuhrpark fundamental funde fundgrube fundort fundus fungieren funkanstalt funken funkhaus funkkontakt funknetz funkspruch funkt funkverkehr furche furios furor fusionieren fussball futsch futter gabel gaben gaffen gagen galaabend galaktisch galant galaxie galen galeria galgen galionsfigur galle galopp gangart gangbar ganoven ganzheit ganzseitig ganztags garage garant garen garnelen garnieren garten gasbetrieben gasexplosion gasflasche gasheizung gasleitung gaspedal gaspipeline gaspreis gassen gastarbeiter gastdirigent gasteltern gastfreundlich gastgewerbe gasthaus gastieren gastmahl gastprofessor gastspiel gastwirtschaft gasversorger gasvorkommen gaswerk gattung gaukeln gaumen gauner gazellen geachtet geadelt geahndet gealtert geangelt geantwortet gearbeitet gebacken gebadet gebaggert gebahnt geballt gebangt gebastelt geben geber gebessert gebeugt gebilde gebinde gebiss geblasen geblendet geblickt geblockt gebogen gebohrt geboren gebot geboxt gebracht gebrechen gebrochen gebucht gebuddelt gebunden geburt gechartert gecheckt gecko gecoacht gedacht gedanken gedauert gedeck gedehnt gedeihen gedenken gedeutet gedicht gediegen gedonnert gedreht gedrillt gedroht gedruckt geduckt gedulden geduscht geebnet geehrt geeicht geeignet geeilt geeinigt geerbt geerntet gefahndet gefallen gefangen gefasst gefaxt gefegt gefehlt gefeiert gefertigt gefesselt gefeuert gefieder gefilde gefischt geflattert geflecht geflochten gefochten gefolge gefordert gefragt gefressen gefrieren gefroren gefruchtet gefunden gegangen gegeben gegen gegessen geglaubt gegliedert gegner gegolten gegossen gegraben gegriffen gehackt gehalt gehandelt gehasst gehauen geheftet gehege geheilt gehemmt gehen gehetzt geheuer gehhilfe gehilfen gehindert gehirn gehisst gehminuten gehobelt gehofft geholfen gehorchen gehrock gehst gehuldigt gehversuche gehweg geier geigen geimpft geirrt geist geizen geizig geizt gejagt gejammer gejohle gejubelt gekannt gekapert gekauft gekehrt gekennzeichnet gekettet gekippt geklagt geklebt geklingelt geklont geklungen geknackt geknebelt geknickt gekocht gekommen gekonnt gekoppelt gekostet gekracht gekreische gekriegt gekrochen gelacht gelackmeiert geladen gelage gelandet gelassen gelaufen geldanlage geldbeschaffung geldentwertung geldforderungen geldgeber geldhahn geldinstitut geldkassette geldmangel geldnot geldpolitik geldquelle geldregen geldschein geldverlust geldwert geleast gelebt geleckt gelee gelehnt gelenk gelernt gelesen geleugnet gelichtet geliebt gelingen gelistet gelitten geloben gelockert gelogen gelohnt gelten geltung gelungen gelyncht gemacht gemahl gemalt gemauert gemeckert gemein gemeldet gemerkt gemessen gemieden gemildert gemindert gemischt gemixt gemobbt gemocht gemogelt gemolken gemsen gemunkelt gemurmel gemustert genagelt genannt genau genehm geneigt genesen genforschung genial genick genie genom genormten genossen gentechnik gentherapie genug genuss genutzt geografie geohrfeigt geologen geometrie geopfert geophysik geopolitisch geordert geortet geothermie geoutet geowissenschaften gepaart gepachtet gepanzert gepard gepasst gepatzt gepaukt gepeinigt gepfercht gepfiffen gepflanzt gepinselt geplagt gepocht gepokert gepolstert geprahlt geprobt gepumpt gepunktet gequetscht gerade gerahmt gerammt gerangel gerast geraten geraubt gerechnet gerede geregelt gerettet gericht gerieben gerippe gerissen geritten gerne gerochen gerodet gerstensaft geruch gerudert gerufen geruhsam gerupft gerutscht gesagt gesalzen gesammelt gesandt gesaugt geschirr gesegelt gesehen gesell gesendet gesessen gesetzlos gesichert gesiegt gesindel gesittet gesoffen gesondert gesorgt gespalten gespeichert gespickt gesplittet gesponnen gespreizt gespuckt geste gestiegen gestochen gestrafft gestundet gesuch gesund gesurft getadelt getagt getan getappt getarnt getaucht geteert geteilt getestet getextet getier getilgt getippt getobt getoppt getragen getreide getrickst getrocknet getrunken geurteilt gewachsen gewagt gewahrsam gewalt gewand gewappnet gewarnt gewaschen gewebe gewechselt gewehr geweigert gewendet gewerbe gewesen gewettert gewichen gewidmet gewillt gewimmel gewinn gewirbelt gewischt gewitter gewogen gewohnheit gewollt gewonnen geworben gewunden gewusel gezahlt gezapft gezaubert gezeichnet gezeter gezeugt gezielt gezimmert gezittert gezogen gezollt gezupft gezweifelt gezwungen gibts gicht giebel gierig giert giftig giftschlange gigant gingen gipfel gipsabdruck giraffe girlanden girokonten gischt gitarre gitter glamour glanz glasbruch glasdach glaser glasfaser glashaus glasig glaskasten glasur glasvitrine glaswand glatt glatze glauben gleich gleis gleiten gletscher gliederung glimmen glimpflich glitschig glitten glitzer global globus glocken glorreiche glossar glotz glukose gluthitze gnade gockel goldbarren golden goldfisch goldkette goldpreis goldrausch goldschatz goldwaage golfanlage golfball golfclub golfen golfplatz golfturnier gondel gorilla gotik gourmet grabbeigaben graben grabkammer grabmal grabpflege grabstein grabung grade gradmesser grafen graffiti grafik granit granulat grasen grashalm gratis gratulant gratwanderung grauhaarig graustufen grauzone gravierend gremien grenzenlos grill grinsen grips groll groschen grotte grube gruft grummeln grundlos gruppe gruselig gulasch gullydeckel gummihammer gurgel gurken gurte gutachten gutbesuchten gutgesinnt guthaben gutmachen gutmenschen gutsbetrieb gutschein guttun haarausfall haare haarfarbe haargenau haarpracht haarscharf haartracht haben habgier habhaft habicht habilitation habseligkeiten hackbeil hacken hackfleisch hackordnung hafen hafer haftanstalt haftbar haften haftpflicht haftstrafe haftung haftverschonung haftzeit hagel hager hahnenkamm haifisch haken hakte halbbitter halbe halbfest halbherzig halbieren halbjahr halbkreis halbleiter halbmarathon halbnackt halbpension halbrund halbsatz halbtags halbwahrheiten halbzeit halde halfen hallen hallimasch hallt halluzinationen halme halsband halskette halsschlagader halstuch halswirbel haltbar haltestelle haltlos haltmachen haltung halunken hammer hamster handarbeit handball handel handfest handgefertigt handhaben handlanger handpuppen handreichung handschuhe handtaschen handumdrehen handverlesen handwagen hanfanbau hanfernte hangar hangeln hanglage hantel hantieren happig harfe harmlos harmonie harpune harren harsch hartgesotten hartplatz haselnuss hasen hassen hassliebe hasst hasten hastig hatten haubentaucher hauch haudegen hauen hauer haufen hauptstadt hauruckaktion hausarbeit hausbank hausdach hausfassade hausgemacht haushalt hausieren hauskatze hausordnung hausputz hausrat hausverbot hauswand hautarzt hauteng hautfreundlich hautklinik hautnah hautpflege hautschonend hautzellen havarie hebamme hebel heben hebung hecht hecken heckklappe heckscheibe heerscharen heften heftig hegemonie hegen hehlerei heilbad heilen heilfroh heilkraft heillos heilpflanzen heilt heilung heimbewohner heimcomputer heimfahren heimgeholt heimisch heimkehr heimlaufen heimreisen heimvorteil heimweg heirat heiter heizanlage heizen heizkessel heizperiode heizsysteme heizt heizung hektar hektik heldenhaft helfen helft helikopter helium hellblau helligkeitsgrad hellt helme helmpflicht hemden hemdkragen hemmen hemmnis hemmschwelle hemmt hemmung hengst herab herauf herben herbst herde herdplatte herein herfallen hergab hergeben hergibt herhalten hering herkommen herleiten hermachen hermelin hernieder herren herrichten herrlich herrschaftlich herstellen herum herunter hervor herzallerliebst herzbrechend herzform herzhaft herziehen herzkammer herzmuskel herzrasen herzschlag herzton herzugeben heterogen hetzen hetzjagd hetzkampagne hetzt heuballen heuchelei heuhaufen heulen heult heuschnupfen heute heutigen heutzutage hexen hiebe hielt hieran hierbei hierdurch hierher hierin hiermit hiervon hierzu hiesig hieven hievt hilfen hilflos hilfreich hilft himbeeren himmel hinab hinarbeiten hinauf hinbekommen hinblick hinein hinfahren hinfort hingabe hingen hingibt hingucken hinhalten hinken hinkommen hinkriegen hinkt hinlegen hinnehmbar hinnimmt hinreichend hinrunde hinschauen hinsehen hinsicht hinspiel hinstellen hinten hinunter hinweisen hinwirken hinziehen hinzog hinzu hiobsbotschaft hippen hippie hirnbotenstoff hirnforschung hirngespinst hirnzellen hirsch hirse hirte hissen hitze hitzig hitzschlag hobel hoben hochachtung hochbahn hochdekoriert hochebene hochfahren hochgearbeitet hochhalten hochinteressant hochklassig hochland hochmoderne hochnehmen hochofen hochphase hochqualifiziert hochrangig hochsehen hochtragen hochverdient hochwasser hochzeit hocken hockt hoffen hoffnung hofft hofgarten hofiert hofnarren hoftheater hohen hohlraum holen holprig holst holten holunder holzarbeiten holzbalken holzdecke holzfiguren holzhammer holzkisten holzlatten holzofen holzplatten holzrahmen holzschnitt holztisch holzverarbeitung holzweg holzzaun homogen honorar hopfen horchen hormon hornhaut hornissen horrend hosen hotel hubraum hubschrauber huckepack hufeisen hufen huldigen huldvoll human hummel humor humpelt hundefutter hundstage hunger hungrig hupen hurtig huschen husten hygiene hymne hypen hyperaktiv hypnose hypochonder hypothek hysterie idealerweise ideell ideenreich identisch ideologisch idiotensicher idole idolisieren igelstachel ignorant ihnen illegal iltis imageverlust imagination imbiss imitieren imker immens immer immobilien immun imperativ impfen impfschutz impfung implantat implementierung implikationen implosion imponieren imposant improvisieren impuls imstande inakzeptabel inanspruchnahme inbegriff inbetriebnahme inbrunst indifferent indigenen indikatoren individual indiz indoktrinieren industriell ineffizient ineinander infamieren infantil infekt infiltrieren infizieren inflation infoabend infolge infomaterial information infostand infotag infoveranstaltung infozentrum infrage infusion ingenieur ingesamt ingwer inhaber inhaftiert inhalieren inhuman initialen injektion injizieren inkarnieren inklusive inkognito inkompatibel inkonsequent inkrafttreten inkubationszeit inlandsreise inmitten innehalten innenansicht innig innovation innung inoffiziell insasse insbesondere inschrift insekt insel inserat insgeheim insignien insofern insolvent insoweit inspektion inspizieren installieren instinkt instruieren inszenieren intakt intellektuell international intim intolerant intrigieren intuitiv invalide invasion inventar investieren involviert inwiefern inzwischen irdisch irgendein ironie irrational irreal irrelevant irren irreparabel irrer irreversibel irrfahrt irrgarten irritation irrsinn irrten irrtum irrweg irrwitzig isolation isolieren jacht jacken jagdbeute jagdhund jagdrevier jagdsaison jagen jagten jaguar jahrbuch jahre jahrfeier jahrgang jahrhundert jahrmarkt jahrtausend jahrzehnt jalousien jammer januar jargon jauche jawohl jawort jazzband jazzclub jazzfest jazzkonzert jazzmusik jeden jedoch jegliche jemals jemand jenen jenseits jetzigen jetzt jeweiligen jobangebote jobaussicht jobben jobkiller jobsuche jobverlust jodeln jodhaltig joggen jogginganzug joggt joghurt jubel jubilieren jucken juckreiz juckt jugend jungautor jungbrunnen jungen junggeblieben jungpflanze jungtier jungunternehmen junitag juror jurymitglied kabarett kabel kabine kaffee kahlkopf kahlschlag kaiman kaiserlos kajak kakadu kakao kakerlaken kakteen kaktus kaleidoskop kalender kalibrieren kalium kalkstein kalkulation kalligrafie kaltfront kaltgestellt kaltlassen kaltstart kalziumreich kamel kaminholz kammer kampagne kampfsport kampieren kanal kanarienvogel kandidat kaninchen kanister kannen kannst kannte kanon kantholz kantig kanufahren kanuten kanzlei kapelle kapern kapieren kapital kappen kappt kapriolen kapsel kaputt kapuze karaokebar karate karawane kargheit karibus karierte karikatur karitativ karneval karnickel karotten karpfen karriere kartbahn karten kartierung kartoffeln kaschieren kassen kassieren kastanie kasten katapultieren kategorie katzen kauen kauern kaufanreiz kaufen kauffreudig kaufhalle kaufinteresse kaufkraft kaufleute kaufpreis kaufrausch kauft kaufvertrag kaugummiautomat kaulquappen kaution kautschukbaum kavaliersdelikt kegeln kehle kehlkopf kehren kehrseite kehrt keilen keimen keimt keimzelle kekse kelch keller kellner kennen kennst kennt kennung kennwort kennzahl kentern keramik kerben kerbholz kernaufgabe kernbereich kerne kernfusion kerngesund kernig kernkompetenz kernlos kernphysik kerzen ketchup ketten keuchhusten keule kichern kickboxen kicken kiefer kiesbett kiesel kiesgrube kilogramm kilometer kilowatt kinder kindgerecht kindheit kindisch kinobesuch kinofilm kinogeschichte kinokarten kinoleinwand kinopublikum kinowelt kippen kippt kirschen kittel kitzeln klaffen klagen klaglos klagt klammheimlich klamotten klang klappen klargemacht klarheit klarkommen klarmachen klarstellen klartext klarzukommen klassen klatschen klauen klaut kleben klebrig klebstoff klebt kleckern kleeblatt kleiden klein kleister klemmen klient klima klinisch klinke klippe klirren klischee klobigen klonen klopapier klopfen klotz klubhaus klubs kluft klugheit klumpen knabbern knabe knacken knallen knapp knarren knast knattern knauf knebel knecht kneifen kneipen kneten knicken kniebeschwerden kniefall kniegelenk knien knieoperation knieprobleme kniet knifflig knipsen knirps knirschen knistern knoblauch knochen knoten knurren knusprig koala kobra kochbuch kochen kochkunst kochrezepte kocht kodex koexistieren koffein kognitiv kohlenkeller kohlraben koiteich kojen kokett kolibri kollabieren kollidieren kolossal kombinieren komfort komisch komitee komma kommen kommilitonen kommode kommst kommt kommunal komodowaran kompendium komplett komponente komprimieren kondition kondor konfigurieren konflikt konform konfrontieren konfus konglomerat konjunktiv konkret konkurrenz konnten konsens konsistent konsolidieren konspirieren kontakt kontinental konto kontraproduktiv konturlos konzentrieren kooperativ koordinaten kopfarbeit kopfbahnhof kopfende kopfgeld kopfhaar kopfkissen kopflos kopfnicken kopfsache kopftuch kopfweh kopfzerbrechen kopieren koproduktion korallen korbdeckel kordel koriander kormoran kornfeld korpulent korrektiv korrosion korrumpiert kosenamen kosmetik kosmisch kosmonaut kostbar kostenlos kostprobe kostspielig kotzen krabben krachen kraftvoll kragen kraken krallen kramen krampf kranich krankmachen kranz krapfen krass krater kratzen kraulen kraut krawall krebs kredenzen kredit kreide kreieren kreis krempel kresse kreuz kribbeln kriechen kriegen kriminalroman kringeln krippenkind krisenfest kriterien kritik kroch krokodil krokus kroll krone kronleuchter kronzeuge krude krumm kruste kryptisch kubikmeter kuchen kufen kugel kuhglocken kuhhandel kuhmilch kuhstall kulant kulinarisch kulleraugen kulminieren kultfigur kultobjekt kultserie kultur kummervoll kumpan kumpel kunden kundgeben kundig kundschaft kundtat kunst kunterbunt kupfer kuppe kurativ kuraufenthalt kurbeln kureinrichtung kurgast kurhotel kurieren kurios kurort kursangebot kursbuch kurse kursgewinn kursieren kurskorrektur kursleiter kursniveau kursprogramm kursrutsch kursschwankungen kurstadt kursverfall kurswechsel kursziel kurven kurvigen kurzarbeit kurzfassung kurzgeschichten kurzhaarschnitt kurzlebig kurznachrichten kurzreisen kurzschluss kurztrip kurzweilig kuscheln kutschieren kuvert labeln laben labil laborversuch labrador labyrinth lachen lachhaft lachnummer lachs lacht lacke lackieren lackmantel lackschaden laden laderaum ladung lagebericht lagen lageplan lager lahmen lahmgelegt lahmlegen lahmt laienhaft lakai laken lakonisch lamawolle lamellen lamentieren lammfell lampen landbrot landen landflucht landhaus landjugend landkarte landleben landnahme landratte landung landweg landzunge langanhaltend langfinger langgehegter langhaarig languste langweilen langzeitfolgen lanze lapidar lappalie lappen larven lassen lasst lasten lastkraftwagen lastwagen lastzug lasziv latent laterne latschen latten latzhose laube lauch laufarbeit laufbahn laufen lauffeuer laufkundschaft laufleistung laufpass laufrad laufschuhe lauftraining laufwege laufzeit laugenbrezel launenhaft launig lausbub lauschangriff laute lauthals lautlos lautsprecher lauwarm lavendel lawinen leben leber lebewesen lebhaft lebkuchen lebst lebten lebzeiten lechzen lecken leckt lederartig ledig leeren leergefegt leerlauf leerstand leerung legalisieren legehennen legen legieren legislative legitim legten leguan lehne lehnstuhl lehnt lehramt lehrbuch lehren lehrgang lehrinhalt lehrjahr lehrkraft lehrling lehrmaterial lehrpersonal lehrreich lehrstellen lehrten lehrveranstaltung lehrzeit leibarzt leibgericht leibhaftig leiblich leiden leidlich leidtragend leidvoll leidwesen leiharbeit leihen leihgabe leiht leihwagen leimen leinen leinwand leise leisten leitbild leiten leitfaden leitgedanke leitidee leitkultur leitmotiv leitplanke leitsatz leitung lektion lektor lemminge lenken lenkrad lenkt lenkung leopard lerche lernbegierde lernen lerngruppen lerninhalte lernmittel lernprogramm lernt lernziel lesart lesbar lesebrille lesekompetenz leselust lesen leser lesesaal lesezeichen lesung lethargisch letzlich letztendlich leuchtdioden leugnen leumund leute libellen liberal lichter lider lidschatten lieben liebgeworden lieblich liebschaft liebt liedchen lieder liedgut liedtexte liefen liege liegt liehen liest liftanlagen limette limitieren linden linken links liquidieren listen literarisch lithium loben lobgesang loblied lobpreisen lobten locher locken lockmittel lockruf lockt lockvogel lodern logbuch logen logieren logik lohnarbeit lohnen lohnforderungen lohnkampf lohnnebenkosten lohnt lohnzahlungen lokal lokomotive lorbeerblatt losen losfahren losgefahren losging loslassen loslegen losung loswerden losziehen loten lotosblume lotsen loyal luchs luftaustausch luftbefeuchtung luftdicht luftfahrt luftig luftkammer luftleer luftmassen luftnummer luftpolster luftraum luftschicht lufttemperatur luftverkehr luftzug lukrativ lumpen lunge lunte lupenrein lustgarten lustig lustlos lustspiel lustvoll luxus lyrik lyrisch machart machbar machen machst macht machwerk maden madig magen magerquark magie magisch magma magnesium mahlen mahlt mahlzeit mahnen mahnmal mahnt mahnung mahnwache maibaum mailen makaber makellos malen maler malheur mammut management manchmal mandarine mandelkern mango manifest manipulieren manisch mantel manufaktur manuskript marder marge marginal markant marken markieren markt marmeladen marmorieren marode marotten marsch marzipan maschinen maserung masken maskiert massen massieren masten material matetee mathematik matrosen matschen matten maulkorb maulwurf mauschelei mausefalle mausklick maximal medaille median medien medikament meditation medium medizin meerblick meerenge meerjungfrau meerrettich meerschwein meerwasser megahertz mehltau mehraufwand mehrbedarf mehreinnahmen mehrfach mehrheit mehrkampf mehrmalig mehrpolig mehrsprachig mehrverbrauch mehrweg mehrzahl meiden meilenstein meinen meinung meisennest meistens melancholisch melden meldung melken melodie melone membran memoiren mengenlehre mensaessen menschheit mental mentor merkbar merken merklich merkmal merkt messbar messdaten messen messlatte messstation messtechnik messung messwerte metall metapher metaphorisch meterhoch mickrig mieden miene miesmacher mieten mietfrei mietkosten mietpreis mietrecht mietschulden mietvertrag mietwagen mietzahlungen milan milchglas mildern milieu militant mimik mineral miniatur minibar minigolf minus minuten minze mischen miserabel missbehagen missfallen missgeschick misskredit misslingen missrede misst missverstanden misswirtschaft misthaufen mitangeklagt mitarbeit mitautor mitbekommen mitbieten mitbringen mitdenken miteinander mitentscheiden miterleben mitfahren mitfeiern mitfiebern mitfliegen mitgearbeitet mitgift mitglied mithelfen mitinhaber mitkommen mitlaufen mitleid mitmachen mitmensch mitmischen mitnahm mitnehmen mitnichten mitreden mitsamt mitschnitt mitsingen mitspielen mitstreiter mittag mitten mittig mittlerweile mittragen mittwoch mitunter mitverantwortlich mitwerber mitwirken mitziehen mixen mixer mixtur mochten modebranche modeerscheinung modehaus model modem modern modeschau modetrend modewelt modifikation modisch modular modus mogeln mohnblume mokieren molch molekular mollig moment monat mondfinsternis mondgestein mondlicht mondphase mondschein monieren monitor monokultur monolog monopol monster montag monument moosbedeckt moped moralisieren morastig moratorium morbide morgen morgig morsch morsen motivieren motor motten motto muffel muffig mulden mulmig mundart mundgerecht mundpropaganda mundschutz mundtot mundwinkel munkeln munter murmeltier murren murrt muschel museen museum musikalisch musisch musizieren muskatnuss muskel muskulatur musst muster mutanten mutation mutieren mutig mutlos mutprobe mutter mutwillig mysterien mythisch mythologisch nachahmen nachbar nachdenken nacheifern nachfahren nachhaken nachjagen nachkam nachlass nachmachen nachname nachrangig nachsagen nacht nachverfolgen nachwachsen nachzahlen nacken nackt nadel nagel nagen nagetiere nahaufnahme nahbereich nahebringen nahegehen nahelegen nahen nahezu nahkampf nahmen nahrung nahtlos nahverkehr namen namhaft nannte nanotechnologie narben narkose narren narrte narzissen naschen nasen nashorn natrium natter natur navigieren nebel neben neblig neffen negativ negieren nehmen nehmt neider neidisch neidlos neidvoll neigen neigt neigung nektar nennen nennt nennung nennwert neoliberale neonlicht nerven nervig nervlich nervt nestbau nester nette nettigkeiten netto netzbetreiber netze netzhaut netzwerk netzzugang neuanfang neuartig neuauflage neubau neubeginn neudefinition neueinstellung neuer neufahrzeuge neuformulierung neugierig neugliederung neuheit neuigkeit neuinfektionen neujahr neukauf neukonzeption neukunden neuland neulich neumond neunmalklug neunzehn neuordnung neuplanung neupositionierung neuproduktion neuralgisch neuregelung neurologie neutralisieren neuverfilmung neuwagen neuzeit neuzugang nichtig nickel nickt nieder niedlich niedrig niemals nieren nieselregen nieten nihilismus nilpferd nimmersatt nimmst nimmt nippen nirgendwo nischen nobel nochmal nominieren norden nordhalbkugel nordkap nordlicht nordmanntanne nordost nordpol nordufer normen normierung normung nostalgie notar notation notaufnahme notbremse notdienst notdurft noten notfall notgedrungen nothilfen notieren notizen notlage notleidend notnagel notorisch notprogramm notruf notsituation notstand notunterkunft notversorgung notwehr notzeichen november nudelsalat nullen nullnummer nullpunkt nullrunde nullsummenspiel nulltarif numerisch nummer nussbaum nussknacker nutria nutzbar nutzen nutzfahrzeug nutzlast nutzpflanzen nutzt nutzung nutzwert oasen obacht obdach obenauf obendrauf oberdeck oberen obergeschoss oberhalb oberkante oberschenkel oberteil oberwasser obgleich obhut obigen objekt oblag obliegen oboen obrigkeit observieren obsession obsiegen obskur obsolet obstbaum obstgarten obstsorten obwohl ochsen ofenfrisch ofenheizung ofenrohr offen offerieren offiziell oftmals ohnedies ohnegleichen ohnehin ohnmacht ohren ohrfeigen ohrringe ohrwurm okkupieren oktober oliven olympiade operette operieren opern opfer optik optimal option optisch orangen orbit orcas orchester orchideen orden ordnen ordnung organismus orgel original ornament orten ortet ortsausgang ortsbegehung ortschaft ortsdurchfahrt ortseinfahrt ortsgemeinde ortskenntnis ortsmitte ortsnamen ortsrand ortsschild ortstarif ortswechsel ortszeit ortung ostbahnhof osten osterblume otter outen ovale ozonbelastung ozonkonzentration ozonloch ozonschicht ozonwerte paare paarlauf paarmal paarweise pachten packen packpapier packten packung pailletten paket paktieren palastartig paletten palladium palmen panda panik panisch panne panorama pantoffeln panzerglas papagei papier pappen pappkarton paprika parabel parade paragraf parallel parameter paranoia parasit parieren parkbank parkdeck parken parkhaus parklandschaft parkplatz parkraum parkuhren parkverbot parodie parolen partner parzelle passabel passen passgenau passierbar passt passwort pastinaken patentfrei pathetisch patient patzer patzt pause pausieren pavian pavillon pechschwarz pechvogel pedal pedantisch pegel peilen peilt peinigen peinlich peitschen pelikan pelle pelze pelzmantel pendant pendel penetrant penibel pension pensum perfekt perfide performanz pergament periodisch perlen permanent perplex person perspektive petersilie petrischalen pfade pfahl pfand pfannen pfauenauge pfeffer pfeifen pferde pfiff pfirsich pflanzen pflaster pflaumen pflegen pflicht pflug pforten pfosten pfoten pfund pfuschen phasen phosphor physik picknick pickt pigmente pikant pikiert piktogramme pillen piloten pilzbefall pilze pinguine pinienzapfen pinkfarben pinsel piranha pirat pirschen piste pittoresk pixeln pizza pizzen plagen plagiat plagt plakat plakette planbar planen planieren planktont planlos planquadrat plant planung planwagen planzahlen plastikfrei platzen plaudern plauschen plazieren pleite plenarsaal plenum plexiglas plural pluspunkt pochen pocht pocken podest podien podium poesie poeten pokal polarstern polemik polieren poliklinisch pollen polster polterabend polytechnisch popkultur popmusik poppig popsong poren portfolio portieren portrait portwein porzellan posaunen posen posieren positionieren posse postablage postdienst posten postfach postieren postkarten postleitzahl postschalter postweg potenzieren pracht pragmatisch prahlen praktikum prall prangen prasseln praxen praxis preis preschen prickelnd primitiv pritsche privat privileg probanden proben probieren problemlos probt produkt profan professionell programm projizieren proklamieren proletarisch prollen prolog promenaden promoten prompt propaganda propeller prospekt prost protokollieren protzen proviant provokant prozedere prunk pseudologie psychisch pubertierend pudding pudel puder pufferzone pulle pullover pulsadern pulsieren pulsschlag pulver pumpen pumpt pumpwerk punkband punkrock punkten punsch puschen pusten puten putschen putzen putzig putzlappen putzmittel putzt puzzeln pyjama pyramide pyrotechnik pythonschlange quadrat qualen qualifizieren quallen qualm qualvoll quantenphysik quark quartal quast quatsch quecksilber querbalken queren querfeldein querkommen querlatte querschnitt quert querulant querverbindung quetschen quietschen quillt quintessenz quirlig quittung quizfragen quizsendung rabatt raben rabiat rache rachsucht rackern radar radau raddampfer radeln radfahren radiergummi radikal radio radius radrennen radsport radstand radtour radweg raffgierig raffiniert raketen rammen rammt rampen ramponiert randalieren randbemerkung randfigur randgebiet randlage randnotiz randvoll rangfolge rangieren rangliste rangordnung ranken rankt rannten rappen rasant rasch rasen raser rasieren raspel rasten rastlos rastplatz rasur raten ratgeber rathaus ratifizieren rational ratlos ratsam ratschlag ratsstube ratsuchende ratten raubbau rauben raubkatze raubt raubzug rauchen raufen raumakustik raumfahrt raumgewinn rauminhalt raumluft raumordnung raumplanung raumtemperatur raunen raunt raupen rausch rausgeflogen raushalten rauskommen rauslassen rausnehmen rausspringen rauswerfen rauszuholen raven razzia reagenzglas reagieren reaktion realisieren rebel rechen rechnen rechtsfrei recken reckt recyceln redakteur redefreiheit reden rederei redet redeverbot redewendung redezeit redlich rednerpult reduktion reduzieren referat refinanzieren reflektieren reformieren regal regeln regenwurm regie regimekritisch reglementieren reglos regnen regress regte regung rehabilitieren rehkitz reiben reibt reibung reich reifen reift reifung reiher reiht reihum reime reimt reinfallen reingehen reinigen reinkommen reinreden reinschauen reintreten reisen reisfelder reiskorn reist reiten reitschule reitturnier reitunterricht reitz reizen reizfigur reizgas reizt reizung reizvoll rekapitulieren reklamieren rekonstruieren rekord rekultivieren relation relaxen relevant relief relikt renitent rennauto rennbahn rennen rennleitung rennmaschine rennpferd rennrad rennschlitten rennt rennwagen renovieren rentabel rente rentier rentner reorganisation reparationen replizieren report repressiv reproduktion reptil reputation resignieren resolut resonanz resozialisieren respekt restaurant restbetrag rester restlaufzeit restposten restriktionen restschuld restwert resultat retten rettung revidieren revier revision revitalisieren revolution rezept rezession rezitieren rhabarber rhetorisch rhodium rhythmisch richten rieben riechen riefen riesig rinde ringen ringfinger ringkampf ringt rinnen rinnsal risiken riskant riskieren risse ritten ritualisieren rituell ritzen robben roben robust rochen rockermilieu rockkonzert rockmusik rodeln roden rodung rohbau rohdiamanten rohkost rohling rohmaterial rohre rohrkrepierer rohrleitung rohstoff rollbahn rollen rollladen roman rosafarben rosen rosig rosten rostig rotation rotieren rotkehlchen rotkohl rotor rotstift rotwein rotwild ruckartig rucksack rudel ruder rufen rufnummer ruhebereich ruhekissen ruhen ruhelosigkeit ruhephase ruheraum ruhestand ruhetag ruhezeit ruhig ruhmreich ruhmvoll ruinen ruinieren rumlaufen rundbau runden rundfahrt rundgang rundlich rundreise rundschau rundum rundweg runter rupfen ruppig rustikal ruten rutschen saalartig saatgut sabotieren sachbezogen sachdienlich sachfragen sachgebiet sachkenntnis sachlage sachpreis sachte sachverhalt sackgasse sackkarre sadistisch safran saftig sagenhaft sagst sagte sahen sahne sakralbau salamander salat salbe saloon salopp salzbergwerk salzen salzgehalt salzig salzkartoffel salzwasser samen sammeln samstag samtanzug samthandschuhen samtig samtpfoten sandalen sandbank sanden sandgrube sandige sandkasten sandplatz sanduhr sanft sangen sanieren sardinen sargnagel sarkastisch satellitendaten satirisch sattbekommen sattel satzglied satzreif satzung sauber sauer saufen saugen saugt sauna saunen saurier sausen schaben schachfiguren schadenfroh schafsfell schakal schalldicht scham schande scharren schatten schaukeln scheckig scheiben schellen schematisch scheppern scheren scherzen scheu schichten schieben schiffen schikanieren schildern schimpansen schindel schippen schlamm schlecht schlichten schloss schlucht schmal schmecken schmieden schmolzen schmuckvoll schnabel schnecken schnorren schnupfen schob schokolade scholle schon schornstein schottern schrank schrebergarten schrubben schubsen schuften schuhe schule schummeln schund schuppen schusselig schutt schwalben schwester schwieg sechs sechzehn seeadler seebeben seeblick seefahrt seegang seegurke seehund seekrank seelenruhig seemeilen seenlandschaft seenotrettung seenplatte seepferdchen seereisen seerosen seestern seetang seeufer seeweg segeln segen segmentieren sehen sehgewohnheiten sehkraft sehnen sehnlich sehnsucht sehnt sehtest seicht seide seife seilbahn seile seilschaft seiltanz seilwinde seitdem seiten seither seitlich sekretariat sekte sektflaschen sektion sektkorken sektor sekunde selber selbstsicher selektiert sellerie selten seltsam semantik semester seminar semmel senden sendung senfglas senken senkrecht senkung sensation sense sensibel sensor september sequenz serienweise serpentinen serum server servolenkung sessel sesshaft setzen setzlinge seuche seufzen sezieren shoppen showeinlagen showprogramm shrimps sichel sichtweise siebdruck sieben siebzehn siedeln siedler siegen siegreich siehst sieht signal signieren silbentrennung simpel simulation singen singt sinken sinkflug sinkt sinnbild sinnen sinnfrei sinnhaftigkeit sinnieren sinnkrise sinnlich sinnvoll sintflut sippenhaft sirenen sitte sittlich situation situiert sitzbank sitzen sitzgelegenheit sitzheizung sitzkissen sitzordnung sitzplatz sitzreihen sitzstreik sitzt sitzung skala skalen skalpell skandal skaten skelett skepsis skeptiker skifahren skigebiet skilanglauf skilift skisport skiurlaub skorpion skript skrupel skulptur skurril sobald socken sodbrennen soeben sofern sofort sogar sogenannten sogleich sogwirkung sohlen sojabohnen solarstrom sollen soloalbum sololauf sommer sonderlich sondieren sonnabend sonnen sonnig sonntag sonst sorgenfrei sorgfalt sorglos sorgsam sorten sortieren soviel sowas soweit sowie sowohl sozialistisch soziopath sozusagen spachtel spagat spaghetti spalten spangen spannend spanplatten sparbuch sparen sparflamme spargel sparsam sparziel spaten spatzen spazieren specht speck spediteur speerwerfen speichel speisen spektakel spekulant spendabel sperling sperren spesen speziell spickzettel spiegel spielplatz spinat spinnen spionieren spitzen spontan sporadisch sporen sport spotten sprachen sprechen sprengen spreu springen sprossen sprotten spruch sprudeln sprung spucken spuken spuren spurlos spurwechsel sputen staatenlos stabil stachelschwein stadien stadt stagnation stahl stamm standpunkt stangen stapeln stapfen stark starren starten statik staub staudamm stauen staufer staumauer staunen stauraum stechen stecken steganografie stegreif stehen stehlen stehplatz steht steif steigen steil steinbock stellen stelzen stemmen stempeln stengel steppe sterben steril stetig stich sticken stiefel stiehlt stiel stier stift stigmatisieren stilbruch stilisieren stillen stilmittel stilrichtung stilvoll stimmen stimulieren stinktier stirn stochern stock stoff stollen stolz stopfen stoppen storch stornieren stottern strafen strahl stramm strand strapazen strategisch streben strecken streng streuen strich stroh strom strophen strotzen strukturiert strumpf stuben student studien stufen stuhl stumm stumpf stunk sturheit sturm sturz stutzen subjekt subkultur substantiell subsumieren subtil subunternehmen subvention suchaktion suchen suchhunde sucht suggerieren sukzessiv summen summieren summt sumpf super suppen surfbrett surfen surft suspekt symbiose symbol symmetrie sympathie syndikat synergie synonym syntaktisch system szenarien tabelle tabubruch tabuisieren tacker tadel tafel tagebuch tagelang tagen tagung tagwerk takten taktieren talent talfahrt talsperre talstation tangente tangieren tango tanken tankt tankwagen tannenwald tante tanzabend tanzbar tanzen tanzkunst tanzmusik tanzpaar tanzsaal tapeziert tapfer tapir tarnen tarnt tarnung taschen tassen tastatur tasten tastsinn tatsachen tattoo tauben tauchen tauglich tauschen tausend tauwetter tauziehen taverne taxifahrt teamarbeit teamgeist teamleistung teebeutel teehaus teekanne teerschwarz teeservice teesieb teesorten teestube teich teigtaschen teigwaren teilbar teilen teilgebiet teilhaben teilnahm teilung teilweise teilzeit teint telefon teleobjektiv teller tendieren teppich termin testbetrieb testen testfahrt testlauf testphasen testreihe testverfahren teuer teufel teuflisch texten textil textlich textpassagen textstellen textur textzeilen theater thema themen therapieren thermal thunfisch ticken tiefbau tiefen tieflader tiefpunkt tierart tierbild tierisch tiermedizin tierpark tierreich tierwelt tierzucht tiger tilgen tintenfleck tippen tischbein titan titelbild titulieren toben tochter toilette tolerant tollwut tomaten tonangebend tonart tonaufnahmen tonband tonfall tonfolgen tongebung tonlage tonleiter tonnen tonstudio tontechnik topfit topform topfpflanzen topografie toppen torbogen torheit torpedieren torten tortur tosend total touren toxikologie toxisch trabant traben tracht trafen tragbar tragen tragik tragweite trampeltier trapez trasse traten tratsch trauben trauen traufe traurig treffen treiben trend trennen tresen tresor treten treue treuhand trial triangel tricksen trieb triest trifft trimmen trinken trist tritt triumphieren trivial trocken trollen trommeln trompete tropenhelm tropfen trost trott trotz trubel trugbild trugen trugschluss truhe trunk truthahn tugend tukan tulpen tummeln tumult tundra tunlichst tunnel tupfen turbine turbulent turmbau turmuhr turnen turnhalle turnier turnschuh turnt turnus turnverein tusche typisch typus tyrannisieren uferbereich ufern uferpromenade uhren uhrmacher uhrwerk uhrzeigersinn umarmen umbauen umbenannt umbesetzen umbruch umbuchungen umdenken umdeuten umdrehen umeinander umerziehung umfahren umfallen umfang umfassen umfeld umfragen umfunktionieren umgang umgarnen umgearbeitet umgebaut umgedeutet umgefahren umgegangen umgehen umgekehrt umgeladen umgerechnet umgeschaltet umgewandelt umgezogen umgibt umging umhang umher umhin umjubelt umkehren umkippen umklammern umkleiden umkreisen umkurven umlagen umland umlaufen umlegen umleiten umliegenden umnutzung umorganisieren umorientieren umrahmen umrechnen umringt umriss umrunden umsatz umschalten umsehen umsetzen umsichtig umsiedeln umsonst umsorgen umspannen umspielen umstand umstehend umstieg umstritten umsturz umtausch umtreiben umtriebe umtrunk umverteilen umwandeln umwegen umweht umweltschutz umwerben umwickeln umwirbt umworben umziehen umzingeln umzog umzug unabdingbar unabsehbar unabwendbar unachtsam unakzeptabel unanfechtbar unangebracht unannehmbar unansehnlich unantastbar unappetitlich unartig unattraktiv unaufdringlich unausstehlich unbarmherzig unbeabsichtigt unbebaut unbedacht unbeeindruckt unbefangen unbegreiflich unbehagen unbeirrbar unbekannt unbelastet unbemannt unbeobachtet unbequem unberechenbar unbeschadet unbeteiligt unbeugsam unbewusst unbezahlbar unbrauchbar uncool undankbar undenkbar undeutlich undicht undifferenziert undiszipliniert undurchdringlichen unebenheiten unecht unehrlich uneinheitlich unempfindlich unendlich unentbehrlich unerbittlich unerfahren unerheblich unerkannt unerlaubt unermesslich unerreichbar unerschrocken unerwartet unfair unfall unfassbar unfehlbar unfertig unflexibel unfreiwillig unfug ungeachtet ungebeten ungeduldig ungeeignet ungefiltert ungehalten ungelegen ungemacht ungenannt ungeordnet ungepflegt ungern ungeschehen ungeteilt ungewiss ungeziefer unglaubhaft ungleich ungnade ungunsten ungut unhaltbar unheil unhold unikat uniklinik uninspiriert uninteressant universal unkalkulierbar unkenntlich unklar unklug unkommentiert unkontrollierbar unkoordiniert unkosten unkraut unkritisch unkultiviert unlauter unleserlich unliebsam unlogisch unlustig unmengen unmerklich unmittelbar unmodern unmoralisch unmotiviert unmut unnachahmlich unnahbar unordnung unpassend unpolitisch unpraktisch unproblematisch unqualifiziert unrat unrealistisch unrecht unredlich unreflektiert unreif unrentabel unruhen unsachlich unsanft unsauber unscharf unsensibel unser unsicher unsinn unsitte unsolidarisch unsozial unsportlich unsterblich unstimmigkeiten unstreitig unsummen unsympathisch untauglich unteilbar unten untiefen untragbar untrennbar untypisch unumkehrbar unumstritten ununterbrochen unverantwortlich unvollendet unvorbereitet unwahr unwegsamen unweigerlich unwesen unwetter unwichtig unwiderruflich unwiederholbar unwillig unwirklich unwissen unwohl unzahl unzeit unzertrennlich unzucht unzufrieden unzumutbar unzureichend unzutreffend unzweifelhaft updaten uralt urenkel urfassung urform urgestein urgewalt urheber urknall urkunden urlaub urnen ursachen ursprung urteil urwald urzeiten urzustand utensil utopien vagabunden vakant vakuum validieren vanille variabel variieren vater vegetarisch vehement ventilator verabreden verachten verallgemeinern veranda verarbeiten verausgaben verbal verben verbiegen verblassen verbogen verbracht verbuchen verdacht verdonnern verdrecken verebben veredeln verehren verelendung vererben verewigen verfassen verfechten verfiel verflachen verfolgen verfrachten verfugen vergab vergeben vergibt verglast vergolden vergraben verhaften verheddern verhielt verifizieren verinnerlichen verirren verjagen verkabeln verkehren verklagen verknallen verkohlen verkraften verlassen verlegen verlieben verlosen verlust vermachen vermied vermocht vermummen verneinen vernommen vernunft verordnen verpachten verpennen verpfiffen verplanen verprellen verpulvern verqualmen verraten verrechnen verrichten verrohen verruf versagen versehen versichern versorgen verspannungen verstanden versuchen vertagen verteidigen vertiefen vertonen vertragen vertuschen veruntreuen verursachen vervielfachen vervollkommnen verwachsen verweben verwickeln verwoben verwundbar verzaubern verzeihen verzichten verzogen verzug verzweifeln viadukt vibrieren video vielfach vielleicht vielmehr vielsagend vielversprechend vielzahl vierbeinig viereck vierfach vierhundert vierkantholz viermal vierundzwanzig vierzehn villa villen vintage vinylplatte viren virologen virtuell virusinfektion visier vision visite visuell vitamine vitrine vogel vokabel vokal voliere vollbad volldampf vollmond vollpension vollrausch volltreffer vollversammlung vollwertig vollzeit volumen voneinander vorabend vorahnung vorankommen vorarbeit voraus vorbehalt vorbild vorboten vorbringen vordach vordem vordringen voreilig vorenthalten vorerst vorfahren vorfeld vorfinanzieren vorfreude vorfuhr vorgaben vorgearbeitet vorgibt vorgreifen vorhaben vorher vorhielt vorhof vorhut vorjahr vorkam vorkehrungen vorkommen vorladung vorleben vorlieben vormachen vormerken vormittag vormonat vormund vornahm vorne vornherein vornimmt vorort vorplatz vorpreschen vorrang vorrecht vorrichtung vorsah vorschau vorsehen vorsichtig vorsorgen vorspannen vorstadt vortag vorteil vortrag voruntersuchung vorurteil vorverlegen vorwahl vorweg vorwiegend vorwort vorwurf vorzeichen vorziehen vulkan waage waagrecht waagschale waben wachdienst wachen wachhalten wachleute wacholderbeere wachpersonal wachsen wacht wacklig waden wagemut wagen waggon waghalsige wagten wahlabend wahlchancen wahldebakel wahlen wahlgang wahlheimat wahljahr wahlkabine wahlparty wahlrecht wahltag wahlunterlagen wahlweise wahlzettel wahnsinn wahnvorstellungen wahnwitzig wahren wahrgemacht wahrhaben wahrlich wahrnehmen wahrsagung wahrt wahrzeichen waldarbeiten waldbestand waldgebiet waldhaus waldlauf waldrand waldsee waldweg wallung walten walzen walzwerk wandbild wandel wandlung wandmalerei wandschmuck wangen wanken wankt wannen wanzen wappen wappnen waran warben waren warfen warmherzig warmwasser warnblinkanlage warnen warnhinweis warnschilder warnt warnung warnzeichen warst warten wartung warum warzen waschen wasser waten watscheln wattwurm webbasiert weben webstuhl wechseln wecken weckruf weckt wedel weder wegbegleiter wegbleiben wegbrechen wegdiskutieren wegelagerei wegen wegfahren wegfielen weggehen wegkommen weglassen wegnehmen wegnimmt wegrand wegschauen wegsehen wegstecken wegweisend wegziehen wehen wehgetan wehklagen wehmut wehren wehrhaft wehrlos wehten wehtun weich weiden weihnachten weiht weilen weilt weinanbau weinberg weinen weinfest weingut weinhandel weinkarte weinlaune weinproben weinreben weintrauben weinwirtschaft weise weisheit weismachen weist weisung weitab weitblick weiten weitgehend weither weitreichend weitschuss weitverbreitet weizen welken wellblech wellen wellpappe welpen weltall weltfremd weltgegenden weltmeere weltoffen weltschmerz weltumsegelung weltweit wenden wendig wendung wenig wenngleich werben werbung werden werfen werft werkbank werken werkhalle werktag werkvertrag werkzeug wermutstropfen wertarbeit wertbrief werten wertigkeit wertlos wertminderung wertpapier wertung wertverlust wertzuwachs wesen weshalb wespen westen westseite westufer westwind weswegen wettbewerb wetten wettkampf wettlauf wettmachen wettrennen wettstreit wichen wichtel wickeln widder widmen widmung widrige wiegen wiegt wiesen wieso wieviel wieweit wiewohl wildfremd wildhasen wildkatzen wildnis wildpark wildschwein wildtier wildwasser willen willkommen willst wimmeln wimpel winden windgeschwindigkeit windhund windig windjacken windkanal windrad windschatten windungen winkelmesser winkt winter winzer winzig wipfel wippen wippt wirbel wirbt wirft wirken wirklich wirksam wirkt wirkung wirren wirrungen wirrwarr wirsing wirst wirtschaften wischen wisent wissen wisst witzbold witze witzfigur witzig woanders wobei wochen wodurch wogegen wogen woher wohin wohlauf wohlbefinden wohle wohlfahrt wohlgefallen wohlhabend wohlig wohlklang wohlmeinend wohlstand wohltat wohlverdient wohnbau wohncontainer wohnen wohnform wohngebiet wohnhaft wohnkomfort wohnlage wohnmobil wohnort wohnprojekt wohnquartier wohnraum wohnsiedlung wohnt wohnumfeld wohnviertel wohnwagen wohnzimmer wolfram wolfsrudel wolken wolkig wolldecke wolle wollust womit wonach wonnen woran worauf worden worin wortbruch worte wortfetzen wortgefecht wortkarg wortlaut wortreich wortwahl worum worunter wovon wovor wucher wuchs wucht wunden wunsch wurde wurfgeschosse wurmt wurschteln wurzel wuseln wusste wutanfall wutausbruch wutentbrannt xylofon yacht yuppie zacken zackig zaghaft zahlbar zahlen zahllose zahlreich zahlt zahlung zahmen zahnarzt zahnersatz zahnfleisch zahnlos zahnmedizin zahnpasta zahnrad zahnseide zahntechnik zander zange zankapfel zanken zapfen zapfhahn zapft zappeln zarte zartheit zauber zaudern zaungast zaunpfahl zebra zeche zecken zehen zehnfach zehnkampf zehren zehrt zeichen zeigen zeigt zeilen zeitablauf zeitbegrenzung zeitdokument zeiteinheit zeitfaktor zeitgeist zeitig zeitkonto zeitlang zeitmanagement zeitnah zeitplan zeitraffer zeitschrift zeitumstellung zeitverlust zeitweilig zeitzeugen zelebrieren zellen zellkern zellstoff zellteilung zeltdach zelten zeltlager zeltplatz zementieren zenit zensieren zensor zensur zentimeter zentner zentral zerbrach zeremonie zerfallen zerfetzt zerfiel zerfressen zergehen zerhacken zerkleinern zerknirschen zerkratzen zerlegen zermalmen zerplatzen zerquetschen zerrbild zerreden zerrieben zerrt zerrung zerschellen zersetzen zersplittern zerstochen zerteilen zertifikat zertreten zerzausen zettel zeugen zeugnis zicken zickig ziegen ziehen ziehharmonika zieht ziehung zielbereich zielen zielgebiet ziellinie zielorientiert zielperson zielscheibe zielt zielvereinbarungen ziemlich zierde zieren zierlich zierpflanzen ziert ziesel ziffer zimmer zimperlich zinken zinsbindung zinseinnahmen zinslast zinsniveau zinspolitik zinssatz zinszahlungen zipfel zirkel zirkulation zischen zitat zitieren zitronen zittern zivildienst zocken zoffen zogen zollamt zollen zollfrei zombie zonen zoodirektor zoologie zoomen zornig zuallererst zuarbeiten zuber zubetoniert zubewegt zubringen zubrot zucchini zucht zucken zuckt zuckungen zudem zudrehen zueinander zuerkannt zuerst zufahrt zufall zuflucht zufolge zufrieden zufuhr zugabe zugang zugbegleiter zugebaut zugefallen zugegangen zugelangt zugemacht zugeneigt zugeordnet zugeparkt zugerechnet zugetan zugewachsen zugezogen zugfahrt zugibt zuging zugkraft zugleich zugluft zugmaschine zugnummer zugpferd zugreifen zugriff zugrunde zugunsten zugute zugverbindung zugzwang zuhalten zuhauf zuhilfenahme zujubeln zukauf zukunft zulagen zulassen zulauf zulegen zuletzt zuliebe zumachen zumal zumeist zumindest zumutbar zunahm zunehmen zuneigen zunft zunge zunichte zunimmt zunutze zuordnen zupacken zupfen zupft zurechnen zureden zurief zurschaustellen zuruf zurzeit zusagen zusah zusammen zusatz zuschauen zusehen zusendung zusetzen zusichern zusieht zuspielen zusprach zustand zustehen zustimmen zustrom zutaten zuteilen zutiefst zutrauen zutreffen zutrifft zutun zuungunsten zuversicht zuviel zuvor zuwachs zuwege zuweilen zuwenden zuwider zuzahlen zuziehen zuzug zwang zwanzig zweckgebunden zweibeinig zweideutig zweieinhalb zweifach zweig zweihundert zweikampf zweimal zweirad zweisamkeit zweit zwerchfell zwerge zwicken zwieback zwielicht zwiespalt zwietracht zwilling zwingen zwinkert zwirn zwischen zwitschern zyklen zyklisch zyklus zylinder zyniker zynisch zypressen".split(" "),
+  };
+
+  /* ===================== Zufall (CSPRNG, unverzerrt) ===================== */
+  const POOL = new Uint32Array(256);
+  let poolIdx = POOL.length;
+  function rand32(){
+    if(poolIdx >= POOL.length){ crypto.getRandomValues(POOL); poolIdx = 0; }
+    return POOL[poolIdx++];
+  }
+  function randInt(n){
+    if(!(n >= 1) || n > 0x100000000) throw new RangeError('randInt: ' + n);
+    const lim = 0x100000000 - (0x100000000 % n);   // grösstes Vielfaches von n ≤ 2^32
+    let x;
+    do { x = rand32(); } while(x >= lim);
+    return x % n;
+  }
+  const pick = arr => arr[randInt(arr.length)];
+
+  /* ===================== Mathematik ===================== */
+  function log2Big(b){
+    if(b <= 0n) return -Infinity;
+    const s = b.toString(16);
+    if(s.length <= 13) return Math.log2(Number(b));
+    return Math.log2(parseInt(s.slice(0, 13), 16)) + 4 * (s.length - 13);
+  }
+  const LOG2_10 = Math.log2(10);
+
+  /* ===================== Einstellungen ===================== */
+  const DEF = {
+    mode:'chars',
+    cLen:20, cU:true, cL:true, cD:true, cS:true, cSym:'std', cEvery:true, cFirst:true, cAmb:false, cExtra:'', cExcl:'',
+    pWords:5, pList:'kurz', pSep:'-', pNum:2, pCap:true, pSym:true,
+    nLen:6, nTriv:true,
+    bN:10,
+  };
+  const KEY = 'boeffes.tresor.v1';
+  let S = Object.assign({}, DEF);
+  try {
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const o = JSON.parse(raw);
+      for(const k in DEF) if(o && typeof o[k] === typeof DEF[k]) S[k] = o[k];
+    }
+  } catch(e){}
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  S.cLen = clamp(S.cLen|0, 4, 128); S.pWords = clamp(S.pWords|0, 3, 12);
+  S.nLen = clamp(S.nLen|0, 4, 12); S.bN = clamp(S.bN|0, 2, 500); S.pNum = clamp(S.pNum|0, 0, 4);
+  if(!['chars','phrase','pin'].includes(S.mode)) S.mode = 'chars';
+  if(!['std','all'].includes(S.cSym)) S.cSym = 'std';
+  if(!['kurz','lang'].includes(S.pList)) S.pList = 'kurz';
+  if(!['-','.','_',' ','','#'].includes(S.pSep)) S.pSep = '-';
+
+  /* ===================== Konfiguration je Modus ===================== */
+  const uniq = arr => Array.from(new Set(arr));
+  const cleanChars = str => uniq(Array.from(str || '').filter(c => !/\s/u.test(c) && !/\p{C}/u.test(c)));
+
+  function charsConfig(){
+    const groups = [];
+    if(S.cU) groups.push({id:'U', chars:UPPER});
+    if(S.cL) groups.push({id:'L', chars:LOWER});
+    if(S.cD) groups.push({id:'D', chars:DIGIT});
+    if(S.cS) groups.push({id:'S', chars:S.cSym === 'all' ? SYM_ALL : SYM_STD});
+    const excl = new Set(cleanChars(S.cExcl));
+    let base = [];
+    groups.forEach(g => g.chars.forEach(c => { if(!(S.cAmb && AMBIG.has(c))) base.push(c); }));
+    const pool = uniq(base.concat(cleanChars(S.cExtra))).filter(c => !excl.has(c));
+    const N = pool.length, L = S.cLen;
+    const classes = S.cEvery
+      ? groups.map(g => new Set(pool.filter(IS[g.id]))).filter(set => set.size > 0)
+      : [];
+    const F = pool.filter(isLetter);
+    const first = S.cFirst && F.length > 0;
+    if(N < 2) return {err:'Zu wenige Zeichen übrig. Mindestens eine Gruppe aktivieren oder weniger ausschliessen.'};
+
+    // exakte Anzahl gültiger Passwörter (Inklusion–Exklusion über die Pflichtgruppen)
+    let valid = 0n;
+    const k = classes.length;
+    for(let mask = 0; mask < (1 << k); mask++){
+      const missing = new Set();
+      let bits = 0;
+      for(let i = 0; i < k; i++) if(mask & (1 << i)){ bits++; classes[i].forEach(c => missing.add(c)); }
+      const rest = BigInt(N - missing.size);
+      let term;
+      if(first){
+        const f = BigInt(F.filter(c => !missing.has(c)).length);
+        term = f * rest ** BigInt(L - 1);
+      } else {
+        term = rest ** BigInt(L);
+      }
+      valid += (bits % 2 ? -term : term);
+    }
+    if(valid <= 0n) return {err:`Für ${L} Zeichen sind zu viele Regeln aktiv. Länge erhöhen oder Regeln lockern.`};
+    return {
+      pool, F, first, classes, L, N,
+      bits: log2Big(valid),
+      poolLabel: `${fmtN(N)} <small>Zeichen</small>`,
+      lenLabel: `${L} <small>Zeichen</small>`,
+    };
+  }
+  function genChars(c){
+    for(let t = 0; t < 5e6; t++){
+      const out = new Array(c.L);
+      out[0] = c.first ? pick(c.F) : pick(c.pool);
+      for(let i = 1; i < c.L; i++) out[i] = pick(c.pool);
+      if(c.classes.length && !c.classes.every(set => out.some(ch => set.has(ch)))) continue;
+      return out.join('');
+    }
+    throw new Error('Keine gültige Kombination gefunden');
+  }
+
+  function phraseConfig(){
+    const list = WL[S.pList];
+    const n = S.pWords;
+    let bits = n * Math.log2(list.length);
+    if(S.pSep === '#') bits += (n - 1) * LOG2_10;
+    bits += S.pNum * LOG2_10;
+    if(S.pSym) bits += Math.log2(SYM_STD.length);
+    return {
+      list, n, bits,
+      poolLabel: `${fmtN(list.length)} <small>Wörter</small>`,
+      lenLabel: null,
+    };
+  }
+  function genPhrase(c){
+    const words = [];
+    for(let i = 0; i < c.n; i++){
+      let w = pick(c.list);
+      if(S.pCap) w = w.charAt(0).toUpperCase() + w.slice(1);
+      words.push(w);
+    }
+    let s = words[0];
+    for(let i = 1; i < words.length; i++) s += (S.pSep === '#' ? String(randInt(10)) : S.pSep) + words[i];
+    for(let i = 0; i < S.pNum; i++) s += String(randInt(10));
+    if(S.pSym) s += pick(SYM_STD);
+    return s;
+  }
+
+  function isTrivialPin(p){
+    if(/^(\d)\1+$/.test(p)) return true;
+    let up = true, down = true;
+    for(let i = 1; i < p.length; i++){
+      const d = p.charCodeAt(i) - p.charCodeAt(i - 1);
+      if(d !== 1) up = false;
+      if(d !== -1) down = false;
+    }
+    return up || down;
+  }
+  function pinConfig(){
+    const L = S.nLen;
+    let total = 10n ** BigInt(L);
+    if(S.nTriv) total -= 10n + (L <= 10 ? 2n * BigInt(11 - L) : 0n);
+    return {
+      L, bits: log2Big(total),
+      poolLabel: `10 <small>Ziffern</small>`,
+      lenLabel: `${L} <small>Stellen</small>`,
+    };
+  }
+  function genPin(c){
+    for(let t = 0; t < 1e5; t++){
+      let p = '';
+      for(let i = 0; i < c.L; i++) p += String(randInt(10));
+      if(S.nTriv && isTrivialPin(p)) continue;
+      return p;
+    }
+    throw new Error('PIN');
+  }
+
+  const MODES = {
+    chars:  {cfg:charsConfig,  gen:genChars,  title:'Zeichen'},
+    phrase: {cfg:phraseConfig, gen:genPhrase, title:'Passphrase'},
+    pin:    {cfg:pinConfig,    gen:genPin,    title:'PIN'},
+  };
+
+  /* ===================== Formatierung ===================== */
+  const NF = new Intl.NumberFormat('de-CH');
+  const fmtN = n => NF.format(n);
+  const SUP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  const sup = n => String(n).split('').map(c => SUP[c] || c).join('');
+  const RATE = 1e11;                        // angenommene Versuche pro Sekunde
+  function crackTime(bits){
+    // Durchschnitt: die Hälfte des Suchraums
+    const l10 = (bits - 1) * Math.log10(2) - Math.log10(RATE);
+    if(l10 < 0) return 'sofort';
+    const sec = Math.pow(10, l10);
+    const one = (v, a, b) => `${fmtN(Math.round(v))} ${Math.round(v) === 1 ? a : b}`;
+    if(sec < 60) return one(sec, 'Sekunde', 'Sekunden');
+    if(sec < 3600) return one(sec / 60, 'Minute', 'Minuten');
+    if(sec < 86400) return one(sec / 3600, 'Stunde', 'Stunden');
+    const YEAR = 31557600;
+    if(sec < YEAR) return one(sec / 86400, 'Tag', 'Tage');
+    const ly = l10 - Math.log10(YEAR);
+    const y = Math.pow(10, ly);
+    if(y < 1e6) return one(y, 'Jahr', 'Jahre');
+    if(y < 1e9) return `${(y / 1e6).toFixed(y < 1e7 ? 1 : 0).replace('.', ',')} Mio. Jahre`;
+    if(y < 1e12) return `${(y / 1e9).toFixed(y < 1e10 ? 1 : 0).replace('.', ',')} Mrd. Jahre`;
+    return `10${sup(Math.floor(ly))} Jahre`;
+  }
+  function level(bits){
+    if(bits < 36) return [1, 'Schwach'];
+    if(bits < 60) return [2, 'Mässig'];
+    if(bits < 80) return [3, 'Stark'];
+    if(bits < 128) return [4, 'Sehr stark'];
+    return [5, 'Ausgezeichnet'];
+  }
+  const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function colorize(s){
+    let out = '', cur = '', buf = '';
+    const flush = () => { if(buf){ out += cur ? `<span class="${cur}">${esc(buf)}</span>` : esc(buf); buf = ''; } };
+    for(const ch of s){
+      const cls = (ch >= '0' && ch <= '9') ? 'd' : (isLetter(ch) ? '' : 's');
+      if(cls !== cur){ flush(); cur = cls; }
+      buf += ch;
+    }
+    flush();
+    return out;
+  }
+  const maskStr = s => '•'.repeat(Array.from(s).length);
+
+  /* ===================== Zustand + Rendering ===================== */
+  const pwEl = $('#pw'), meter = $('#meter');
+  let current = '', currentBits = 0, cfg = null, masked = false, scrambleRaf = 0;
+
+  function fontFor(len){
+    const narrow = window.innerWidth < 560;
+    if(len <= 14) return narrow ? 26 : 36;
+    if(len <= 24) return narrow ? 21 : 30;
+    if(len <= 40) return narrow ? 17 : 24;
+    if(len <= 72) return narrow ? 15 : 19;
+    return narrow ? 13 : 16;
+  }
+
+  function paint(){
+    cancelAnimationFrame(scrambleRaf);
+    if(!cfg || cfg.err){
+      pwEl.className = 'pw err';
+      pwEl.textContent = cfg ? cfg.err : '';
+      return;
+    }
+    const len = Array.from(current).length;
+    pwEl.style.setProperty('--fs', fontFor(len) + 'px');
+    pwEl.className = 'pw' + (masked ? ' masked' : '');
+    pwEl.innerHTML = masked ? maskStr(current) : colorize(current);
+  }
+
+  function scramble(){
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce || masked || !current){ paint(); return; }
+    const chars = Array.from(current);
+    const src = (cfg && cfg.pool) ? cfg.pool : (S.mode === 'pin' ? DIGIT : LOWER.concat(UPPER));
+    const t0 = performance.now(), dur = Math.min(420, 160 + chars.length * 8);
+    pwEl.style.setProperty('--fs', fontFor(chars.length) + 'px');
+    pwEl.className = 'pw';
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur);
+      const fixed = Math.floor(p * chars.length);
+      let s = '';
+      for(let i = 0; i < chars.length; i++){
+        // nur Optik: Math.random reicht hier, das echte Passwort stammt aus dem CSPRNG
+        s += i < fixed || /\s/.test(chars[i]) ? chars[i] : src[Math.floor(Math.random() * src.length)];
+      }
+      pwEl.innerHTML = colorize(s);
+      if(p < 1) scrambleRaf = requestAnimationFrame(step);
+      else { paint(); pwEl.classList.add('flash'); }
+    };
+    scrambleRaf = requestAnimationFrame(step);
+  }
+
+  function updateStats(){
+    const ok = cfg && !cfg.err;
+    $('#copy').disabled = !ok; $('#regen').disabled = !ok; $('#bGo').disabled = !ok;
+    if(!ok){
+      meter.dataset.lv = '0'; $('#mLab').textContent = 'Ungültig'; $('#mBits').textContent = '';
+      ['#sBits','#sPool','#sLen','#sTime'].forEach(s => $(s).textContent = '–');
+      return;
+    }
+    const [lv, lab] = level(cfg.bits);
+    meter.dataset.lv = String(lv);
+    $('#mLab').textContent = lab;
+    $('#mBits').innerHTML = `<b>${Math.floor(cfg.bits)}</b> Bit`;
+    $('#sBits').innerHTML = `${cfg.bits.toFixed(1).replace('.', ',')} <small>Bit</small>`;
+    $('#kPool').textContent = S.mode === 'phrase' ? 'Wortliste' : (S.mode === 'pin' ? 'Vorrat' : 'Zeichenvorrat');
+    $('#sPool').innerHTML = cfg.poolLabel;
+    $('#sLen').innerHTML = cfg.lenLabel || `${S.pWords} <small>Wörter ·</small> ${Array.from(current).length} <small>Zeichen</small>`;
+    $('#sTime').textContent = crackTime(cfg.bits);
+  }
+
+  function generate(animate){
+    cfg = MODES[S.mode].cfg();
+    if(cfg.err){ current = ''; paint(); updateStats(); return; }
+    current = MODES[S.mode].gen(cfg);
+    updateStats();
+    animate ? scramble() : paint();
+  }
+
+  /* ===================== UI-Bindung ===================== */
+  function setRangeFill(r){
+    const p = (r.value - r.min) / (r.max - r.min) * 100;
+    r.style.setProperty('--p', p + '%');
+  }
+  function bindNumber(key, min, max, rangeId, live = true){
+    const inp = $('#' + key), rng = rangeId ? $('#' + rangeId) : null;
+    const set = v => {
+      v = clamp(Math.round(+v || min), min, max);
+      S[key] = v; inp.value = v;
+      if(rng){ rng.value = Math.min(v, +rng.max); setRangeFill(rng); }
+      save();
+      if(live) generate(false);
+    };
+    inp.value = S[key];
+    if(rng){ rng.value = Math.min(S[key], +rng.max); setRangeFill(rng); rng.addEventListener('input', () => set(rng.value)); }
+    inp.addEventListener('change', () => set(inp.value));
+    inp.addEventListener('input', () => {
+      const v = +inp.value;
+      if(Number.isFinite(v) && v >= min && v <= max){
+        S[key] = Math.round(v);
+        if(rng){ rng.value = Math.min(S[key], +rng.max); setRangeFill(rng); }
+        save();
+        if(live) generate(false);
+      }
+    });
+    $$(`[data-step="${key}"]`).forEach(b => b.addEventListener('click', () => set(S[key] + (+b.dataset.d))));
+    return set;
+  }
+  function bindChoice(boxSel, key, parse){
+    const box = $(boxSel);
+    const sync = () => box.querySelectorAll('.fmt').forEach(b => b.classList.toggle('on', parse(b.dataset.v) === S[key]));
+    box.addEventListener('click', e => {
+      const b = e.target.closest('.fmt'); if(!b) return;
+      S[key] = parse(b.dataset.v); sync(); save(); refreshUI(); generate(true);
+    });
+    sync();
+  }
+  function bindSwitch(id, key){
+    const el = $('#' + id);
+    el.checked = !!S[key];
+    el.addEventListener('change', () => { S[key] = el.checked; save(); refreshUI(); generate(true); });
+  }
+  function bindText(id, key){
+    const el = $('#' + id);
+    el.value = S[key];
+    el.addEventListener('input', () => { S[key] = el.value; save(); generate(false); });
+  }
+
+  // Modus
+  function setMode(m){
+    S.mode = m; save();
+    $$('.mode').forEach(b => b.setAttribute('aria-selected', String(b.dataset.mode === m)));
+    $$('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== m);
+    $('#optTitle').textContent = 'Einstellungen · ' + MODES[m].title;
+    refreshUI();
+    generate(true);
+  }
+  $$('.mode').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  $('.modes').addEventListener('keydown', e => {
+    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const keys = Object.keys(MODES), i = keys.indexOf(S.mode);
+    const n = keys[(i + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length];
+    setMode(n); $(`.mode[data-mode="${n}"]`).focus(); e.preventDefault();
+  });
+
+  // Zeichen
+  bindNumber('cLen', 4, 128, 'cLenR');
+  $('#groups').addEventListener('click', e => {
+    const b = e.target.closest('.fmt'); if(!b) return;
+    const k = 'c' + b.dataset.g;
+    const active = ['cU','cL','cD','cS'].filter(x => S[x]).length;
+    if(S[k] && active === 1 && !cleanChars(S.cExtra).length){ toast('Mindestens eine Gruppe bleibt aktiv', true); return; }
+    S[k] = !S[k]; save(); refreshUI(); generate(true);
+  });
+  bindChoice('#symSet', 'cSym', v => v);
+  bindSwitch('cEvery', 'cEvery'); bindSwitch('cFirst', 'cFirst'); bindSwitch('cAmb', 'cAmb');
+  bindText('cExtra', 'cExtra'); bindText('cExcl', 'cExcl');
+
+  // Passphrase
+  bindNumber('pWords', 3, 12, 'pWordsR');
+  bindChoice('#pList', 'pList', v => v);
+  bindChoice('#pSep', 'pSep', v => v);
+  bindChoice('#pNum', 'pNum', v => +v);
+  bindSwitch('pCap', 'pCap'); bindSwitch('pSym', 'pSym');
+
+  // PIN
+  bindNumber('nLen', 4, 12, 'nLenR');
+  bindSwitch('nTriv', 'nTriv');
+
+  function refreshUI(){
+    $$('#groups .fmt').forEach(b => b.classList.toggle('on', !!S['c' + b.dataset.g]));
+    const symOn = S.cS;
+    $$('#symSet .fmt').forEach(b => { b.disabled = !symOn; });
+    const set = S.cSym === 'all' ? SYM_ALL : SYM_STD;
+    $('#symHint').innerHTML = `<code>${esc(set.join(' '))}</code>`;
+    // "Beginnt mit Buchstabe" nur sinnvoll, wenn Buchstaben im Vorrat sind
+    const hasLetters = S.cU || S.cL || cleanChars(S.cExtra).some(isLetter);
+    $('#cFirst').disabled = !hasLetters;
+  }
+
+  // Aktionen
+  $('#regen').addEventListener('click', () => generate(true));
+  $('#mask').addEventListener('click', () => {
+    masked = !masked;
+    $('#mask').setAttribute('aria-pressed', String(masked));
+    $('#mask').setAttribute('aria-label', masked ? 'Passwort anzeigen' : 'Passwort verbergen');
+    $('#mask .eye-on').style.display = masked ? 'none' : '';
+    $('#mask .eye-off').style.display = masked ? '' : 'none';
+    paint(); renderBatch();
+  });
+
+  /* ---------- Zwischenablage ---------- */
+  async function copyText(text){
+    try {
+      if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(text); return true; }
+    } catch(e){}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch(e){ return false; }
+  }
+  let toastT = 0;
+  function toast(msg, warn){
+    $('#toastTxt').textContent = msg;
+    $('#toast i').style.background = warn ? 'var(--warn)' : 'var(--ok)';
+    $('#toast i').style.boxShadow = warn ? '0 0 8px var(--warn)' : '0 0 8px var(--ok)';
+    $('#toast').classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('show'), 1700);
+  }
+  function flashBtn(btn, label){
+    const span = btn.querySelector('span');
+    const old = span ? span.textContent : '';
+    btn.classList.add('done'); if(span) span.textContent = label;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => { btn.classList.remove('done'); if(span) span.textContent = old; }, 1400);
+  }
+  async function copyCurrent(){
+    if(!current) return;
+    if(await copyText(current)){ flashBtn($('#copy'), 'Kopiert'); toast('Passwort kopiert'); }
+    else toast('Kopieren nicht möglich', true);
+  }
+  $('#copy').addEventListener('click', copyCurrent);
+
+  // Klick auf die Anzeige markiert alles (bei Maske: kopieren)
+  pwEl.addEventListener('click', () => { if(masked) copyCurrent(); });
+
+  /* ---------- Tastatur ---------- */
+  document.addEventListener('keydown', e => {
+    const t = e.target;
+    const typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+    if(e.code === 'Space' && !typing && !(t && (t.tagName === 'BUTTON' || t.tagName === 'A' || t.tagName === 'LABEL'))){
+      e.preventDefault(); generate(true);
+    }
+    if((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C') && !typing){
+      const sel = window.getSelection();
+      if(!sel || sel.isCollapsed){ e.preventDefault(); copyCurrent(); }
+    }
+  });
+
+  /* ===================== Stapel ===================== */
+  let batch = [], batchBits = 0, batchMode = '';
+  bindNumber('bN', 2, 500, null, false);
+  $('#bPre').addEventListener('click', e => {
+    const b = e.target.closest('.fmt'); if(!b) return;
+    S.bN = +b.dataset.v; $('#bN').value = S.bN; save(); syncPre();
+  });
+  function syncPre(){ $$('#bPre .fmt').forEach(b => b.classList.toggle('on', +b.dataset.v === S.bN)); }
+  $('#bN').addEventListener('input', syncPre);
+  $('#bN').addEventListener('change', syncPre);
+  $$('[data-step="bN"]').forEach(b => b.addEventListener('click', syncPre));
+  syncPre();
+
+  const COPY_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/></svg>';
+  const OK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+  $('#bGo').addEventListener('click', () => {
+    const c = MODES[S.mode].cfg();
+    if(c.err){ toast(c.err, true); return; }
+    const n = clamp(S.bN, 2, 500);
+    batch = [];
+    const seen = new Set();
+    // Duplikate sind bei sinnvoller Entropie praktisch ausgeschlossen; bei kurzen PINs aktiv vermeiden
+    for(let i = 0, guard = 0; batch.length < n && guard < n * 50; guard++){
+      const p = MODES[S.mode].gen(c);
+      if(seen.has(p)) continue;
+      seen.add(p); batch.push(p); i++;
+    }
+    batchBits = c.bits; batchMode = MODES[S.mode].title;
+    $('#bOut').hidden = false;
+    renderBatch();
+  });
+  function renderBatch(){
+    if($('#bOut').hidden) return;
+    $('#bCount').innerHTML = `<b>${batch.length}</b> × ${esc(batchMode)} · ${Math.floor(batchBits)} Bit`;
+    const ol = $('#bList');
+    ol.innerHTML = batch.map((p, i) =>
+      `<li><span class="no">${String(i + 1).padStart(2, '0')}</span>` +
+      `<span class="val${masked ? ' masked' : ''}">${masked ? maskStr(p) : colorize(p)}</span>` +
+      `<button class="ibtn" type="button" data-i="${i}" title="Kopieren" aria-label="Passwort ${i + 1} kopieren">${COPY_SVG}</button></li>`
+    ).join('');
+    ol.querySelectorAll('li').forEach((li, i) => li.style.animationDelay = Math.min(i, 20) * 12 + 'ms');
+  }
+  $('#bList').addEventListener('click', async e => {
+    const b = e.target.closest('.ibtn'); if(!b) return;
+    const p = batch[+b.dataset.i];
+    if(await copyText(p)){
+      b.classList.add('ok'); b.innerHTML = OK_SVG;
+      setTimeout(() => { b.classList.remove('ok'); b.innerHTML = COPY_SVG; }, 1200);
+      toast(`Nr. ${+b.dataset.i + 1} kopiert`);
+    } else toast('Kopieren nicht möglich', true);
+  });
+  $('#bCopy').addEventListener('click', async () => {
+    if(!batch.length) return;
+    if(await copyText(batch.join('\r\n'))){ flashBtn($('#bCopy'), 'Kopiert'); toast(`${batch.length} Passwörter kopiert`); }
+    else toast('Kopieren nicht möglich', true);
+  });
+  $('#bClear').addEventListener('click', () => {
+    batch = []; $('#bList').innerHTML = ''; $('#bOut').hidden = true;
+  });
+
+  /* ---------- Export ---------- */
+  const stamp = () => { const d = new Date(), z = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`; };
+  function download(blob, name){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+  function toCsv(list){
+    const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+    return '﻿' + [q('Passwort')].concat(list.map(q)).join('\r\n') + '\r\n';
+  }
+  $('#bCsv').addEventListener('click', () => {
+    if(!batch.length) return;
+    download(new Blob([toCsv(batch)], {type:'text/csv;charset=utf-8'}), `tresor-${stamp()}.csv`);
+  });
+  $('#bXlsx').addEventListener('click', () => {
+    if(!batch.length) return;
+    download(new Blob([buildXlsx(batch)], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}), `tresor-${stamp()}.xlsx`);
+  });
+
+  /* ---------- Minimaler XLSX-Schreiber (ZIP ohne Kompression) ---------- */
+  const CRC_T = (() => { const t = new Uint32Array(256); for(let n = 0; n < 256; n++){ let c = n; for(let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(u8){ let c = 0xFFFFFFFF; for(let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  function zipStore(files){
+    const enc = new TextEncoder();
+    const d = new Date();
+    const dosTime = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+    const dosDate = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+    const parts = [], central = [];
+    let offset = 0;
+    for(const f of files){
+      const name = enc.encode(f.name);
+      const data = typeof f.data === 'string' ? enc.encode(f.data) : f.data;
+      const crc = crc32(data);
+      const lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+      lh.setUint16(10, dosTime, true); lh.setUint16(12, dosDate, true); lh.setUint32(14, crc, true);
+      lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+      parts.push(new Uint8Array(lh.buffer), name, data);
+      const ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+      ch.setUint16(12, dosTime, true); ch.setUint16(14, dosDate, true); ch.setUint32(16, crc, true);
+      ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true);
+      ch.setUint16(30, 0, true); ch.setUint16(32, 0, true); ch.setUint16(34, 0, true); ch.setUint16(36, 0, true);
+      ch.setUint32(38, 0, true); ch.setUint32(42, offset, true);
+      central.push(new Uint8Array(ch.buffer), name);
+      offset += 30 + name.length + data.length;
+    }
+    const cdSize = central.reduce((s, a) => s + a.length, 0);
+    const eo = new DataView(new ArrayBuffer(22));
+    eo.setUint32(0, 0x06054b50, true); eo.setUint16(4, 0, true); eo.setUint16(6, 0, true);
+    eo.setUint16(8, files.length, true); eo.setUint16(10, files.length, true);
+    eo.setUint32(12, cdSize, true); eo.setUint32(16, offset, true); eo.setUint16(20, 0, true);
+    const all = parts.concat(central, [new Uint8Array(eo.buffer)]);
+    const out = new Uint8Array(all.reduce((s, a) => s + a.length, 0));
+    let p = 0; for(const a of all){ out.set(a, p); p += a.length; }
+    return out;
+  }
+  const xesc = s => String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function buildXlsx(list){
+    const NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+    const RNS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    const PNS = 'http://schemas.openxmlformats.org/package/2006/relationships';
+    const head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+    const maxLen = list.reduce((m, p) => Math.max(m, Array.from(p).length), 8);
+    const rows = [`<row r="1"><c r="A1" t="inlineStr" s="1"><is><t>Nr</t></is></c><c r="B1" t="inlineStr" s="1"><is><t>Passwort</t></is></c></row>`]
+      .concat(list.map((p, i) => `<row r="${i + 2}"><c r="A${i + 2}"><v>${i + 1}</v></c><c r="B${i + 2}" t="inlineStr" s="2"><is><t xml:space="preserve">${xesc(p)}</t></is></c></row>`));
+    const now = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+    return zipStore([
+      {name:'[Content_Types].xml', data: head +
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/>' +
+        '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+        '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+        '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+        '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
+        '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>' +
+        '</Types>'},
+      {name:'_rels/.rels', data: head +
+        `<Relationships xmlns="${PNS}">` +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+        '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
+        '</Relationships>'},
+      {name:'docProps/core.xml', data: head +
+        '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+        '<dc:title>Tresor Passwörter</dc:title><dc:creator>Boeffes ToolBox</dc:creator>' +
+        `<dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified>` +
+        '</cp:coreProperties>'},
+      {name:'docProps/app.xml', data: head +
+        '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Boeffes ToolBox</Application></Properties>'},
+      {name:'xl/workbook.xml', data: head +
+        `<workbook xmlns="${NS}" xmlns:r="${RNS}"><sheets><sheet name="Passwörter" sheetId="1" r:id="rId1"/></sheets></workbook>`},
+      {name:'xl/_rels/workbook.xml.rels', data: head +
+        `<Relationships xmlns="${PNS}">` +
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+        '</Relationships>'},
+      {name:'xl/styles.xml', data: head +
+        `<styleSheet xmlns="${NS}">` +
+        '<fonts count="3"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><sz val="11"/><name val="Consolas"/><family val="3"/></font></fonts>' +
+        '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>' +
+        '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+        '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+        '<cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+        '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+        '<xf numFmtId="49" fontId="2" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1"/></cellXfs>' +
+        '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
+        '</styleSheet>'},
+      {name:'xl/worksheets/sheet1.xml', data: head +
+        `<worksheet xmlns="${NS}" xmlns:r="${RNS}">` +
+        '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' +
+        `<cols><col min="1" max="1" width="6" customWidth="1"/><col min="2" max="2" width="${Math.min(120, maxLen + 4)}" customWidth="1"/></cols>` +
+        `<sheetData>${rows.join('')}</sheetData>` +
+        '</worksheet>'},
+    ]);
+  }
+
+  /* ===================== Start ===================== */
+  window.addEventListener('resize', () => { if(!masked && current) pwEl.style.setProperty('--fs', fontFor(Array.from(current).length) + 'px'); });
+  refreshUI();
+  setMode(S.mode);
+})();
+</script>
+</body>
+</html>
