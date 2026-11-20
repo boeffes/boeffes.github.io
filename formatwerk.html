@@ -10,17 +10,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#0A0C0F; --steel:#101319; --steel-2:#161A21; --steel-3:#1C212A;
-    --rail:#232932; --rail-2:#333B47; --rail-3:#414B5A;
-    --ink:#ECEFF4; --ink-2:#A2ADBB; --ink-3:#6A7482; --ink-4:#48515E;
+    --void:#100E09; --steel:#171510; --steel-2:#1E1C17; --steel-3:#24221D;
+    --rail:#2C2A25; --rail-2:#3E3C37; --rail-3:#4E4C47;
+    --ink:#F3F1EC; --ink-2:#AFADA8; --ink-3:#777570; --ink-4:#54524D;
     --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
     --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --ease:cubic-bezier(.2,.7,.2,1);
-    --brand:#FFB401;
-    --ac:#2DD4BF;                      /* Formatwerk — Türkis */
+    --brand:#5CC8D6;
+    --ac:#5CC8D6;                      /* Formatwerk — Türkis */
     --ac-soft:color-mix(in srgb, var(--ac) 14%, transparent);
-    --bo-1:#7FB4FF; --bo-2:#4F7DF0;
+    --bo-1:#5CC8D6; --bo-2:#5CC8D6;
     --warn:#F2A33C;
   }
   *{box-sizing:border-box}
@@ -48,14 +48,14 @@
   .brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex:none}
   .logo{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
     font:700 15px/1 var(--disp);color:#fff;background:linear-gradient(150deg,var(--bo-1),var(--bo-2));
-    box-shadow:inset 0 0 0 1px #ffffff30, 0 2px 9px #4f7df055;}
+    box-shadow:inset 0 0 0 1px #ffffff30;}
   .word{font:600 16px/1 var(--disp);letter-spacing:-.01em;color:var(--ink)}
   .word .x{color:#6E97F2}
   .crumb{display:flex;align-items:center;gap:9px;min-width:0;
     font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
-  .crumb .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);
+  .crumb .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);box-shadow:none;
     animation:dotp 2.6s var(--ease) infinite;flex:none}
-  @keyframes dotp{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 55%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  @keyframes dotp{0%{box-shadow:none}70%{box-shadow:none}100%{box-shadow:none}}
   .crumb b{color:var(--ink-2);font-weight:600;letter-spacing:.1em}
   .crumb .sep{color:var(--ink-4)}
   .loc{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);flex:none}
@@ -78,7 +78,7 @@
     transition:border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease)}
   .drop:hover{border-color:color-mix(in srgb,var(--ac) 50%, var(--rail-2));transform:translateY(-2px)}
   .drop.drag{border-color:var(--ac);border-style:solid;
-    box-shadow:0 0 0 1px var(--ac), 0 0 50px -20px var(--ac);transform:translateY(-2px)}
+    box-shadow:none;transform:translateY(-2px)}
   .drop:focus-within{outline:none;border-color:color-mix(in srgb,var(--ac) 55%, var(--rail-2))}
   .drop svg{width:42px;height:42px;color:var(--ac);opacity:.9}
   .drop .big{font:600 17px/1.3 var(--disp);color:var(--ink)}
@@ -99,18 +99,18 @@
     transition:.18s var(--ease)}
   .fmt:hover{color:var(--ink);border-color:var(--rail-3)}
   .fmt.on{color:var(--void);background:var(--ac);border-color:var(--ac);font-weight:700;
-    box-shadow:0 0 22px -8px var(--ac)}
-  .fmt:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+    box-shadow:none}
+  .fmt:focus-visible{outline:none;box-shadow:none}
   .qwrap{display:flex;align-items:center;gap:14px;flex:1;min-width:200px}
   input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:3px;flex:1;min-width:120px;
     background:linear-gradient(90deg,var(--ac) var(--p,85%),var(--rail-2) var(--p,85%));outline:none;cursor:pointer}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
-    background:var(--ink);border:3px solid var(--ac);box-shadow:0 1px 4px #0008;cursor:pointer}
+    background:var(--ink);border:3px solid var(--ac);box-shadow:none;cursor:pointer}
   input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ink);border:3px solid var(--ac);cursor:pointer}
   .qval{font-family:var(--mono);font-size:13px;color:var(--ink);min-width:42px;text-align:right}
   .swatches{display:flex;align-items:center;gap:8px}
   .swatch{width:24px;height:24px;border-radius:7px;cursor:pointer;border:1px solid var(--rail-2);position:relative;padding:0;background:none}
-  .swatch.on{box-shadow:0 0 0 2px var(--ac),0 0 0 4px var(--void)}
+  .swatch.on{box-shadow:none}
   .swatch.w{background:#fff}.swatch.k{background:#111}
   .swatch.cust{overflow:hidden}
   .swatch.cust input{position:absolute;inset:-6px;width:200%;height:200%;border:none;padding:0;cursor:pointer;background:none}
@@ -122,10 +122,10 @@
     color:var(--ink);background:var(--steel-3);border:1px solid var(--rail-2);border-radius:11px;padding:11px 16px;
     display:inline-flex;align-items:center;gap:8px;transition:.18s var(--ease)}
   .btn:hover{border-color:var(--rail-3);background:var(--rail)}
-  .btn.primary{color:var(--void);background:var(--ac);border-color:var(--ac);box-shadow:0 8px 26px -14px var(--ac)}
+  .btn.primary{color:var(--void);background:var(--ac);border-color:var(--ac);box-shadow:none}
   .btn.primary:hover{filter:brightness(1.06)}
   .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
-  .btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .btn:focus-visible{outline:none;box-shadow:none}
   .btn .spin{width:14px;height:14px;border-radius:50%;border:2px solid color-mix(in srgb,var(--void) 35%,transparent);border-top-color:var(--void);animation:sp .7s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
 
@@ -136,7 +136,7 @@
     animation:rise .3s var(--ease) both}
   @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .thumb{width:58px;height:58px;flex:none;border-radius:9px;overflow:hidden;border:1px solid var(--rail-2);
-    background:repeating-conic-gradient(#1b2129 0 25%, #151a21 0 50%) 0/14px 14px;display:grid;place-items:center}
+    background:repeating-conic-gradient(#24221D 0 25%, #1D1B16 0 50%) 0/14px 14px;display:grid;place-items:center}
   .thumb img{max-width:100%;max-height:100%;display:block;object-fit:contain}
   .thumb.load{color:var(--ink-4)}
   .thumb .ph{width:20px;height:20px;border-radius:50%;border:2px solid var(--rail-3);border-top-color:var(--ac);animation:sp .8s linear infinite}
@@ -163,7 +163,7 @@
   .ibtn.dl{color:var(--ac);border-color:color-mix(in srgb,var(--ac) 35%,var(--rail-2))}
   .ibtn.dl:hover{background:color-mix(in srgb,var(--ac) 14%,var(--steel-3))}
   .ibtn:disabled{opacity:.35;cursor:default}
-  .ibtn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ac)}
+  .ibtn:focus-visible{outline:none;box-shadow:none}
   .ibtn svg{width:16px;height:16px}
 
   .foot{margin-top:42px;padding-top:18px;border-top:1px solid var(--rail);
@@ -179,6 +179,7 @@
     *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style id="beton-skin">:root{--void:#0B0B0B;--steel:#111111;--steel-2:#141414;--steel-3:#1A1A1A;--rail:#4A4741;--rail-2:#8F897F;--rail-3:#EFEBE4;--ink:#EFEBE4;--ink-2:#BEB8AE;--ink-3:#8F897F;--ink-4:#6E6961;--line:#4A4741;--ok:#A8D672;--warn:#F5C518;--err:#FF4A3D;--bad:#FF4A3D;--ac:#5CC8D6;--ac-2:#5CC8D6;--ac-hi:#5CC8D6;--ac-deep:#5CC8D6;--acc:#5CC8D6;--acc-2:#5CC8D6;--accent:#5CC8D6;--amber:#5CC8D6;--amber-deep:#5CC8D6;--brand:#5CC8D6;--brand-2:#5CC8D6;--cur:#5CC8D6;--logo:#5CC8D6;--logo-2:#5CC8D6;--logo-a:#5CC8D6;--logo-b:#5CC8D6;--bo-1:#5CC8D6;--bo-2:#5CC8D6;--brand-a:#5CC8D6;--brand-b:#5CC8D6;--ac-weak:color-mix(in srgb,#5CC8D6 12%,#111111);--acw:color-mix(in srgb,#5CC8D6 12%,#111111);--ac-w:color-mix(in srgb,#5CC8D6 12%,#111111);--ac-soft:color-mix(in srgb,#5CC8D6 14%,#111111);--ac-12:color-mix(in srgb,#5CC8D6 12%,#111111);--ac-22:color-mix(in srgb,#5CC8D6 22%,#111111);--ac-w2:color-mix(in srgb,#5CC8D6 22%,#111111);--accent-dim:color-mix(in srgb,#5CC8D6 24%,#111111);--ac-ink:#111111;--bf-ac:#5CC8D6;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--disp:"Schibsted Grotesk",system-ui,sans-serif;--sans:"Schibsted Grotesk",system-ui,sans-serif}*,*::before,*::after{border-radius:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html,body{background:#111111!important}.sheen,.grain,.vignette,.vig,.aura,.cursor-glow,.scanline,.noise{display:none!important}:focus-visible{outline:2px solid var(--bf-ac)!important;outline-offset:2px}::selection{background:var(--bf-ac);color:#111}</style>
 </head>
 <body>
 <div class="grain"></div><div class="aura"></div><div class="vig"></div>
@@ -186,8 +187,8 @@
 <div class="wrap">
   <header class="top">
     <a class="brand" href="index.html" title="Zurück zur ToolBox">
-      <span class="logo">B</span>
-      <span class="word">Bo<span class="x">ff</span>es</span>
+      
+      <span class="word"><span class="bf-mark" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#EFEBE4;white-space:nowrap">Boeffes / Toolbox</span></span>
     </a>
     <div class="crumb">
       <span class="dot"></span>

@@ -11,27 +11,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0E1117;
-    --panel:#161C26;
-    --panel-2:#1B2330;
-    --line:#27303E;
-    --line-bright:#36435A;
-    --ink:#E7ECF3;
-    --ink-dim:#9AA6B6;
-    --ink-faint:#5E6B7D;
-    --ac:#EC4899;
-    --ac-deep:#BE185D;
-    --ac-weak:rgba(236,72,153,0.10);
+    --bg:#15130E;
+    --panel:#1F1D18;
+    --panel-2:#26241F;
+    --line:#33312C;
+    --line-bright:#46443F;
+    --ink:#EFEDE8;
+    --ink-dim:#A8A6A1;
+    --ink-faint:#6D6B66;
+    --ac:#FF8FB1;
+    --ac-deep:#FF8FB1;
+    --ac-weak:rgba(255,143,177,0.10);
     --bad:#FF6B6B;
     --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
     --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --ease:cubic-bezier(.2,.7,.2,1);
     --checker:
-      linear-gradient(45deg,#2a3240 25%,transparent 25%),
-      linear-gradient(-45deg,#2a3240 25%,transparent 25%),
-      linear-gradient(45deg,transparent 75%,#2a3240 75%),
-      linear-gradient(-45deg,transparent 75%,#2a3240 75%);
+      linear-gradient(45deg,#35332E 25%,transparent 25%),
+      linear-gradient(-45deg,#35332E 25%,transparent 25%),
+      linear-gradient(45deg,transparent 75%,#35332E 75%),
+      linear-gradient(-45deg,transparent 75%,#35332E 75%);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -63,12 +63,12 @@
   .mark{display:flex;align-items:baseline;gap:12px;min-width:0}
   .pdot{
     width:9px;height:9px;border-radius:50%;background:var(--ac);align-self:center;flex:none;
-    box-shadow:0 0 0 0 var(--ac);animation:pulse 2.6s var(--ease) infinite;
+    box-shadow:none;animation:pulse 2.6s var(--ease) infinite;
   }
   @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(236,72,153,.45)}
-    70%{box-shadow:0 0 0 8px rgba(236,72,153,0)}
-    100%{box-shadow:0 0 0 0 rgba(236,72,153,0)}
+    0%{box-shadow:none}
+    70%{box-shadow:none}
+    100%{box-shadow:none}
   }
   .ptitle{font-family:var(--disp);font-weight:600;font-size:21px;letter-spacing:-0.02em;margin:0;color:var(--ink)}
   .pkick{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
@@ -88,12 +88,12 @@
     position:relative;width:100%;height:264px;border-radius:12px;cursor:crosshair;
     border:1px solid var(--line-bright);outline:none;touch-action:none;
     background-image:linear-gradient(to top,#000,rgba(0,0,0,0)),linear-gradient(to right,#fff,rgba(255,255,255,0));
-    background-color:#EC4899;
+    background-color:#FF8FB1;
   }
-  .sv:focus-visible{box-shadow:0 0 0 3px var(--ac-weak)}
+  .sv:focus-visible{box-shadow:none}
   .sv .knob{
     position:absolute;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;
-    border:2px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.45),0 2px 6px rgba(0,0,0,.5);
+    border:2px solid #fff;box-shadow:none;
   }
 
   /* Slider */
@@ -102,17 +102,17 @@
   .srow .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink-faint);width:14px;flex:none;text-align:center}
   .rng{
     -webkit-appearance:none;appearance:none;width:100%;height:14px;border-radius:8px;
-    border:1px solid var(--line-bright);background:#0c0f15;outline:none;cursor:pointer;
+    border:1px solid var(--line-bright);background:#13110C;outline:none;cursor:pointer;
     background-image:var(--track-grad);background-size:cover;
   }
-  .rng.checkered{background-color:#1b2330;background-image:var(--track-grad),var(--checker);
+  .rng.checkered{background-color:#26241F;background-image:var(--track-grad),var(--checker);
     background-size:cover,12px 12px;background-position:0 0,0 0,0 6px,6px -6px,-6px 0}
   .rng::-webkit-slider-thumb{
     -webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;cursor:pointer;
-    border:2px solid #11151c;box-shadow:0 0 0 1px #ffffff55,0 2px 5px rgba(0,0,0,.5)}
+    border:2px solid #191712;box-shadow:none}
   .rng::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;cursor:pointer;
-    border:2px solid #11151c;box-shadow:0 0 0 1px #ffffff55,0 2px 5px rgba(0,0,0,.5)}
-  .rng:focus-visible{box-shadow:0 0 0 3px var(--ac-weak)}
+    border:2px solid #191712;box-shadow:none}
+  .rng:focus-visible{box-shadow:none}
 
   /* Aktionen */
   .acts{display:flex;gap:9px}
@@ -130,7 +130,7 @@
   /* die Farbe (rechts) */
   .swatch{
     position:relative;flex:1;min-height:170px;border-radius:12px;overflow:hidden;cursor:pointer;
-    border:1px solid var(--line-bright);background-color:#1b2330;background-image:var(--checker);
+    border:1px solid var(--line-bright);background-color:#26241F;background-image:var(--checker);
     background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;
   }
   .swatch .fill{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:background-color .04s linear}
@@ -150,8 +150,8 @@
     width:100%;font-family:var(--mono);font-size:14px;font-weight:500;background:var(--bg);color:var(--ink);
     border:1px solid var(--line-bright);border-radius:11px;padding:12px 86px 12px 14px;outline:none;transition:border-color .14s,box-shadow .14s;
   }
-  .parse input:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-weak)}
-  .parse input.bad{border-color:var(--bad);box-shadow:0 0 0 3px rgba(255,107,107,.12)}
+  .parse input:focus{border-color:var(--ac);box-shadow:none}
+  .parse input.bad{border-color:var(--bad);box-shadow:none}
   .parse .ph{
     position:absolute;right:13px;top:50%;transform:translateY(-50%);
     font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--ink-faint);pointer-events:none;
@@ -165,7 +165,7 @@
     background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;overflow:hidden;
     transition:border-color .14s,background .14s,transform .12s var(--ease);
   }
-  .qrow:hover{border-color:color-mix(in srgb,var(--ac) 50%,var(--line));background:#1d2330}
+  .qrow:hover{border-color:color-mix(in srgb,var(--ac) 50%,var(--line));background:#272520}
   .qrow:active{transform:scale(.985)}
   .qk{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
   .qv{font-family:var(--mono);font-size:11.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -222,7 +222,7 @@
     -moz-appearance:textfield;transition:border-color .14s,box-shadow .14s;
   }
   .chrow input.num::-webkit-outer-spin-button,.chrow input.num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  .chrow input.num:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-weak)}
+  .chrow input.num:focus{border-color:var(--ac);box-shadow:none}
 
   /* Harmonien */
   .harm{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
@@ -248,7 +248,7 @@
   .schip{
     width:42px;height:42px;border-radius:10px;cursor:pointer;position:relative;
     border:1px solid rgba(255,255,255,.10);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
-    background-color:#1b2330;background-image:var(--checker);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0;
+    background-color:#26241F;background-image:var(--checker);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0;
     transition:transform .12s var(--ease);
   }
   .schip .scol{position:absolute;inset:0;border-radius:9px}
@@ -273,7 +273,7 @@
   #toast{
     position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(18px);
     background:var(--panel-2);border:1px solid var(--line-bright);padding:10px 18px;border-radius:10px;
-    font-family:var(--mono);font-size:12px;color:var(--ink);box-shadow:0 14px 36px rgba(0,0,0,.5);
+    font-family:var(--mono);font-size:12px;color:var(--ink);box-shadow:none;
     opacity:0;pointer-events:none;transition:.2s var(--ease);z-index:200;display:flex;align-items:center;gap:9px;
   }
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -284,6 +284,7 @@
   ::-webkit-scrollbar-track{background:transparent}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style id="beton-skin">:root{--bg:#111111;--panel:#141414;--panel-2:#1A1A1A;--line:#4A4741;--line-bright:#EFEBE4;--ink:#EFEBE4;--ink-dim:#BEB8AE;--ink-faint:#8F897F;--good:#A8D672;--bad:#FF4A3D;--ac:#FF8FB1;--ac-2:#FF8FB1;--ac-hi:#FF8FB1;--ac-deep:#FF8FB1;--acc:#FF8FB1;--acc-2:#FF8FB1;--accent:#FF8FB1;--amber:#FF8FB1;--amber-deep:#FF8FB1;--brand:#FF8FB1;--brand-2:#FF8FB1;--cur:#FF8FB1;--logo:#FF8FB1;--logo-2:#FF8FB1;--logo-a:#FF8FB1;--logo-b:#FF8FB1;--bo-1:#FF8FB1;--bo-2:#FF8FB1;--brand-a:#FF8FB1;--brand-b:#FF8FB1;--ac-weak:color-mix(in srgb,#FF8FB1 12%,#111111);--acw:color-mix(in srgb,#FF8FB1 12%,#111111);--ac-w:color-mix(in srgb,#FF8FB1 12%,#111111);--ac-soft:color-mix(in srgb,#FF8FB1 14%,#111111);--ac-12:color-mix(in srgb,#FF8FB1 12%,#111111);--ac-22:color-mix(in srgb,#FF8FB1 22%,#111111);--ac-w2:color-mix(in srgb,#FF8FB1 22%,#111111);--accent-dim:color-mix(in srgb,#FF8FB1 24%,#111111);--ac-ink:#111111;--bf-ac:#FF8FB1;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--disp:"Schibsted Grotesk",system-ui,sans-serif;--sans:"Schibsted Grotesk",system-ui,sans-serif}*,*::before,*::after{border-radius:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html,body{background:#111111!important}.sheen,.grain,.vignette,.vig,.aura,.cursor-glow,.scanline,.noise{display:none!important}:focus-visible{outline:2px solid var(--bf-ac)!important;outline-offset:2px}::selection{background:var(--bf-ac);color:#111}</style>
 </head>
 <body>
   <div class="wrap">
@@ -296,7 +297,7 @@
         <span class="pkick">Color Studio</span>
       </div>
       <div class="hright">
-        <div class="bf-sig" title="Boeffes"><span class="bf-tile">B</span><span class="bf-word">Boe<b>ff</b>es</span></div>
+        <div class="bf-sig" title="Boeffes"><span class="bf-word"><span class="bf-mark" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#EFEBE4;white-space:nowrap">Boeffes / Toolbox</span></span></div>
         <span class="badge">Lokal · kein Upload</span>
       </div>
     </header>

@@ -10,27 +10,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#0A0C0F;
-    --steel:#101319;
-    --steel-2:#161A21;
-    --steel-3:#1C212A;
-    --rail:#232932;
-    --rail-2:#333B47;
-    --rail-3:#414B5A;
-    --ink:#ECEFF4;
-    --ink-2:#A2ADBB;
-    --ink-3:#6A7482;
-    --ink-4:#48515E;
+    --void:#100E09;
+    --steel:#171510;
+    --steel-2:#1E1C17;
+    --steel-3:#24221D;
+    --rail:#2C2A25;
+    --rail-2:#3E3C37;
+    --rail-3:#4E4C47;
+    --ink:#F3F1EC;
+    --ink-2:#AFADA8;
+    --ink-3:#777570;
+    --ink-4:#54524D;
     --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
     --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --ease:cubic-bezier(.2,.7,.2,1);
     /* tool accent: F1 racing red */
-    --ac:#E8202A;
-    --ac-2:#FF4B54;
-    --acw:rgba(232,32,42,.10);
+    --ac:#FF4A3D;
+    --ac-2:#FF4A3D;
+    --acw:rgba(255,74,61,.10);
     --gold:#E7C766;
-    --silver:#C2CBD6;
+    --silver:#CECCC7;
     --bronze:#C98A5B;
   }
   *{box-sizing:border-box}
@@ -70,12 +70,12 @@
   .brand{display:flex;align-items:center;gap:13px;min-width:0}
   .brand .dot{
     width:11px;height:11px;border-radius:50%;background:var(--ac);flex:none;
-    box-shadow:0 0 0 0 rgba(232,32,42,.5);animation:beat 2.4s var(--ease) infinite;
+    box-shadow:none;animation:beat 2.4s var(--ease) infinite;
   }
   @keyframes beat{
-    0%{box-shadow:0 0 0 0 rgba(232,32,42,.5)}
-    70%{box-shadow:0 0 0 9px rgba(232,32,42,0)}
-    100%{box-shadow:0 0 0 0 rgba(232,32,42,0)}
+    0%{box-shadow:none}
+    70%{box-shadow:none}
+    100%{box-shadow:none}
   }
   .brand h1{
     font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:-0.02em;
@@ -172,7 +172,7 @@
     appearance:none;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-3);
     background:transparent;border:none;border-radius:7px;padding:7px 14px;cursor:pointer;transition:all .18s;
   }
-  .seg button.on{color:var(--ink);background:var(--steel-3);box-shadow:0 1px 2px #0006}
+  .seg button.on{color:var(--ink);background:var(--steel-3);box-shadow:none}
   .ctrl .spacer{flex:1}
   .hint{font-family:var(--mono);font-size:10.5px;color:var(--ink-4);letter-spacing:.04em}
   @media(max-width:600px){ .ctrl .spacer{display:none} .ctrl .hint{display:none} }
@@ -224,7 +224,7 @@
   .sub-name{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.02em;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:7px}
   .flagico{width:18px;height:13px;border-radius:2px;object-fit:cover;flex:none;
-    box-shadow:0 0 0 1px #ffffff14;vertical-align:middle}
+    box-shadow:none;vertical-align:middle}
   .pts{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
   .pts b{font-family:var(--mono);font-weight:700;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
   .pts span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4)}
@@ -256,7 +256,7 @@
   .circ::after{content:"";position:absolute;inset:0;border-radius:13px;pointer-events:none;
     box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .25s}
   .circ:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--ac) 40%,var(--rail));
-    box-shadow:0 16px 34px -22px #000, 0 0 36px -22px var(--ac)}
+    box-shadow:none}
   .circ-rnd{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink-4);
     display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
   .circ-rnd .badge{color:var(--ac-2);border:1px solid color-mix(in srgb,var(--ac) 30%,var(--rail));
@@ -413,6 +413,7 @@
     *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
   }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style id="beton-skin">:root{--void:#0B0B0B;--steel:#111111;--steel-2:#141414;--steel-3:#1A1A1A;--rail:#4A4741;--rail-2:#8F897F;--rail-3:#EFEBE4;--ink:#EFEBE4;--ink-2:#BEB8AE;--ink-3:#8F897F;--ink-4:#6E6961;--line:#4A4741;--ok:#A8D672;--warn:#F5C518;--err:#FF4A3D;--bad:#FF4A3D;--ac:#FF4A3D;--ac-2:#FF4A3D;--ac-hi:#FF4A3D;--ac-deep:#FF4A3D;--acc:#FF4A3D;--acc-2:#FF4A3D;--accent:#FF4A3D;--amber:#FF4A3D;--amber-deep:#FF4A3D;--brand:#FF4A3D;--brand-2:#FF4A3D;--cur:#FF4A3D;--logo:#FF4A3D;--logo-2:#FF4A3D;--logo-a:#FF4A3D;--logo-b:#FF4A3D;--bo-1:#FF4A3D;--bo-2:#FF4A3D;--brand-a:#FF4A3D;--brand-b:#FF4A3D;--ac-weak:color-mix(in srgb,#FF4A3D 12%,#111111);--acw:color-mix(in srgb,#FF4A3D 12%,#111111);--ac-w:color-mix(in srgb,#FF4A3D 12%,#111111);--ac-soft:color-mix(in srgb,#FF4A3D 14%,#111111);--ac-12:color-mix(in srgb,#FF4A3D 12%,#111111);--ac-22:color-mix(in srgb,#FF4A3D 22%,#111111);--ac-w2:color-mix(in srgb,#FF4A3D 22%,#111111);--accent-dim:color-mix(in srgb,#FF4A3D 24%,#111111);--ac-ink:#111111;--bf-ac:#FF4A3D;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--disp:"Schibsted Grotesk",system-ui,sans-serif;--sans:"Schibsted Grotesk",system-ui,sans-serif}*,*::before,*::after{border-radius:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html,body{background:#111111!important}.sheen,.grain,.vignette,.vig,.aura,.cursor-glow,.scanline,.noise{display:none!important}:focus-visible{outline:2px solid var(--bf-ac)!important;outline-offset:2px}::selection{background:var(--bf-ac);color:#111}</style>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -427,7 +428,7 @@
         <span class="sub">Formel 1 · Daten</span>
       </div>
       <div class="hright">
-        <div class="bf-sig" title="Boeffes"><span class="bf-tile">B</span><span class="bf-word">Boe<b>ff</b>es</span></div>
+        <div class="bf-sig" title="Boeffes"><span class="bf-word"><span class="bf-mark" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#EFEBE4;white-space:nowrap">Boeffes / Toolbox</span></span></div>
         <div class="src">
           <span class="pip load" id="statusPip" aria-hidden="true"></span>
           <span class="txt" id="statusTxt">verbinde…</span>

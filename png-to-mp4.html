@@ -7,16 +7,16 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='15' fill='%23E8870C'/><text x='33' y='47' font-family='Arial,sans-serif' font-size='44' font-weight='700' text-anchor='middle' fill='%231A1206'>B</text></svg>">
 <style>
   :root{
-    --bg:#0E1117;
-    --panel:#161C26;
-    --panel-2:#1B2330;
-    --line:#27303E;
-    --line-bright:#36435A;
-    --ink:#E7ECF3;
-    --ink-dim:#9AA6B6;
-    --ink-faint:#5E6B7D;
-    --amber:#FFB454;
-    --amber-deep:#E8870C;
+    --bg:#15130E;
+    --panel:#1F1D18;
+    --panel-2:#26241F;
+    --line:#33312C;
+    --line-bright:#46443F;
+    --ink:#EFEDE8;
+    --ink-dim:#A8A6A1;
+    --ink-faint:#6D6B66;
+    --amber:#FF5B23;
+    --amber-deep:#FF5B23;
     --good:#5BD6A0;
     --bad:#FF6B6B;
     --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -26,7 +26,7 @@
   html,body{margin:0;padding:0}
   body{
     background:
-      radial-gradient(1200px 600px at 50% -10%, #19222F 0%, var(--bg) 60%) fixed,
+      radial-gradient(1200px 600px at 50% -10%, #25231E 0%, var(--bg) 60%) fixed,
       var(--bg);
     color:var(--ink);
     font-family:var(--sans);
@@ -49,7 +49,7 @@
   .bf-sig{display:flex;align-items:center;gap:8px}
   .bf-sig .bf-tile{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;
     font-family:var(--sans);font-weight:700;font-size:14px;line-height:1;color:#1A1206;
-    background:linear-gradient(150deg,#FFC06A,#E8870C);box-shadow:inset 0 0 0 1px #ffffff33,inset 0 1px 0 #ffffff55}
+    background:linear-gradient(150deg,#FFC06A,#FF5B23);box-shadow:inset 0 0 0 1px #ffffff33,inset 0 1px 0 #ffffff55}
   .bf-sig .bf-word{font-weight:700;font-size:14px;letter-spacing:-0.01em;color:var(--ink)}
   .bf-sig .bf-word b{color:var(--amber);font-weight:700}
 
@@ -57,14 +57,14 @@
   .drop{
     border:1.5px dashed var(--line-bright);
     border-radius:14px;
-    background:linear-gradient(180deg, rgba(255,180,84,0.025), transparent);
+    background:linear-gradient(180deg, rgba(255,91,35,0.025), transparent);
     padding:34px 28px;
     text-align:center;
     transition:border-color .15s, background .15s;
     cursor:pointer;
   }
-  .drop:hover{border-color:#4A5C78}
-  .drop.over{border-color:var(--amber);background:rgba(255,180,84,0.06)}
+  .drop:hover{border-color:#5E5C57}
+  .drop.over{border-color:var(--amber);background:rgba(255,91,35,0.06)}
   .drop .big{font-size:15px;font-weight:550;margin-bottom:6px}
   .drop .small{font-size:13px;color:var(--ink-dim)}
   .drop .btns{margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -74,7 +74,7 @@
     border:1px solid var(--line-bright);border-radius:9px;
     padding:9px 16px;cursor:pointer;transition:border-color .12s,background .12s;
   }
-  .ghost:hover{border-color:#5A6E8C;background:#222C3B}
+  .ghost:hover{border-color:#5A6E8C;background:#2F2D28}
 
   /* Summary after load */
   .summary{display:none;margin-top:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
@@ -123,7 +123,7 @@
     font-family:var(--sans);font-size:15px;font-weight:650;letter-spacing:0.01em;
     color:#1A1206;background:linear-gradient(180deg,#FFC06A,var(--amber-deep));
     border:none;border-radius:12px;padding:15px;cursor:pointer;
-    box-shadow:0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 24px -10px rgba(232,135,12,0.6);
+    box-shadow:0 1px 0 rgba(255,255,255,0.25) inset;
     transition:filter .12s, transform .05s;
   }
   .go:hover:not(:disabled){filter:brightness(1.05)}
@@ -154,7 +154,7 @@
     background:linear-gradient(90deg, var(--amber-deep), var(--amber));
     transition:width .08s linear;z-index:1}
   .playhead{position:absolute;top:0;bottom:0;width:2px;background:#FFF;left:0%;
-    box-shadow:0 0 8px 1px rgba(255,255,255,0.7);transition:left .08s linear;z-index:2}
+    box-shadow:none;transition:left .08s linear;z-index:2}
 
   /* Result */
   .result{display:none;margin-top:24px;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
@@ -167,7 +167,7 @@
     font-family:var(--sans);font-size:14px;font-weight:650;text-decoration:none;
     color:#1A1206;background:linear-gradient(180deg,#FFC06A,var(--amber-deep));
     border-radius:10px;padding:11px 22px;white-space:nowrap;cursor:pointer;
-    box-shadow:0 6px 18px -8px rgba(232,135,12,0.6);
+    box-shadow:none;
   }
   .dl:hover{filter:brightness(1.05)}
 
@@ -175,7 +175,7 @@
   .status{margin-top:16px;font-family:var(--mono);font-size:12.5px;padding:12px 16px;border-radius:10px;display:none;line-height:1.55}
   .status.on{display:block}
   .status.err{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);color:#FFB3B3}
-  .status.info{background:rgba(255,180,84,0.07);border:1px solid rgba(255,180,84,0.25);color:#FFD49B}
+  .status.info{background:rgba(255,91,35,0.07);border:1px solid rgba(255,91,35,0.25);color:#FFD49B}
 
   .foot{margin-top:30px;font-family:var(--mono);font-size:11px;color:var(--ink-faint);line-height:1.7}
   .foot b{color:var(--ink-dim);font-weight:600}
@@ -189,6 +189,7 @@
     .fill,.playhead{transition:none}
   }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style id="beton-skin">:root{--bg:#111111;--panel:#141414;--panel-2:#1A1A1A;--line:#4A4741;--line-bright:#EFEBE4;--ink:#EFEBE4;--ink-dim:#BEB8AE;--ink-faint:#8F897F;--good:#A8D672;--bad:#FF4A3D;--ac:#FF5B23;--ac-2:#FF5B23;--ac-hi:#FF5B23;--ac-deep:#FF5B23;--acc:#FF5B23;--acc-2:#FF5B23;--accent:#FF5B23;--amber:#FF5B23;--amber-deep:#FF5B23;--brand:#FF5B23;--brand-2:#FF5B23;--cur:#FF5B23;--logo:#FF5B23;--logo-2:#FF5B23;--logo-a:#FF5B23;--logo-b:#FF5B23;--bo-1:#FF5B23;--bo-2:#FF5B23;--brand-a:#FF5B23;--brand-b:#FF5B23;--ac-weak:color-mix(in srgb,#FF5B23 12%,#111111);--acw:color-mix(in srgb,#FF5B23 12%,#111111);--ac-w:color-mix(in srgb,#FF5B23 12%,#111111);--ac-soft:color-mix(in srgb,#FF5B23 14%,#111111);--ac-12:color-mix(in srgb,#FF5B23 12%,#111111);--ac-22:color-mix(in srgb,#FF5B23 22%,#111111);--ac-w2:color-mix(in srgb,#FF5B23 22%,#111111);--accent-dim:color-mix(in srgb,#FF5B23 24%,#111111);--ac-ink:#111111;--bf-ac:#FF5B23;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--disp:"Schibsted Grotesk",system-ui,sans-serif;--sans:"Schibsted Grotesk",system-ui,sans-serif}*,*::before,*::after{border-radius:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html,body{background:#111111!important}.sheen,.grain,.vignette,.vig,.aura,.cursor-glow,.scanline,.noise{display:none!important}:focus-visible{outline:2px solid var(--bf-ac)!important;outline-offset:2px}::selection{background:var(--bf-ac);color:#111}</style>
 </head>
 <body>
 <div class="wrap">
@@ -200,8 +201,8 @@
     </div>
     <div class="hright">
       <div class="bf-sig" title="Boeffes">
-        <span class="bf-tile">B</span>
-        <span class="bf-word">Boe<b>ff</b>es</span>
+        
+        <span class="bf-word"><span class="bf-mark" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#EFEBE4;white-space:nowrap">Boeffes / Toolbox</span></span>
       </div>
       <div class="engine">encoder: <b id="engineName">WebCodecs</b><br><span id="engineDetail">checking support&hellip;</span></div>
     </div>

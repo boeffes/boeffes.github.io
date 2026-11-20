@@ -12,27 +12,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#0A0C0F;
-    --steel:#101319;
-    --steel-2:#161A21;
-    --steel-3:#1C212A;
-    --rail:#232932;
-    --rail-2:#333B47;
-    --rail-3:#414B5A;
-    --ink:#ECEFF4;
-    --ink-2:#A2ADBB;
-    --ink-3:#6A7482;
-    --ink-4:#48515E;
+    --void:#100E09;
+    --steel:#171510;
+    --steel-2:#1E1C17;
+    --steel-3:#24221D;
+    --rail:#2C2A25;
+    --rail-2:#3E3C37;
+    --rail-3:#4E4C47;
+    --ink:#F3F1EC;
+    --ink-2:#AFADA8;
+    --ink-3:#777570;
+    --ink-4:#54524D;
     --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --disp:"Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
     --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --ease:cubic-bezier(.2,.7,.2,1);
     /* tool signal colour — Pixelschmiede besitzt das Limegrün */
-    --ac:#A3E635;
+    --ac:#B79CFF;
     --ac-ink:#10160A;
-    --cur:#A3E635;
+    --cur:#B79CFF;
   }
-  @property --cur{ syntax:"<color>"; inherits:true; initial-value:#A3E635; }
+  @property --cur{ syntax:"<color>"; inherits:true; initial-value:#B79CFF; }
 
   /* cursor glow — folgt der Maus in der Tool-Farbe */
   .cursor-glow{
@@ -84,22 +84,22 @@
   .bf-sig{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
   .bf-tile{
     width:22px;height:22px;border-radius:6px;display:grid;place-items:center;flex:none;
-    background:linear-gradient(150deg,#7FB4FF,#4F7DF0);color:#fff;
+    background:linear-gradient(150deg,#B79CFF,#B79CFF);color:#fff;
     font-family:var(--disp);font-weight:700;font-size:14px;line-height:1;
-    box-shadow:inset 0 0 0 1px #ffffff33, inset 0 1px 0 #ffffff55, 0 1px 3px #0007;
+    box-shadow:inset 0 0 0 1px #ffffff33, inset 0 1px 0 #ffffff55;
   }
   .bf-word{font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:-0.01em;color:var(--ink);text-transform:none}
-  .bf-ff{color:#7FB4FF}
+  .bf-ff{color:#B79CFF}
   .rail .sep{color:var(--ink-4);font-size:11px;letter-spacing:.18em}
   .rail .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink-3)}
   .rail .status{display:flex;align-items:center;gap:14px;color:var(--ink-3)}
   .rail .live{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2)}
   .rail .dot{width:6px;height:6px;border-radius:50%;background:#3CCB8E;
-    box-shadow:0 0 0 0 rgba(60,203,142,.5);animation:pulse 2.6s var(--ease) infinite}
+    box-shadow:none;animation:pulse 2.6s var(--ease) infinite}
   @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(60,203,142,.45)}
-    70%{box-shadow:0 0 0 7px rgba(60,203,142,0)}
-    100%{box-shadow:0 0 0 0 rgba(60,203,142,0)}
+    0%{box-shadow:none}
+    70%{box-shadow:none}
+    100%{box-shadow:none}
   }
   @media (max-width:600px){ .rail .hide-s{display:none} }
 
@@ -110,7 +110,7 @@
     color:var(--ink-3);margin:0 0 18px;display:flex;align-items:center;gap:11px;
   }
   .eyebrow .e-dot{width:7px;height:7px;border-radius:2px;background:var(--ac);
-    box-shadow:0 0 9px var(--ac);animation:blink 2.8s var(--ease) infinite}
+    box-shadow:none;animation:blink 2.8s var(--ease) infinite}
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
   .lead h1{
     font-family:var(--disp);font-weight:700;font-size:clamp(40px,7vw,68px);
@@ -129,7 +129,7 @@
     margin-bottom:28px;
   }
   .drop:hover,.drop:focus-visible{border-color:color-mix(in srgb,var(--ac) 55%, var(--rail-2));outline:none;
-    box-shadow:0 0 50px -26px var(--ac), 0 26px 50px -34px #000}
+    box-shadow:none}
   .drop.over{border-color:var(--ac);background:
       radial-gradient(120% 130% at 50% 0%, color-mix(in srgb,var(--ac) 12%, transparent), transparent 60%),
       linear-gradient(180deg,var(--steel-3),var(--steel-2));transform:scale(1.005)}
@@ -162,7 +162,7 @@
     padding:13px 16px;border-bottom:1px solid var(--rail);
     font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
   }
-  .panel-h .ph-dot{width:7px;height:7px;border-radius:2px;background:var(--ac);box-shadow:0 0 8px var(--ac)}
+  .panel-h .ph-dot{width:7px;height:7px;border-radius:2px;background:var(--ac);box-shadow:none}
   .panel-h .left{display:flex;align-items:center;gap:9px}
 
   /* file meta */
@@ -198,9 +198,9 @@
   .rng{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;
     background:var(--rail-2);outline:none;margin:6px 0 2px;cursor:pointer}
   .rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;
-    background:var(--ac);border:3px solid var(--steel);box-shadow:0 0 0 1px var(--ac),0 2px 6px #0008;cursor:pointer}
+    background:var(--ac);border:3px solid var(--steel);box-shadow:none;cursor:pointer}
   .rng::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ac);
-    border:3px solid var(--steel);box-shadow:0 0 0 1px var(--ac);cursor:pointer}
+    border:3px solid var(--steel);box-shadow:none;cursor:pointer}
   .rng-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--ink-4);letter-spacing:.06em;margin-top:2px}
 
   .note{font-size:11.5px;color:var(--ink-4);line-height:1.5;margin-top:9px}
@@ -247,14 +247,14 @@
   .stage-body{padding:16px}
   .single{display:block}
   .single img{width:100%;height:auto;display:block;border-radius:11px;border:1px solid var(--rail);background:
-    repeating-conic-gradient(#1a1f27 0% 25%, #14181f 0% 50%) 50%/22px 22px}
+    repeating-conic-gradient(#22201B 0% 25%, #1C1A15 0% 50%) 50%/22px 22px}
   .single .cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
     color:var(--ink-4);margin-top:11px;text-align:center}
 
   .compare{
     position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--rail);
     user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;background:
-    repeating-conic-gradient(#1a1f27 0% 25%, #14181f 0% 50%) 50%/22px 22px;display:none;
+    repeating-conic-gradient(#22201B 0% 25%, #1C1A15 0% 50%) 50%/22px 22px;display:none;
     height:clamp(300px,58vh,720px);
   }
   .compare.grabbing{cursor:grabbing}
@@ -265,11 +265,11 @@
   .cmp-before{object-fit:fill;clip-path:inset(0 var(--clip,50%) 0 0)}
   .compare.peek .cmp-layer{image-rendering:pixelated}
   .cmp-div{position:absolute;top:0;bottom:0;left:0;width:2px;background:var(--ac);
-    box-shadow:0 0 12px var(--ac);transform:translateX(-1px);pointer-events:none;z-index:3}
+    box-shadow:none;transform:translateX(-1px);pointer-events:none;z-index:3}
   .cmp-knob{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:32px;height:32px;
     border-radius:50%;background:var(--ac);color:var(--ac-ink);display:grid;place-items:center;cursor:ew-resize;
     z-index:4;touch-action:none;user-select:none;-webkit-user-select:none;
-    box-shadow:0 2px 12px #000a, 0 0 0 4px color-mix(in srgb,var(--ac) 28%, transparent);font-size:14px}
+    box-shadow:none;font-size:14px}
   .cmp-tag{position:absolute;top:10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--ink-2);background:#0b0e12cc;border:1px solid var(--rail);
     border-radius:20px;padding:3px 9px;backdrop-filter:blur(4px);pointer-events:none;z-index:3}
@@ -335,6 +335,7 @@
     .sheen,.cursor-glow{display:none}
   }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style id="beton-skin">:root{--void:#0B0B0B;--steel:#111111;--steel-2:#141414;--steel-3:#1A1A1A;--rail:#4A4741;--rail-2:#8F897F;--rail-3:#EFEBE4;--ink:#EFEBE4;--ink-2:#BEB8AE;--ink-3:#8F897F;--ink-4:#6E6961;--line:#4A4741;--ok:#A8D672;--warn:#F5C518;--err:#FF4A3D;--bad:#FF4A3D;--ac:#B79CFF;--ac-2:#B79CFF;--ac-hi:#B79CFF;--ac-deep:#B79CFF;--acc:#B79CFF;--acc-2:#B79CFF;--accent:#B79CFF;--amber:#B79CFF;--amber-deep:#B79CFF;--brand:#B79CFF;--brand-2:#B79CFF;--cur:#B79CFF;--logo:#B79CFF;--logo-2:#B79CFF;--logo-a:#B79CFF;--logo-b:#B79CFF;--bo-1:#B79CFF;--bo-2:#B79CFF;--brand-a:#B79CFF;--brand-b:#B79CFF;--ac-weak:color-mix(in srgb,#B79CFF 12%,#111111);--acw:color-mix(in srgb,#B79CFF 12%,#111111);--ac-w:color-mix(in srgb,#B79CFF 12%,#111111);--ac-soft:color-mix(in srgb,#B79CFF 14%,#111111);--ac-12:color-mix(in srgb,#B79CFF 12%,#111111);--ac-22:color-mix(in srgb,#B79CFF 22%,#111111);--ac-w2:color-mix(in srgb,#B79CFF 22%,#111111);--accent-dim:color-mix(in srgb,#B79CFF 24%,#111111);--ac-ink:#111111;--bf-ac:#B79CFF;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--disp:"Schibsted Grotesk",system-ui,sans-serif;--sans:"Schibsted Grotesk",system-ui,sans-serif}*,*::before,*::after{border-radius:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html,body{background:#111111!important}.sheen,.grain,.vignette,.vig,.aura,.cursor-glow,.scanline,.noise{display:none!important}:focus-visible{outline:2px solid var(--bf-ac)!important;outline-offset:2px}::selection{background:var(--bf-ac);color:#111}</style>
 </head>
 <body>
   <div class="sheen" aria-hidden="true"></div>
@@ -347,8 +348,8 @@
     <!-- top rail -->
     <div class="rail">
       <a class="bf-sig" href="index.html" title="Zurück zur ToolBox">
-        <span class="bf-tile">B</span>
-        <span class="bf-word">Boe<span class="bf-ff">ff</span>es</span>
+        
+        <span class="bf-word"><span class="bf-mark" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#EFEBE4;white-space:nowrap">Boeffes / Toolbox</span></span>
       </a>
       <div class="status">
         <span class="crumb hide-s">Pixelschmiede</span>
