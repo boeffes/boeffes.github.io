@@ -883,9 +883,9 @@
 
   /* ===================== Karte ===================== */
   var map = L.map('map',{ zoomControl:true, attributionControl:true, worldCopyJump:true }).setView([30,12],3);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  L.tileLayer('https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_5ejk_1_7c70e850f2541fdcb58177e1',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains:'abcd', maxZoom:19 }).addTo(map);
+    maxZoom:19 }).addTo(map);
   L.control.scale({imperial:false, position:'bottomright'}).addTo(map);
 
   var groups = {
